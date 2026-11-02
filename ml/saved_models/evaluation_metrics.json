@@ -1,0 +1,58 @@
+{
+  "models": [
+    {
+      "model_name": "XGBoost Regressor",
+      "r2_score": 0.9595,
+      "rmse": 2.3203,
+      "mae": 1.555,
+      "mse": 5.3839,
+      "training_time_sec": 1.969,
+      "inference_latency_ms": 0.73,
+      "best_features": [
+        "soil_type_Sandy Loam",
+        "soil_type_Sandy",
+        "soil_type_Clay",
+        "soil_type_Clay Loam",
+        "soil_moisture_pct"
+      ],
+      "description": "Gradient-boosted decision trees optimized for non-linear agro-meteorological tabular features."
+    },
+    {
+      "model_name": "Artificial Neural Network (ANN)",
+      "r2_score": 0.9869,
+      "rmse": 1.3182,
+      "mae": 0.8514,
+      "mse": 1.7375,
+      "training_time_sec": 3.966,
+      "inference_latency_ms": 0.12,
+      "best_features": [
+        "soil_moisture_pct",
+        "et0_mm",
+        "temperature_c",
+        "humidity_pct",
+        "wind_speed_kmh"
+      ],
+      "description": "Deep Multi-Layer Perceptron (128-64-32) capturing continuous microclimatic non-linearities."
+    },
+    {
+      "model_name": "LSTM Regressor",
+      "r2_score": 0.9941,
+      "rmse": 0.8836,
+      "mae": 0.5769,
+      "mse": 0.7807,
+      "training_time_sec": 11.806,
+      "inference_latency_ms": 0.55,
+      "best_features": [
+        "et0_mm",
+        "rainfall_mm",
+        "soil_moisture_pct",
+        "solar_radiation"
+      ],
+      "description": "Recurrent 2-layer LSTM architecture for sequential and temporal moisture depletion patterns."
+    }
+  ],
+  "benchmark_dataset_size": 5000,
+  "target_variable": "water_requirement_mm",
+  "evaluation_date": "2026-11-02",
+  "recommended_model": "LSTM Regressor"
+}

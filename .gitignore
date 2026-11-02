@@ -1,0 +1,42 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Model checkpoints and artifacts
+*.pkl
+*.h5
+*.pt
+*.onnx
+*.joblib
+!ml/saved_models/*.joblib
+!ml/saved_models/*.json
+
+# Data & local databases
+*.sqlite3
+*.db
+backend/data/*.db
+
+# Node & Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+.pnpm-debug.log*
+
+# Environment & IDE
+.env
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
