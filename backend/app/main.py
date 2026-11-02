@@ -2,6 +2,7 @@
 Cropwater Compass - Smart Irrigation Management System API
 Main FastAPI Application Entrypoint
 """
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
@@ -32,11 +33,25 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# Enable CORS for frontend Vite/React integration
+# Configure CORS origins: environment-based with local development defaults
+DEFAULT_DEV_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+cors_env = os.getenv("CORS_ORIGINS", "").strip()
+extra_origins = [origin.strip() for origin in cors_env.split(",") if origin.strip()] if cors_env else []
+allowed_origins = list(dict.fromkeys(DEFAULT_DEV_ORIGINS + extra_origins))
+
+is_wildcard = "*" in allowed_origins
+
+# Do not combine wildcard origins with credentials enabled
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins for local and networked dev
-    allow_credentials=True,
+    allow_origins=["*"] if is_wildcard else allowed_origins,
+    allow_credentials=not is_wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
 )

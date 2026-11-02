@@ -7,14 +7,29 @@ import uuid
 import os
 from pathlib import Path
 from typing import List, Dict, Any, Optional
+from datetime import datetime
 
-DB_DIR = Path(__file__).resolve().parent.parent.parent / "data"
-DB_PATH = DB_DIR / "cropwater.db"
+DEFAULT_DB_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+DEFAULT_DB_PATH = DEFAULT_DB_DIR / "cropwater.db"
+
+
+def get_db_path() -> Path:
+    """Returns database path from DB_PATH environment variable or default local location."""
+    env_path = os.getenv("DB_PATH", "").strip()
+    if env_path:
+        return Path(env_path)
+    return DEFAULT_DB_PATH
+
+
+# For backwards-compatibility with module-level references
+DB_DIR = DEFAULT_DB_DIR
+DB_PATH = DEFAULT_DB_PATH
 
 
 def get_connection() -> sqlite3.Connection:
-    DB_DIR.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(DB_PATH))
+    db_path = get_db_path()
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -58,6 +73,8 @@ def save_prediction(record: Dict[str, Any]) -> str:
     init_db()
     pred_id = record.get("id") or str(uuid.uuid4())[:8]
     record["id"] = pred_id
+    timestamp = record.get("timestamp") or datetime.now().isoformat()
+    record["timestamp"] = timestamp
 
     with get_connection() as conn:
         cursor = conn.cursor()
@@ -72,12 +89,12 @@ def save_prediction(record: Dict[str, Any]) -> str:
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             pred_id,
-            record.get("timestamp"),
-            record.get("crop_type"),
-            record.get("growth_stage"),
+            timestamp,
+            record.get("crop_type", "Wheat"),
+            record.get("growth_stage", "Mid-season"),
             float(record.get("area", 1.0)),
             record.get("area_unit", "hectares"),
-            record.get("soil_type"),
+            record.get("soil_type", "Loamy"),
             float(record.get("soil_moisture_pct", 30.0)),
             float(record.get("temperature_c", 25.0)),
             float(record.get("humidity_pct", 50.0)),

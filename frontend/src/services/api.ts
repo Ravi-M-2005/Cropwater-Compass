@@ -11,10 +11,16 @@ import {
   SummaryReportResponse,
 } from "../types";
 
-const API_BASE = "/api";
+const rawBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+export const API_BASE = rawBase ? rawBase.replace(/\/+$/, "") : "/api";
+
+export function buildApiUrl(endpoint: string): string {
+  const cleanEndpoint = endpoint.replace(/^\/*/, "/");
+  return `${API_BASE}${cleanEndpoint}`;
+}
 
 async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-  const url = `${API_BASE}${endpoint}`;
+  const url = buildApiUrl(endpoint);
   try {
     const res = await fetch(url, {
       headers: {
@@ -90,7 +96,7 @@ export const api = {
   uploadCSV: async (file: File) => {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch(`${API_BASE}/dataset/upload`, {
+    const res = await fetch(buildApiUrl("/dataset/upload"), {
       method: "POST",
       body: formData,
     });
