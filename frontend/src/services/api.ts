@@ -11,11 +11,37 @@ import {
   SummaryReportResponse,
 } from "../types";
 
-const rawBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
-export const API_BASE = rawBase ? rawBase.replace(/\/+$/, "") : "/api";
+const DEFAULT_PROD_API_BASE = "https://cropwater-compass.onrender.com/api";
+const DEFAULT_DEV_API_BASE = "/api";
+
+function resolveApiBase(): string {
+  const envBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+  if (envBase) {
+    let cleaned = envBase.replace(/\/+$/, "");
+    if (!cleaned.endsWith("/api")) {
+      cleaned = `${cleaned}/api`;
+    }
+    return cleaned;
+  }
+  // In development, default to "/api" (proxied to localhost via Vite)
+  // In production builds, default to the live Render backend
+  return import.meta.env.DEV ? DEFAULT_DEV_API_BASE : DEFAULT_PROD_API_BASE;
+}
+
+export const API_BASE = resolveApiBase();
 
 export function buildApiUrl(endpoint: string): string {
-  const cleanEndpoint = endpoint.replace(/^\/*/, "/");
+  // Normalize leading slashes
+  let cleanEndpoint = endpoint.replace(/^\/*/, "/");
+
+  // Prevent duplicate "/api/api/..." if endpoint already contains the "/api" prefix
+  while (cleanEndpoint.startsWith("/api/")) {
+    cleanEndpoint = cleanEndpoint.substring(4);
+  }
+  if (cleanEndpoint === "/api") {
+    cleanEndpoint = "";
+  }
+
   return `${API_BASE}${cleanEndpoint}`;
 }
 

@@ -27,7 +27,7 @@ export const App: React.FC = () => {
   };
 
   const [activeTab, setActiveTab] = useState(getInitialTab);
-  const [systemHealthy, setSystemHealthy] = useState(true);
+  const [systemHealthy, setSystemHealthy] = useState(false);
   const [shapRequest, setShapRequest] = useState<PredictionRequest | undefined>(undefined);
 
   useEffect(() => {
@@ -35,15 +35,27 @@ export const App: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    let isMounted = true;
     const ping = () => {
       api
         .checkHealth()
-        .then(() => setSystemHealthy(true))
-        .catch(() => setSystemHealthy(false));
+        .then((res) => {
+          if (isMounted) {
+            setSystemHealthy(res?.status === "healthy");
+          }
+        })
+        .catch(() => {
+          if (isMounted) {
+            setSystemHealthy(false);
+          }
+        });
     };
     ping();
     const interval = setInterval(ping, 30000);
-    return () => clearInterval(interval);
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
   }, []);
 
   const handleNavigateToShap = (req: PredictionRequest) => {

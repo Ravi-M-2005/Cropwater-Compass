@@ -92,16 +92,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium border ${
                 systemHealthy
                   ? "bg-emerald-900/60 text-emerald-300 border-emerald-700/60"
-                  : "bg-red-950/60 text-red-300 border-red-800/60"
+                  : "bg-amber-950/60 text-amber-300 border-amber-800/60"
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  systemHealthy ? "bg-emerald-400 animate-pulse" : "bg-red-400"
+                  systemHealthy ? "bg-emerald-400 animate-pulse" : "bg-amber-400 animate-pulse"
                 }`}
               />
               <span className="text-[11px] font-semibold">
-                {systemHealthy ? "ML Engine Online" : "Connecting..."}
+                {systemHealthy ? "Connected" : "Connecting..."}
               </span>
             </div>
           </div>
@@ -139,6 +139,23 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             );
           })}
+          <div className="pt-2 px-3 border-t border-emerald-900 flex items-center justify-between text-xs">
+            <span className="text-emerald-300 font-medium">Backend Status</span>
+            <span
+              className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${
+                systemHealthy
+                  ? "bg-emerald-900/80 text-emerald-300 border-emerald-700"
+                  : "bg-amber-950/80 text-amber-300 border-amber-800"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  systemHealthy ? "bg-emerald-400 animate-pulse" : "bg-amber-400 animate-pulse"
+                }`}
+              />
+              {systemHealthy ? "Connected" : "Connecting..."}
+            </span>
+          </div>
         </div>
       )}
     </nav>
