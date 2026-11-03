@@ -14,6 +14,9 @@ import {
   Info,
   Check,
   ChevronRight,
+  Sprout,
+  MapPin,
+  RefreshCw,
 } from "lucide-react";
 import { api } from "../services/api";
 import {
@@ -23,6 +26,7 @@ import {
   SoilInfo,
   IrrigationMethodInfo,
 } from "../types";
+import { SearchableSelect, SelectOption } from "./SearchableSelect";
 
 interface PredictionViewProps {
   onNavigateToShap?: (data: PredictionRequest) => void;
@@ -38,12 +42,12 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
     soil_type: "Loamy",
     soil_moisture_pct: 26.0,
     soil_ph: 6.8,
-    temperature_c: 29.5,
-    humidity_pct: 48.0,
-    wind_speed_kmh: 12.0,
+    temperature_c: 26.8,
+    humidity_pct: 54.0,
+    wind_speed_kmh: 11.5,
     rainfall_mm: 0.0,
-    solar_radiation: 19.5,
-    et0_mm: 4.6,
+    solar_radiation: 18.0,
+    et0_mm: 3.8,
     irrigation_method: "Drip",
     model_name: "xgboost",
   });
@@ -52,6 +56,10 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
   const [crops, setCrops] = useState<CropInfo[]>([]);
   const [soils, setSoils] = useState<SoilInfo[]>([]);
   const [methods, setMethods] = useState<IrrigationMethodInfo[]>([]);
+  const [locations, setLocations] = useState<Record<string, any>>({});
+  const [selectedLocation, setSelectedLocation] = useState<string>("Bengaluru");
+  const [weatherSource, setWeatherSource] = useState<string | null>(null);
+  const [weatherError, setWeatherError] = useState<string | null>(null);
 
   // Submission & Results
   const [loading, setLoading] = useState(false);
@@ -63,14 +71,40 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
   useEffect(() => {
     const fetchMetadataAndInitial = async () => {
       try {
-        const [cList, sList, mList] = await Promise.all([
+        const [cList, sList, mList, locRes] = await Promise.all([
           api.getCrops(),
           api.getSoils(),
           api.getIrrigationMethods(),
+          api.getPresetLocations(),
         ]);
         setCrops(cList);
         setSoils(sList);
         setMethods(mList);
+
+        const locMap = locRes.locations || {};
+        setLocations(locMap);
+
+        // Fetch live weather for initial location (Bengaluru or Devanahalli)
+        const initialLoc = locMap["Bengaluru"] || locMap["Devanahalli"] || Object.values(locMap)[0];
+        if (initialLoc) {
+          const locName = locMap["Bengaluru"] ? "Bengaluru" : Object.keys(locMap)[0];
+          setSelectedLocation(locName);
+          try {
+            const w = await api.getCurrentWeather(initialLoc.lat, initialLoc.lon, locName);
+            setFormData((prev) => ({
+              ...prev,
+              temperature_c: w.temperature_c,
+              humidity_pct: w.humidity_pct,
+              wind_speed_kmh: w.wind_speed_kmh,
+              rainfall_mm: w.rainfall_mm,
+              solar_radiation: w.solar_radiation,
+              et0_mm: w.et0_mm,
+            }));
+            setWeatherSource(w.source);
+          } catch {
+            // keep default
+          }
+        }
 
         // Compute initial prediction
         const initialRes = await api.predict(formData);
@@ -86,10 +120,13 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleFetchWeather = async () => {
+  const handleFetchWeatherForLocation = async (locName: string) => {
+    const loc = locations[locName];
+    if (!loc) return;
     try {
       setWeatherLoading(true);
-      const w = await api.getCurrentWeather(28.6139, 77.209, "Farm Location");
+      setWeatherError(null);
+      const w = await api.getCurrentWeather(loc.lat, loc.lon, locName);
       setFormData((prev) => ({
         ...prev,
         temperature_c: w.temperature_c,
@@ -99,11 +136,17 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
         solar_radiation: w.solar_radiation,
         et0_mm: w.et0_mm,
       }));
+      setWeatherSource(w.source);
     } catch (err: any) {
-      alert("Failed to auto-fetch weather: " + err.message);
+      setWeatherError(err.message || "Failed to retrieve live weather.");
     } finally {
       setWeatherLoading(false);
     }
+  };
+
+  const handleLocationSelect = (locName: string) => {
+    setSelectedLocation(locName);
+    handleFetchWeatherForLocation(locName);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -123,6 +166,53 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
   const selectedCrop = crops.find((c) => c.name === formData.crop_type);
   const selectedSoil = soils.find((s) => s.name === formData.soil_type);
 
+  // Dynamic Kc & ETc calculation
+  const getCurrentKc = () => {
+    if (!selectedCrop) return 0.85;
+    const stage = formData.growth_stage.toLowerCase();
+    if (stage.includes("init")) return selectedCrop.kc_initial;
+    if (stage.includes("mid")) return selectedCrop.kc_mid;
+    if (stage.includes("late")) return selectedCrop.kc_late;
+    return (selectedCrop.kc_initial + selectedCrop.kc_mid) / 2.0;
+  };
+
+  const currentKc = getCurrentKc();
+  const estimatedEtc = ((formData.et0_mm || 4.0) * currentKc).toFixed(2);
+
+  // Options for searchable selects
+  const cropOptions: SelectOption[] = crops.map((c) => ({
+    value: c.name,
+    label: c.name,
+    category: c.category || "General",
+    sublabel: `Root: ${c.root_depth_meters}m • ${c.typical_yield_season_days}d cycle`,
+    badge: `Mid-Kc: ${c.kc_mid.toFixed(2)}`,
+  }));
+
+  const locationOptions: SelectOption[] = Object.entries(locations).map(([name, data]) => {
+    const isKarnataka =
+      data.state === "Karnataka" ||
+      [
+        "Bengaluru",
+        "Devanahalli",
+        "Mysuru",
+        "Mandya",
+        "Hassan",
+        "Tumakuru",
+        "Belagavi",
+        "Hubballi",
+        "Vijayapura",
+        "Kalaburagi",
+      ].some((k) => name.includes(k));
+
+    return {
+      value: name,
+      label: name,
+      category: isKarnataka ? "Karnataka" : "Other Indian States",
+      sublabel: `${data.lat.toFixed(2)}°N, ${data.lon.toFixed(2)}°E`,
+      badge: data.climate ? data.climate.replace(/_/g, " ") : undefined,
+    };
+  });
+
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Title */}
@@ -141,12 +231,12 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
         </div>
         <button
           type="button"
-          onClick={handleFetchWeather}
+          onClick={() => handleFetchWeatherForLocation(selectedLocation)}
           disabled={weatherLoading}
           className="inline-flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold px-4 py-2 rounded-xl text-xs transition-colors self-start md:self-auto shadow-sm"
         >
           <CloudSun className={`w-4 h-4 text-emerald-600 ${weatherLoading ? "animate-spin" : ""}`} />
-          {weatherLoading ? "Fetching..." : "Auto-Fill Weather from Sensors"}
+          {weatherLoading ? "Fetching..." : `Sync Weather for ${selectedLocation}`}
         </button>
       </div>
 
@@ -171,26 +261,29 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Crop Type */}
+              {/* Crop Type - Searchable Dropdown */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Crop Type
-                </label>
-                <select
+                <SearchableSelect
+                  label="Crop Variety (Searchable)"
+                  options={cropOptions}
                   value={formData.crop_type}
-                  onChange={(e) => handleChange("crop_type", e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                >
-                  {(crops.length > 0 ? crops.map((c) => c.name) : ["Wheat", "Rice", "Maize", "Cotton", "Sugarcane", "Tomato", "Potato", "Soybean", "Barley", "Onion"]).map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(val) => handleChange("crop_type", val)}
+                  placeholder="Select crop..."
+                  searchPlaceholder="Search 34 crops (e.g. Ragi, Rice, Cotton, Tomato)..."
+                  icon={<Sprout className="w-4 h-4" />}
+                />
                 {selectedCrop && (
-                  <p className="text-[11px] text-slate-500 mt-1">
-                    Category: {selectedCrop.category} | Root Depth: {selectedCrop.root_depth_meters}m
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                    <span className="font-semibold text-emerald-800">
+                      Category: {selectedCrop.category}
+                    </span>
+                    <span>•</span>
+                    <span>Root: <strong>{selectedCrop.root_depth_meters}m</strong></span>
+                    <span>•</span>
+                    <span>Stage Kc: <strong>{currentKc.toFixed(2)}</strong></span>
+                    <span>•</span>
+                    <span>ETc: <strong className="text-emerald-700">{estimatedEtc} mm/d</strong></span>
+                  </div>
                 )}
               </div>
 
@@ -344,6 +437,73 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                 3
               </span>
               <h3>Microclimate & Irrigation System</h3>
+            </div>
+
+            {/* Location & Live Weather Sync Section */}
+            <div className="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200/80 space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-emerald-700" />
+                  <span className="text-xs font-bold text-emerald-950 uppercase tracking-wide">
+                    Indian Agro-Meteorological Region
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleFetchWeatherForLocation(selectedLocation)}
+                  disabled={weatherLoading}
+                  className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors self-start sm:self-auto shadow-sm disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${weatherLoading ? "animate-spin" : ""}`} />
+                  {weatherLoading ? "Syncing..." : "Sync Open-Meteo"}
+                </button>
+              </div>
+
+              <SearchableSelect
+                options={locationOptions}
+                value={selectedLocation}
+                onChange={handleLocationSelect}
+                placeholder="Select Indian farming region..."
+                searchPlaceholder="Search 26 locations (Karnataka & other states)..."
+                icon={<MapPin className="w-4 h-4" />}
+              />
+
+              {/* Status and Diagnostics */}
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] pt-1">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-semibold ${
+                      weatherSource === "open_meteo_live"
+                        ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                        : "bg-amber-100 text-amber-800 border border-amber-300"
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        weatherSource === "open_meteo_live"
+                          ? "bg-emerald-500 animate-pulse"
+                          : "bg-amber-500"
+                      }`}
+                    />
+                    {weatherSource === "open_meteo_live"
+                      ? "Live Open-Meteo Feed"
+                      : "FAO-56 Microclimate Engine"}
+                  </span>
+                  <span className="text-slate-600 font-medium">
+                    {selectedLocation}
+                  </span>
+                </div>
+                <span className="text-slate-600">
+                  Solar Rad: <strong>{formData.solar_radiation || 18.0} MJ/m²/d</strong>
+                </span>
+              </div>
+
+              {weatherError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 text-xs p-2 rounded-lg flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+                  <span>{weatherError}</span>
+                </div>
+              )}
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">

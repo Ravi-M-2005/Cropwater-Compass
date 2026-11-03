@@ -22,9 +22,21 @@ export const HistoryView: React.FC = () => {
   const [search, setSearch] = useState("");
   const [selectedCrop, setSelectedCrop] = useState("");
   const [selectedSoil, setSelectedSoil] = useState("");
+  const [availableCrops, setAvailableCrops] = useState<string[]>([]);
 
   // Modal State
   const [selectedRecord, setSelectedRecord] = useState<PredictionResponse | null>(null);
+
+  useEffect(() => {
+    api.getCrops()
+      .then((crops) => {
+        if (crops && crops.length > 0) {
+          const names = Array.from(new Set(crops.map((c) => c.name))).sort();
+          setAvailableCrops(names);
+        }
+      })
+      .catch((err) => console.error("Failed to load crops metadata:", err));
+  }, []);
 
   const fetchHistory = async () => {
     try {
@@ -130,7 +142,17 @@ export const HistoryView: React.FC = () => {
             className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none"
           >
             <option value="">All Crops</option>
-            {["Wheat", "Rice", "Maize", "Cotton", "Sugarcane", "Tomato", "Potato", "Soybean", "Barley", "Onion"].map((c) => (
+            {(availableCrops.length > 0
+              ? availableCrops
+              : [
+                  "Banana", "Barley", "Black Gram", "Brinjal", "Cabbage", "Carrot", "Cauliflower",
+                  "Chickpea", "Chilli", "Cotton", "Field Pea", "Finger Millet (Ragi)", "Grapes",
+                  "Green Gram", "Groundnut", "Lentil", "Maize", "Mango", "Mustard", "Onion",
+                  "Papaya", "Pearl Millet (Bajra)", "Pigeon Pea (Toor Dal)", "Pomegranate",
+                  "Potato", "Rice (Paddy)", "Sorghum (Jowar)", "Soybean", "Sugarcane", "Sunflower",
+                  "Tobacco", "Tomato", "Watermelon", "Wheat"
+                ]
+            ).map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>

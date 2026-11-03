@@ -12,16 +12,43 @@ import json
 
 logger = logging.getLogger("weather_service")
 
-# Preset agricultural regions with coordinates
-POPULAR_LOCATIONS: Dict[str, Dict[str, float]] = {
-    "Punjab, India": {"lat": 30.7333, "lon": 76.7794, "climate": "semi_arid"},
-    "Haryana, India": {"lat": 29.0588, "lon": 76.0856, "climate": "semi_arid"},
-    "Maharashtra, India": {"lat": 19.7515, "lon": 75.7139, "climate": "tropical_wet_dry"},
-    "Uttar Pradesh, India": {"lat": 26.8467, "lon": 80.9462, "climate": "subtropical"},
-    "California Central Valley, USA": {"lat": 36.7783, "lon": -119.4179, "climate": "mediterranean"},
-    "Iowa Corn Belt, USA": {"lat": 41.8780, "lon": -93.0977, "climate": "humid_continental"},
-    "Nile Delta, Egypt": {"lat": 30.8760, "lon": 31.0004, "climate": "arid"},
-    "New Delhi, India": {"lat": 28.6139, "lon": 77.2090, "climate": "semi_arid"}
+# Preset agricultural regions with coordinates (Karnataka and major Indian agro-zones)
+POPULAR_LOCATIONS: Dict[str, Dict[str, Any]] = {
+    # --- Karnataka Locations ---
+    "Bengaluru": {"lat": 12.9716, "lon": 77.5946, "state": "Karnataka", "climate": "tropical_savannah"},
+    "Devanahalli": {"lat": 13.2483, "lon": 77.7126, "state": "Karnataka", "climate": "semi_arid"},
+    "Mysuru": {"lat": 12.2958, "lon": 76.6394, "state": "Karnataka", "climate": "tropical_savannah"},
+    "Mandya": {"lat": 12.5218, "lon": 76.8951, "state": "Karnataka", "climate": "semi_arid"},
+    "Hassan": {"lat": 13.0033, "lon": 76.1004, "state": "Karnataka", "climate": "tropical_wet_dry"},
+    "Tumakuru": {"lat": 13.3409, "lon": 77.1006, "state": "Karnataka", "climate": "semi_arid"},
+    "Belagavi": {"lat": 15.8497, "lon": 74.4977, "state": "Karnataka", "climate": "tropical_wet_dry"},
+    "Hubballi": {"lat": 15.3647, "lon": 75.1240, "state": "Karnataka", "climate": "semi_arid"},
+    "Vijayapura": {"lat": 16.8302, "lon": 75.7100, "state": "Karnataka", "climate": "arid_semi_arid"},
+    "Kalaburagi": {"lat": 17.3297, "lon": 76.8343, "state": "Karnataka", "climate": "semi_arid"},
+
+    # --- Other Indian States ---
+    "Chennai, Tamil Nadu": {"lat": 13.0827, "lon": 80.2707, "state": "Tamil Nadu", "climate": "tropical_wet_dry"},
+    "Coimbatore, Tamil Nadu": {"lat": 11.0168, "lon": 76.9558, "state": "Tamil Nadu", "climate": "semi_arid"},
+    "Hyderabad, Telangana": {"lat": 17.3850, "lon": 78.4867, "state": "Telangana", "climate": "semi_arid"},
+    "Vijayawada, Andhra Pradesh": {"lat": 16.5062, "lon": 80.6480, "state": "Andhra Pradesh", "climate": "tropical_savannah"},
+    "Pune, Maharashtra": {"lat": 18.5204, "lon": 73.8567, "state": "Maharashtra", "climate": "semi_arid"},
+    "Nagpur, Maharashtra": {"lat": 21.1458, "lon": 79.0882, "state": "Maharashtra", "climate": "tropical_wet_dry"},
+    "Mumbai, Maharashtra": {"lat": 19.0760, "lon": 72.8777, "state": "Maharashtra", "climate": "tropical_coastal"},
+    "Punjab": {"lat": 31.1471, "lon": 75.3412, "state": "Punjab", "climate": "semi_arid"},
+    "Ludhiana, Punjab": {"lat": 30.9010, "lon": 75.8573, "state": "Punjab", "climate": "semi_arid"},
+    "Jaipur, Rajasthan": {"lat": 26.9124, "lon": 75.7873, "state": "Rajasthan", "climate": "semi_arid"},
+    "Ahmedabad, Gujarat": {"lat": 23.0225, "lon": 72.5714, "state": "Gujarat", "climate": "semi_arid"},
+    "Bhopal, Madhya Pradesh": {"lat": 23.2599, "lon": 77.4126, "state": "Madhya Pradesh", "climate": "humid_subtropical"},
+    "Lucknow, Uttar Pradesh": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh", "climate": "subtropical"},
+    "Kolkata, West Bengal": {"lat": 22.5726, "lon": 88.3639, "state": "West Bengal", "climate": "tropical_wet_dry"},
+    "Patna, Bihar": {"lat": 25.5941, "lon": 85.1376, "state": "Bihar", "climate": "humid_subtropical"},
+    "Kochi, Kerala": {"lat": 9.9312, "lon": 76.2673, "state": "Kerala", "climate": "tropical_monsoon"},
+
+    # Legacy/Global presets for test compatibility
+    "Punjab, India": {"lat": 30.7333, "lon": 76.7794, "state": "Punjab", "climate": "semi_arid"},
+    "Maharashtra, India": {"lat": 19.7515, "lon": 75.7139, "state": "Maharashtra", "climate": "tropical_wet_dry"},
+    "Uttar Pradesh, India": {"lat": 26.8467, "lon": 80.9462, "state": "Uttar Pradesh", "climate": "subtropical"},
+    "New Delhi, India": {"lat": 28.6139, "lon": 77.2090, "state": "Delhi", "climate": "semi_arid"}
 }
 
 
@@ -179,7 +206,7 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
         f"https://api.open-meteo.com/v1/forecast?"
         f"latitude={lat}&longitude={lon}&"
         f"current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code&"
-        f"daily=temperature_2m_max,temperature_2m_min,et0_fao_evapotranspiration,precipitation_sum&"
+        f"daily=temperature_2m_max,temperature_2m_min,et0_fao_evapotranspiration,precipitation_sum,shortwave_radiation_sum&"
         f"timezone=auto"
     )
 
@@ -188,7 +215,7 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
             url,
             headers={"User-Agent": "CropwaterCompass/1.0 (Agriculture Water Management)"}
         )
-        with urllib.request.urlopen(req, timeout=3.5) as response:
+        with urllib.request.urlopen(req, timeout=5.0) as response:
             if response.status == 200:
                 data = json.loads(response.read().decode("utf-8"))
                 current = data.get("current", {})
@@ -200,11 +227,18 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                 rainfall_mm = current.get("precipitation", 0.0)
                 w_code = current.get("weather_code", 0)
 
-                # FAO-56 ET0 from Open-Meteo daily or computed
-                daily_et0 = daily.get("et0_fao_evapotranspiration", [])
-                et0_mm = daily_et0[0] if (daily_et0 and len(daily_et0) > 0 and daily_et0[0] is not None) else calculate_fao56_et0(temp_c, humidity_pct, wind_speed_kmh, None, lat)
+                # Solar radiation from Open-Meteo daily shortwave radiation sum (MJ/m2/day)
+                rad_list = daily.get("shortwave_radiation_sum", [])
+                solar_radiation = round(float(rad_list[0]), 1) if (rad_list and len(rad_list) > 0 and rad_list[0] is not None) else 19.5
 
-                # Condition code mapping (WMO)
+                # FAO-56 ET0 from Open-Meteo daily or computed with FAO-56 Penman-Monteith method
+                daily_et0 = daily.get("et0_fao_evapotranspiration", [])
+                if daily_et0 and len(daily_et0) > 0 and daily_et0[0] is not None:
+                    et0_mm = float(daily_et0[0])
+                else:
+                    et0_mm = calculate_fao56_et0(temp_c, humidity_pct, wind_speed_kmh, solar_radiation, lat)
+
+                # Condition code mapping (WMO standard)
                 condition = "Clear Sky"
                 if w_code in [1, 2, 3]:
                     condition = "Partly Cloudy"
@@ -232,19 +266,19 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                         "temp_min_c": t_min,
                         "temp_avg_c": round((t_max + t_min) / 2.0, 1),
                         "rainfall_mm": r_sum,
-                        "et0_mm": round(e_fao, 2) if e_fao is not None else 4.0,
+                        "et0_mm": round(float(e_fao), 2) if e_fao is not None else 4.0,
                         "condition": "Showers" if r_sum > 2 else "Clear"
                     })
 
                 return {
-                    "temperature_c": round(temp_c, 1),
-                    "humidity_pct": round(humidity_pct, 1),
-                    "wind_speed_kmh": round(wind_speed_kmh, 1),
-                    "rainfall_mm": round(rainfall_mm, 1),
-                    "solar_radiation": 19.5,
-                    "et0_mm": round(et0_mm, 2),
+                    "temperature_c": round(float(temp_c), 1),
+                    "humidity_pct": round(float(humidity_pct), 1),
+                    "wind_speed_kmh": round(float(wind_speed_kmh), 1),
+                    "rainfall_mm": round(float(rainfall_mm), 1),
+                    "solar_radiation": solar_radiation,
+                    "et0_mm": round(float(et0_mm), 2),
                     "weather_condition": condition,
-                    "city": city or f"Lat: {lat:.2f}, Lon: {lon:.2f}",
+                    "city": city or f"Farm Region ({lat:.2f}, {lon:.2f})",
                     "latitude": lat,
                     "longitude": lon,
                     "forecast_daily": forecast_daily,

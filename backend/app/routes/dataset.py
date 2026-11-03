@@ -7,6 +7,8 @@ import io
 import pandas as pd
 
 from backend.app.services.irrigation import (
+    CROP_DATABASE,
+    SOIL_DATABASE,
     calculate_irrigation_recommendation,
     convert_area_to_sq_meters
 )
@@ -167,15 +169,16 @@ def get_sample_csv():
 def get_dataset_stats():
     """Returns metadata about the benchmark training dataset."""
     return {
-        "dataset_name": "Cropwater-Compass Global Irrigation Benchmark",
-        "total_samples": 12500,
+        "dataset_name": "Cropwater-Compass FAO-56 Synthetic Irrigation Benchmark",
+        "total_samples": 5000,
         "features": [
             "crop_type", "growth_stage", "soil_type", "soil_moisture_pct",
             "soil_ph", "temperature_c", "humidity_pct", "wind_speed_kmh",
             "rainfall_mm", "solar_radiation", "et0_mm", "irrigation_method"
         ],
         "target": "water_requirement_mm",
-        "supported_crops_count": 10,
-        "supported_soils_count": 6,
-        "standard_reference": "FAO Irrigation and Drainage Paper No. 56 (CROPWAT)"
+        "supported_crops_count": len(CROP_DATABASE),
+        "supported_soils_count": len(SOIL_DATABASE),
+        "standard_reference": "FAO Irrigation and Drainage Paper No. 56 (CROPWAT)",
+        "synthetic_notice": "Training and benchmark datasets are synthetically generated according to FAO-56 Penman-Monteith physical equations and empirical agronomic distributions."
     }

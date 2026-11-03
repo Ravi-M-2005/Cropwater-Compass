@@ -11,6 +11,7 @@ import {
   Calendar,
   Layers,
   ArrowUpRight,
+  AlertTriangle,
 } from "lucide-react";
 import {
   LineChart,
@@ -24,24 +25,28 @@ import {
 } from "recharts";
 import { api } from "../services/api";
 import { WeatherData, DailyForecast } from "../types";
+import { SearchableSelect, SelectOption } from "./SearchableSelect";
 
 export const WeatherView: React.FC = () => {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [locations, setLocations] = useState<Record<string, any>>({});
-  const [selectedLocation, setSelectedLocation] = useState("Punjab, India");
+  const [selectedLocation, setSelectedLocation] = useState("Bengaluru");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Custom coordinate inputs
-  const [lat, setLat] = useState(30.7333);
-  const [lon, setLon] = useState(76.7794);
+  const [lat, setLat] = useState(12.9716);
+  const [lon, setLon] = useState(77.5946);
 
   const fetchWeather = async (latitude: number, longitude: number, city?: string) => {
     try {
       setLoading(true);
+      setError(null);
       const data = await api.getCurrentWeather(latitude, longitude, city);
       setWeather(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to load weather:", err);
+      setError(err.message || "Failed to retrieve real-time weather from Open-Meteo API.");
     } finally {
       setLoading(false);
     }
@@ -51,11 +56,17 @@ export const WeatherView: React.FC = () => {
     const init = async () => {
       try {
         const locRes = await api.getPresetLocations();
-        setLocations(locRes.locations || {});
-        // Default to Punjab
-        fetchWeather(30.7333, 76.7794, "Punjab, India");
-      } catch {
-        fetchWeather(28.6139, 77.209, "New Delhi");
+        const locMap = locRes.locations || {};
+        setLocations(locMap);
+        const defaultName = locMap["Bengaluru"] ? "Bengaluru" : Object.keys(locMap)[0] || "Punjab, India";
+        const defaultLoc = locMap[defaultName] || { lat: 12.9716, lon: 77.5946 };
+        setSelectedLocation(defaultName);
+        setLat(defaultLoc.lat);
+        setLon(defaultLoc.lon);
+        fetchWeather(defaultLoc.lat, defaultLoc.lon, defaultName);
+      } catch (err: any) {
+        setError("Could not load preset locations.");
+        fetchWeather(12.9716, 77.5946, "Bengaluru");
       }
     };
     init();
@@ -71,6 +82,31 @@ export const WeatherView: React.FC = () => {
     }
   };
 
+  const locationOptions: SelectOption[] = Object.entries(locations).map(([name, data]) => {
+    const isKarnataka =
+      data.state === "Karnataka" ||
+      [
+        "Bengaluru",
+        "Devanahalli",
+        "Mysuru",
+        "Mandya",
+        "Hassan",
+        "Tumakuru",
+        "Belagavi",
+        "Hubballi",
+        "Vijayapura",
+        "Kalaburagi",
+      ].some((k) => name.includes(k));
+
+    return {
+      value: name,
+      label: name,
+      category: isKarnataka ? "Karnataka" : "Other Indian States",
+      sublabel: `${data.lat.toFixed(2)}°N, ${data.lon.toFixed(2)}°E`,
+      badge: data.climate ? data.climate.replace(/_/g, " ") : undefined,
+    };
+  });
+
   return (
     <div className="space-y-8 animate-fadeIn">
       {/* Header with Location Select */}
@@ -83,33 +119,74 @@ export const WeatherView: React.FC = () => {
             Weather & Reference Evapotranspiration (ET₀)
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            Real-time atmospheric parameters and Penman-Monteith evaporative demand.
+            Real-time atmospheric parameters and Penman-Monteith evaporative demand across Indian agricultural hubs.
           </p>
         </div>
 
         {/* Region selector */}
-        <div className="flex items-center gap-3 self-start md:self-auto">
-          <div className="relative">
-            <MapPin className="w-4 h-4 text-emerald-600 absolute left-3 top-3" />
-            <select
+        <div className="flex items-center gap-3 self-start md:self-auto w-full md:w-80">
+          <div className="flex-1">
+            <SearchableSelect
+              options={locationOptions}
               value={selectedLocation}
-              onChange={(e) => handleLocationChange(e.target.value)}
-              className="bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-8 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              {Object.keys(locations).map((locName) => (
-                <option key={locName} value={locName}>
-                  {locName}
-                </option>
-              ))}
-            </select>
+              onChange={handleLocationChange}
+              placeholder="Select location..."
+              searchPlaceholder="Search 26 Indian locations..."
+              icon={<MapPin className="w-4 h-4" />}
+            />
           </div>
           <button
             onClick={() => fetchWeather(lat, lon, selectedLocation)}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600"
+            className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-sm flex-shrink-0"
             title="Refresh weather"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin text-emerald-600" : ""}`} />
           </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl text-amber-900 text-sm flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <AlertTriangle className="w-5 h-5 flex-shrink-0 text-amber-600" />
+            <span>{error}</span>
+          </div>
+          <button
+            onClick={() => fetchWeather(lat, lon, selectedLocation)}
+            className="text-xs font-semibold bg-amber-200 hover:bg-amber-300 px-3 py-1 rounded-lg text-amber-900"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Selected Location Pill & Metadata */}
+      <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 text-emerald-600" />
+          <span className="font-bold text-slate-800 text-sm">{selectedLocation}</span>
+          <span className="text-slate-600">
+            ({lat.toFixed(4)}°N, {lon.toFixed(4)}°E)
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <span className="text-slate-700">
+            Atmospheric Condition: <strong className="text-slate-900">{weather?.weather_condition || "Clear"}</strong>
+          </span>
+          <span
+            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+              weather?.source === "open_meteo_live"
+                ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                : "bg-amber-100 text-amber-800 border border-amber-300"
+            }`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                weather?.source === "open_meteo_live" ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+              }`}
+            />
+            {weather?.source === "open_meteo_live" ? "Live Open-Meteo Feed" : "FAO-56 Simulation Engine"}
+          </span>
         </div>
       </div>
 

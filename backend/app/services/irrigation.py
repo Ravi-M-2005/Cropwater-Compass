@@ -8,107 +8,396 @@ from datetime import datetime, timedelta
 
 
 CROP_DATABASE: Dict[str, Dict[str, Any]] = {
+    # === Cereals ===
     "Wheat": {
-        "category": "Cereal",
+        "category": "Cereals",
         "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
         "kc_mid": 1.15,
         "kc_late": 0.40,
-        "kc_vegetative": 0.75,
         "root_depth_meters": 1.2,
         "critical_depletion_fraction": 0.55,
         "typical_yield_season_days": 130
     },
-    "Rice": {
-        "category": "Cereal",
+    "Rice (Paddy)": {
+        "category": "Cereals",
         "kc_initial": 1.05,
+        "kc_vegetative": 1.10,
         "kc_mid": 1.20,
         "kc_late": 0.90,
-        "kc_vegetative": 1.10,
         "root_depth_meters": 0.6,
         "critical_depletion_fraction": 0.20,
         "typical_yield_season_days": 120
     },
     "Maize": {
-        "category": "Cereal",
+        "category": "Cereals",
         "kc_initial": 0.40,
+        "kc_vegetative": 0.80,
         "kc_mid": 1.20,
         "kc_late": 0.60,
-        "kc_vegetative": 0.80,
         "root_depth_meters": 1.2,
         "critical_depletion_fraction": 0.55,
         "typical_yield_season_days": 110
     },
-    "Cotton": {
-        "category": "Fiber",
-        "kc_initial": 0.35,
-        "kc_mid": 1.20,
-        "kc_late": 0.65,
-        "kc_vegetative": 0.75,
-        "root_depth_meters": 1.4,
-        "critical_depletion_fraction": 0.65,
-        "typical_yield_season_days": 180
+    "Barley": {
+        "category": "Cereals",
+        "kc_initial": 0.30,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.15,
+        "kc_late": 0.25,
+        "root_depth_meters": 1.0,
+        "critical_depletion_fraction": 0.55,
+        "typical_yield_season_days": 120
     },
-    "Sugarcane": {
-        "category": "Cash Crop",
+    "Sorghum (Jowar)": {
+        "category": "Cereals",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.05,
+        "kc_late": 0.55,
+        "root_depth_meters": 1.4,
+        "critical_depletion_fraction": 0.55,
+        "typical_yield_season_days": 115
+    },
+    "Pearl Millet (Bajra)": {
+        "category": "Cereals",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.00,
+        "kc_late": 0.45,
+        "root_depth_meters": 1.2,
+        "critical_depletion_fraction": 0.60,
+        "typical_yield_season_days": 90
+    },
+    "Finger Millet (Ragi)": {
+        "category": "Cereals",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.05,
+        "kc_late": 0.50,
+        "root_depth_meters": 0.9,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 110
+    },
+
+    # === Pulses ===
+    "Chickpea": {
+        "category": "Pulses",
         "kc_initial": 0.40,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.00,
+        "kc_late": 0.35,
+        "root_depth_meters": 0.9,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 110
+    },
+    "Pigeon Pea (Toor Dal)": {
+        "category": "Pulses",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.05,
+        "kc_late": 0.45,
+        "root_depth_meters": 1.3,
+        "critical_depletion_fraction": 0.55,
+        "typical_yield_season_days": 160
+    },
+    "Green Gram": {
+        "category": "Pulses",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.05,
+        "kc_late": 0.35,
+        "root_depth_meters": 0.7,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 70
+    },
+    "Black Gram": {
+        "category": "Pulses",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.05,
+        "kc_late": 0.35,
+        "root_depth_meters": 0.7,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 75
+    },
+    "Lentil": {
+        "category": "Pulses",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.70,
+        "kc_mid": 1.10,
+        "kc_late": 0.30,
+        "root_depth_meters": 0.8,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 110
+    },
+    "Field Pea": {
+        "category": "Pulses",
+        "kc_initial": 0.45,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.15,
+        "kc_late": 0.30,
+        "root_depth_meters": 0.8,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 95
+    },
+
+    # === Commercial Crops ===
+    "Sugarcane": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.85,
         "kc_mid": 1.25,
         "kc_late": 0.75,
-        "kc_vegetative": 0.85,
         "root_depth_meters": 1.5,
         "critical_depletion_fraction": 0.65,
         "typical_yield_season_days": 360
     },
-    "Tomato": {
-        "category": "Vegetable",
-        "kc_initial": 0.45,
+    "Cotton": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.20,
+        "kc_late": 0.65,
+        "root_depth_meters": 1.4,
+        "critical_depletion_fraction": 0.65,
+        "typical_yield_season_days": 180
+    },
+    "Groundnut": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.15,
+        "kc_late": 0.60,
+        "root_depth_meters": 0.8,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 120
+    },
+    "Soybean": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.15,
+        "kc_late": 0.50,
+        "root_depth_meters": 1.0,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 115
+    },
+    "Sunflower": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.15,
+        "kc_late": 0.40,
+        "root_depth_meters": 1.2,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 100
+    },
+    "Mustard": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.10,
+        "kc_late": 0.35,
+        "root_depth_meters": 1.0,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 105
+    },
+    "Tobacco": {
+        "category": "Commercial Crops",
+        "kc_initial": 0.35,
+        "kc_vegetative": 0.75,
         "kc_mid": 1.15,
         "kc_late": 0.80,
+        "root_depth_meters": 1.0,
+        "critical_depletion_fraction": 0.40,
+        "typical_yield_season_days": 120
+    },
+
+    # === Horticultural Crops ===
+    "Tomato": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.45,
         "kc_vegetative": 0.80,
+        "kc_mid": 1.15,
+        "kc_late": 0.80,
         "root_depth_meters": 0.8,
         "critical_depletion_fraction": 0.40,
         "typical_yield_season_days": 105
     },
     "Potato": {
-        "category": "Tuber",
+        "category": "Horticultural Crops",
         "kc_initial": 0.40,
+        "kc_vegetative": 0.75,
         "kc_mid": 1.15,
         "kc_late": 0.75,
-        "kc_vegetative": 0.75,
         "root_depth_meters": 0.6,
         "critical_depletion_fraction": 0.35,
         "typical_yield_season_days": 100
     },
-    "Soybean": {
-        "category": "Legume",
-        "kc_initial": 0.40,
-        "kc_mid": 1.15,
-        "kc_late": 0.50,
-        "kc_vegetative": 0.75,
-        "root_depth_meters": 1.0,
-        "critical_depletion_fraction": 0.50,
-        "typical_yield_season_days": 115
-    },
-    "Barley": {
-        "category": "Cereal",
-        "kc_initial": 0.30,
-        "kc_mid": 1.15,
-        "kc_late": 0.25,
-        "kc_vegetative": 0.70,
-        "root_depth_meters": 1.0,
-        "critical_depletion_fraction": 0.55,
-        "typical_yield_season_days": 120
-    },
     "Onion": {
-        "category": "Vegetable",
+        "category": "Horticultural Crops",
         "kc_initial": 0.50,
+        "kc_vegetative": 0.75,
         "kc_mid": 1.05,
         "kc_late": 0.85,
-        "kc_vegetative": 0.75,
         "root_depth_meters": 0.4,
         "critical_depletion_fraction": 0.30,
         "typical_yield_season_days": 95
+    },
+    "Chilli": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.10,
+        "kc_late": 0.85,
+        "root_depth_meters": 0.7,
+        "critical_depletion_fraction": 0.40,
+        "typical_yield_season_days": 120
+    },
+    "Brinjal": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.45,
+        "kc_vegetative": 0.80,
+        "kc_mid": 1.15,
+        "kc_late": 0.85,
+        "root_depth_meters": 0.8,
+        "critical_depletion_fraction": 0.40,
+        "typical_yield_season_days": 130
+    },
+    "Cabbage": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.45,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.05,
+        "kc_late": 0.90,
+        "root_depth_meters": 0.5,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 90
+    },
+    "Cauliflower": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.45,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.05,
+        "kc_late": 0.90,
+        "root_depth_meters": 0.5,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 90
+    },
+    "Carrot": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.45,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.05,
+        "kc_late": 0.85,
+        "root_depth_meters": 0.6,
+        "critical_depletion_fraction": 0.35,
+        "typical_yield_season_days": 85
+    },
+    "Banana": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.50,
+        "kc_vegetative": 0.90,
+        "kc_mid": 1.20,
+        "kc_late": 1.10,
+        "root_depth_meters": 0.9,
+        "critical_depletion_fraction": 0.35,
+        "typical_yield_season_days": 330
+    },
+    "Mango": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.55,
+        "kc_vegetative": 0.75,
+        "kc_mid": 0.90,
+        "kc_late": 0.70,
+        "root_depth_meters": 1.8,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 365
+    },
+    "Grapes": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.30,
+        "kc_vegetative": 0.60,
+        "kc_mid": 0.85,
+        "kc_late": 0.45,
+        "root_depth_meters": 1.5,
+        "critical_depletion_fraction": 0.45,
+        "typical_yield_season_days": 210
+    },
+    "Pomegranate": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.65,
+        "kc_mid": 0.85,
+        "kc_late": 0.55,
+        "root_depth_meters": 1.4,
+        "critical_depletion_fraction": 0.50,
+        "typical_yield_season_days": 240
+    },
+    "Papaya": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.50,
+        "kc_vegetative": 0.85,
+        "kc_mid": 1.10,
+        "kc_late": 0.90,
+        "root_depth_meters": 0.9,
+        "critical_depletion_fraction": 0.40,
+        "typical_yield_season_days": 300
+    },
+    "Watermelon": {
+        "category": "Horticultural Crops",
+        "kc_initial": 0.40,
+        "kc_vegetative": 0.75,
+        "kc_mid": 1.00,
+        "kc_late": 0.75,
+        "root_depth_meters": 0.8,
+        "critical_depletion_fraction": 0.40,
+        "typical_yield_season_days": 85
     }
 }
+
+CROP_ALIASES: Dict[str, str] = {
+    "Rice": "Rice (Paddy)",
+    "Paddy": "Rice (Paddy)",
+    "Sorghum": "Sorghum (Jowar)",
+    "Jowar": "Sorghum (Jowar)",
+    "Pearl Millet": "Pearl Millet (Bajra)",
+    "Bajra": "Pearl Millet (Bajra)",
+    "Finger Millet": "Finger Millet (Ragi)",
+    "Ragi": "Finger Millet (Ragi)",
+    "Pigeon Pea": "Pigeon Pea (Toor Dal)",
+    "Toor Dal": "Pigeon Pea (Toor Dal)",
+    "Tur Dal": "Pigeon Pea (Toor Dal)",
+    "Green Gram (Moong)": "Green Gram",
+    "Moong": "Green Gram",
+    "Moong Dal": "Green Gram",
+    "Black Gram (Urad)": "Black Gram",
+    "Urad": "Black Gram",
+    "Urad Dal": "Black Gram",
+    "Grape": "Grapes",
+    "Eggplant": "Brinjal",
+    "Aubergine": "Brinjal",
+}
+
+
+def resolve_crop_name(name: str) -> str:
+    """Resolves potential short names or aliases to canonical CROP_DATABASE key."""
+    if not name:
+        return "Wheat"
+    clean = str(name).strip()
+    if clean in CROP_DATABASE:
+        return clean
+    if clean in CROP_ALIASES:
+        return CROP_ALIASES[clean]
+    lower = clean.lower()
+    for k in CROP_DATABASE:
+        if k.lower() == lower:
+            return k
+    for alias, target in CROP_ALIASES.items():
+        if alias.lower() == lower:
+            return target
+    return "Wheat"
 
 SOIL_DATABASE: Dict[str, Dict[str, Any]] = {
     "Sandy": {
@@ -191,10 +480,8 @@ def convert_area_to_sq_meters(area: float, unit: str) -> float:
 
 def get_crop_kc(crop_name: str, growth_stage: str) -> float:
     """Retrieve Kc coefficient based on crop and growth stage."""
-    crop = CROP_DATABASE.get(crop_name)
-    if not crop:
-        # Fallback default
-        return 0.85
+    canonical = resolve_crop_name(crop_name)
+    crop = CROP_DATABASE.get(canonical, CROP_DATABASE["Wheat"])
 
     stage_lower = growth_stage.lower()
     if "init" in stage_lower:
@@ -273,7 +560,8 @@ def calculate_irrigation_recommendation(
     Computes required water depth in mm, converts to total litres for farm area,
     and returns schedule and urgency.
     """
-    crop = CROP_DATABASE.get(crop_type, CROP_DATABASE["Wheat"])
+    canonical_crop = resolve_crop_name(crop_type)
+    crop = CROP_DATABASE.get(canonical_crop, CROP_DATABASE["Wheat"])
     soil = SOIL_DATABASE.get(soil_type, SOIL_DATABASE["Loamy"])
     irr_info = IRRIGATION_METHODS.get(irrigation_method, IRRIGATION_METHODS["Drip"])
 

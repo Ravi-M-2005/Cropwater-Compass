@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
+from backend.app.services.irrigation import resolve_crop_name
 
 # Paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
@@ -79,8 +80,9 @@ def get_shap_explainer() -> Optional[Any]:
 
 def _format_input_dataframe(input_data: Dict[str, Any]) -> pd.DataFrame:
     """Prepares single row DataFrame matching training schema."""
+    canonical_crop = resolve_crop_name(input_data.get("crop_type", "Wheat"))
     return pd.DataFrame([{
-        "crop_type": input_data.get("crop_type", "Wheat"),
+        "crop_type": canonical_crop,
         "growth_stage": input_data.get("growth_stage", "Mid-season"),
         "soil_type": input_data.get("soil_type", "Loamy"),
         "soil_moisture_pct": float(input_data.get("soil_moisture_pct", 25.0)),

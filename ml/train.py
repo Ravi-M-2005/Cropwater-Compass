@@ -40,13 +40,22 @@ def run_training_pipeline():
 
     # 1. Load or Generate Dataset
     csv_path = DATASETS_DIR / "cropwater_dataset.csv"
-    if not csv_path.exists():
-        print("Dataset not found. Generating agro-climatic dataset (5,000 samples)...")
+    from backend.app.services.irrigation import CROP_DATABASE
+    needs_regen = True
+    if csv_path.exists():
+        try:
+            df_existing = pd.read_csv(csv_path)
+            if df_existing["crop_type"].nunique() >= len(CROP_DATABASE):
+                df = df_existing
+                needs_regen = False
+                print(f"Loading existing dataset from {csv_path} ({len(df):,} records, {df['crop_type'].nunique()} crops)...")
+        except Exception:
+            needs_regen = True
+
+    if needs_regen:
+        print(f"Generating comprehensive agro-climatic dataset (5,000 samples across all {len(CROP_DATABASE)} crops)...")
         df = generate_agro_climatic_dataset(num_samples=5000, random_seed=42)
         df.to_csv(csv_path, index=False)
-    else:
-        print(f"Loading existing dataset from {csv_path}...")
-        df = pd.read_csv(csv_path)
 
     print(f"Total dataset records: {len(df):,}")
     print(f"Features: {list(df.columns)}")

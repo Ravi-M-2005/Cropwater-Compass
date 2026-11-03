@@ -63,7 +63,7 @@ export const ModelComparisonView: React.FC = () => {
             Machine Learning Model Comparison
           </h1>
           <p className="text-sm text-slate-600 mt-1">
-            Rigorous evaluation across XGBoost, ANN, and LSTM models evaluated on a held-out test split of 1,000 samples.
+            Evaluation across XGBoost, ANN, and LSTM models evaluated on a held-out synthetic test split of 1,000 samples calibrated to FAO-56 physical equations.
           </p>
         </div>
         <button

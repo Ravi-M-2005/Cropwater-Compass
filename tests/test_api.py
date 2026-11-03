@@ -54,11 +54,14 @@ def test_root_and_health_routes():
 
 def test_crops_metadata():
     crops = get_crops()
-    assert len(crops) >= 8
+    assert len(crops) >= 34
     crop_names = [c["name"] for c in crops]
     assert "Wheat" in crop_names
-    assert "Rice" in crop_names
+    assert "Rice (Paddy)" in crop_names or "Rice" in crop_names
     assert "Maize" in crop_names
+    assert "Finger Millet (Ragi)" in crop_names
+    assert "Chickpea" in crop_names
+    assert "Tomato" in crop_names
 
 
 def test_soils_metadata():

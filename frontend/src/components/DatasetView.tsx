@@ -174,9 +174,20 @@ export const DatasetView: React.FC = () => {
               <span className="font-bold text-emerald-700">water_requirement_mm & Litres</span>
             </div>
             <div>
+              <span className="text-slate-500 block">Supported Varieties</span>
+              <span className="font-bold text-slate-800">
+                {datasetStats?.supported_crops_count || 34} crops across 4 agricultural categories
+              </span>
+            </div>
+            <div>
               <span className="text-slate-500 block">Agronomic Standard</span>
               <span className="font-semibold text-slate-700">
                 {datasetStats?.standard_reference || "FAO Irrigation Paper No. 56"}
+              </span>
+            </div>
+            <div className="pt-2 border-t border-slate-100">
+              <span className="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg block border border-amber-200">
+                <strong>Synthetic Benchmark Notice:</strong> Dataset is generated using empirical FAO-56 Penman-Monteith physical models and standard agronomic crop coefficients.
               </span>
             </div>
           </div>
