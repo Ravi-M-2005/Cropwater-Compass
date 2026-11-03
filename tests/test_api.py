@@ -7,7 +7,7 @@ from backend.app.schemas import (
     BatchPredictionRequest,
     ET0CalculationRequest,
 )
-from backend.app.main import root, health_check
+from backend.app.main import root, health_check, get_stats_alias
 from backend.app.routes.prediction import (
     predict_irrigation,
     predict_batch,
@@ -46,6 +46,10 @@ def test_root_and_health_routes():
     h = health_check()
     assert h["status"] == "healthy"
     assert h["database"] == "sqlite_ready"
+
+    s = get_stats_alias()
+    assert "total_predictions" in s
+    assert s["total_predictions"] >= 0
 
 
 def test_crops_metadata():

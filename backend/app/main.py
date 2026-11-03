@@ -14,7 +14,8 @@ from backend.app.routes import (
     history_router,
     reports_router,
 )
-from backend.app.services.history import init_db
+from backend.app.schemas.schemas import HistoryStatsResponse
+from backend.app.services.history import init_db, get_history_stats
 
 
 @asynccontextmanager
@@ -47,10 +48,14 @@ allowed_origins = list(dict.fromkeys(DEFAULT_DEV_ORIGINS + extra_origins))
 
 is_wildcard = "*" in allowed_origins
 
+# Dynamic regex matching for all Vercel preview/production domains or custom env regex
+cors_regex = os.getenv("CORS_ORIGIN_REGEX", r"https://.*\.vercel\.app").strip()
+
 # Do not combine wildcard origins with credentials enabled
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"] if is_wildcard else allowed_origins,
+    allow_origin_regex=None if is_wildcard else (cors_regex if cors_regex else None),
     allow_credentials=not is_wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -83,6 +88,12 @@ def health_check():
         "database": "sqlite_ready",
         "ml_engine": "active"
     }
+
+
+@app.get("/api/stats", response_model=HistoryStatsResponse, tags=["History"])
+def get_stats_alias():
+    """Alias for /api/history/stats to support direct stats and dashboard analytics queries."""
+    return get_history_stats()
 
 
 if __name__ == "__main__":

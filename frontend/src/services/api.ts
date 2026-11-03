@@ -17,11 +17,20 @@ const DEFAULT_DEV_API_BASE = "/api";
 function resolveApiBase(): string {
   const envBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
   if (envBase) {
-    let cleaned = envBase.replace(/\/+$/, "");
-    if (!cleaned.endsWith("/api")) {
-      cleaned = `${cleaned}/api`;
+    // If an explicit absolute HTTP/HTTPS URL is provided, sanitize and use it
+    if (/^https?:\/\//i.test(envBase)) {
+      let cleaned = envBase.replace(/\/+$/, "");
+      if (!cleaned.endsWith("/api")) {
+        cleaned = `${cleaned}/api`;
+      }
+      return cleaned;
     }
-    return cleaned;
+    // In local dev mode, allow relative /api proxied by Vite
+    if (import.meta.env.DEV) {
+      return envBase;
+    }
+    // In production, ignore relative paths (which fail on cloud hosts) and default to Render
+    return DEFAULT_PROD_API_BASE;
   }
   // In development, default to "/api" (proxied to localhost via Vite)
   // In production builds, default to the live Render backend
