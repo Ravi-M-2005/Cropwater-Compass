@@ -1,202 +1,349 @@
-# 🌱 Cropwater Compass
-### Smart Irrigation Management System Using Machine Learning
+You have shared the complete GitHub repository page for Cropwater Compass – Smart Irrigation Management System Using Machine Learning.
 
-[![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688.svg?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.15-EE4C2C.svg?style=flat&logo=pytorch&logoColor=white)](https://pytorch.org)
-[![XGBoost](https://img.shields.io/badge/XGBoost-Regressor-EB6A2D.svg?style=flat)](https://xgboost.readthedocs.io)
-[![React](https://img.shields.io/badge/Frontend-React_18_TypeScript-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Styles-Tailwind_CSS-38B2AC.svg?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![Standard](https://img.shields.io/badge/Agronomy-FAO--56_CROPWAT-2E7D32.svg?style=flat)](https://www.fao.org/land-water/databases-and-software/cropwat/en/)
-[![Tests](https://img.shields.io/badge/Tests-44_Passed-brightgreen.svg?style=flat)](tests/)
-[![ISRIC SoilGrids](https://img.shields.io/badge/Soil_Data-ISRIC_SoilGrids_250m-2E7D32.svg?style=flat)](https://docs.isric.org/globaldata/soilgrids/)
+Below is the complete project information organized into sections, suitable for your project documentation, presentation, and explanation.
 
-**Cropwater Compass** is a full-stack, machine learning–powered precision agriculture platform that predicts the volumetric irrigation water requirements for crops in **Litres** (alongside $m^3$ and millimeter depth). Moving far beyond simple binary ("irrigation required: yes/no") triggers, Cropwater Compass combines standard **FAO-56 CROPWAT** agronomic physics with a multi-model ML suite (**XGBoost**, **Artificial Neural Networks**, **PyTorch LSTM**, and **Ensemble**) to eliminate water wastage, prevent crop water stress, and optimize irrigation schedules.
+# 🌱 CROPWATER COMPASS
 
----
+Smart Irrigation Management System Using Machine Learning
 
-## 📸 Application Screenshots
+GitHub Repository
 
-### 1. Central Analytics Dashboard
-Executive KPI cards displaying total recommended volume, estimated water conserved (~25%), crop-wise demand distribution, and recent field evaluations.
-![Dashboard Overview](docs/images/dashboard_screenshot.png)
+[https://github.com/Ravi-M-2005/Cropwater-Compass](https://github.com/Ravi-M-2005/Cropwater-Compass?utm_source=chatgpt.com)
 
-### 2. Volumetric Irrigation Prediction
-Input farm dimensions, crop stage, soil class, and weather to receive the exact water requirement in **Litres**, $m^3$, and $mm$, coupled with pulse duration and urgency levels.
-![Irrigation Prediction](docs/images/prediction_screenshot.png)
+Live Application
 
-### 3. ML Multi-Model Benchmark Comparison
-Head-to-head empirical comparison of XGBoost, ANN, and LSTM across $R^2$, RMSE, MAE, and inference latency on held-out test data.
-![Model Comparison](docs/images/models_screenshot.png)
+[https://frontend-two-chi-90.vercel.app/](https://frontend-two-chi-90.vercel.app/?utm_source=chatgpt.com)
 
-### 4. SHAP Explainability & Feature Attribution
-Local feature contributions indicating which meteorological or soil moisture factors drove water demand up or down.
-![SHAP Explainability](docs/images/explainability_screenshot.png)
+## 1. Project Overview
 
-### 5. Meteorological & FAO-56 Penman-Monteith $ET_0$
-Live Open-Meteo weather feeds with automated solar radiation and Penman-Monteith reference evapotranspiration calculation.
-![Weather & ET0](docs/images/weather_screenshot.png)
+Cropwater Compass is a full-stack, machine-learning-based smart irrigation management system designed to calculate the amount of water required by different crops.
 
-### 6. CSV Dataset Management & Batch Ingestion
-Drag-and-drop CSV batch processor evaluating multiple field plots simultaneously with automated download of sample templates.
-![Dataset Management](docs/images/dataset_screenshot.png)
+Instead of simply predicting whether irrigation is required or not, the system estimates the exact irrigation water requirement in:
 
-### 7. Persistent Prediction Audit Trail
-SQLite-backed prediction history with multi-parameter search, filtering by crop and model, and inspection modals.
-![Prediction History](docs/images/history_screenshot.png)
+- Litres (L)
+- Cubic metres (m³)
+- Millimetres (mm)
 
-### 8. Executive Reports & Printable Audit
-Printable, high-fidelity operational reports complete with water stewardship recommendations and export-ready print CSS.
-![Reports View](docs/images/reports_screenshot.png)
+It combines machine learning models with FAO-56 CROPWAT agricultural calculations, weather information, and soil properties to support efficient irrigation management.
 
----
+## 2. Problem Statement
 
-## 🌟 Key Capabilities
+Traditional irrigation methods often apply water based on fixed schedules without considering actual crop water requirements.
 
-1. **Volumetric Output in Litres**: Translates millimeter depth directly into tangible volume ($1\text{ mm} \times 1\text{ m}^2 = 1\text{ Litre}$, or $10,000\text{ Litres}$ per millimeter per hectare).
-2. **ISRIC SoilGrids 250m Integration**: Retrieves authentic global 250m soil layers via OGC WCS 2.0.1 (clay %, sand %, silt %, pH, SOC, bulk density, CEC, nitrogen, and volumetric water retention at 10, 33, and 1500 kPa). Classified into 12 standard USDA Soil Texture Triangle classes with local SQLite caching.
-3. **Multi-Model Suite**:
-   - **XGBoost Regressor**: Gradient-boosted decision trees for tabular agro-climatic interactions.
-   - **Artificial Neural Network (ANN)**: 3-layer deep Multi-Layer Perceptron (128-64-32) capturing continuous non-linearities.
-   - **LSTM Sequence Regressor**: 2-layer PyTorch LSTM modeling temporal depletion trajectories.
-   - **Ensemble Regressor**: Weighted consensus combining tree-based, neural, and sequence predictors.
-4. **Strict Error Validation & Error Diagnostics**: Pydantic v2 and client-side boundary validation preventing invalid predictions (negative rainfall, area $\le 0$, out-of-range soil moisture or pH).
-5. **5-Fold Cross-Validation & Residual Diagnostics**: 5-Fold CV metrics ($R^2$, RMSE, MAE, MAPE mean $\pm$ std) and residual error distributions ($y - \hat{y}$) for all models.
-6. **Simulated Out-of-Distribution Benchmark Validation**: Stress-tested against an out-of-distribution benchmark dataset (600 records across 10 crops and 10 Indian regions calibrated to ICAR agronomic ranges) to evaluate domain shift robustness.
-7. **SHAP TreeExplainer**: Local waterfall charts showing positive and negative marginal feature impacts.
-8. **FAO-56 CROPWAT Foundation**: Complete integration of crop coefficients ($K_c$), Total Available Water ($TAW$), Readily Available Water ($RAW$), and distribution efficiency adjustments (Drip 90%, Sprinkler 75%, Flood 60%).
-9. **Automatic GPS & Real-Time Weather Integration**: Browser GPS location detection with real-time Open-Meteo meteorological integration and offline dataset fallback.
-10. **Batch Ingestion**: Evaluate arbitrary agricultural CSV files with instant downloadable results.
-11. **SQLite Audit Trail**: Persistent storage of every prediction with full parameter telemetry.
-12. **Printable Executive Reports**: Standardized reporting designed for farm managers and agronomists.
+This can lead to:
 
----
+- Excessive water usage.
+- Water wastage.
+- Uneven irrigation.
+- Reduced crop productivity.
+- Increased agricultural costs.
 
-## 📊 Machine Learning Model Evaluation & 5-Fold Cross-Validation
+Cropwater Compass addresses these problems by estimating the required irrigation water based on crop, soil, weather, and field conditions.
 
-All models were evaluated using strictly regression metrics ($R^2$, RMSE, MAE, MAPE, 5-Fold Cross-Validation, and residual distribution) saved in `ml/saved_models/evaluation_metrics.json`:
+## 3. Main Objectives
 
-| Model Architecture | 5-Fold CV $R^2$ (Mean ± Std) | Test $R^2$ Score | RMSE ($mm$) | MAE ($mm$) | MAPE (%) | Inference Latency |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|
-| **LSTM Regressor (PyTorch)** ⭐ | **0.9867 ± 0.0008** | **0.9909** | **1.1791** | **0.8034** | **14.28%** | 0.52 ms |
-| **Artificial Neural Network (ANN)** | **0.9800 ± 0.0020** | **0.9759** | **1.9178** | **1.1586** | **23.95%** | 0.12 ms |
-| **XGBoost Regressor** | **0.9342 ± 0.0037** | **0.9259** | **3.3608** | **2.1758** | **34.66%** | 0.45 ms |
+1. Predict the irrigation water requirement for different crops.
+2. Reduce unnecessary water usage.
+3. Integrate machine learning models for water prediction.
+4. Retrieve soil information using SoilGrids.
+5. Use weather information for irrigation calculations.
+6. Provide explainable predictions.
+7. Maintain prediction history and generate reports.
 
-> **Model Selection Justification**:
-> - **XGBoost**: Handles tabular agro-climatic interactions without feature scaling; exact local/global explainability via TreeSHAP.
-> - **ANN (MLP)**: Universal continuous function approximator; lowest inference latency ($0.12\text{ ms}$).
-> - **LSTM**: Highest explained variance ($R^2 = 99.09\%$, CV $R^2 = 0.9867$); models temporal lag in root-zone soil drying cycles.
+## 4. Technologies Used
 
----
+| Layer            | Technologies            |
+| ---------------- | ----------------------- |
+| Frontend         | React, TypeScript, Vite |
+| Styling          | Tailwind CSS            |
+| Backend          | FastAPI, Python         |
+| Database         | SQLite                  |
+| Machine Learning | XGBoost, ANN, LSTM      |
+| Deep Learning    | PyTorch                 |
+| Explainability   | SHAP                    |
+| Weather API      | Open-Meteo              |
+| Soil Data        | ISRIC SoilGrids         |
+| Charts           | Recharts                |
+| Testing          | Pytest, TypeScript      |
+| Deployment       | Vercel, Render          |
+| Version Control  | Git, GitHub             |
 
-## 🔬 Dataset Details & Synthetic Benchmark Notice
+## 5. Machine Learning Models
 
-- **Dataset File**: `datasets/cropwater_dataset.csv` (5,000 samples).
-- **Features (13)**: `crop_type`, `growth_stage`, `soil_type`, `soil_moisture_pct`, `temperature_c`, `humidity_pct`, `wind_speed_kmh`, `rainfall_mm`, `solar_radiation`, `et0_mm`, `crop_kc`, `irrigation_method`, `area_hectares`.
-- **Target**: `water_requirement_mm` (Gross Irrigation Requirement in mm) and volumetric conversion in `litres`.
-- **Agronomic Ground Truth**: Calibrated using FAO-56 standard formulas:
-  $$ET_c = K_c \times ET_0$$
-  $$\text{Effective Rainfall } P_{eff} = \max(0, (P \times 0.8) - 5)$$
-  $$NIR = \max(0, ET_c - P_{eff} + \Delta S)$$
-  $$GIR = NIR / \eta_{irrigation}$$
-- **Data Status**: The benchmark dataset is a **synthetically generated agro-climatic benchmark dataset** generated via `ml/dataset_generator.py` with physical constraints and realistic $\pm 5\%$ stochastic sensor noise. It provides a standardized, leak-free testbed for model comparison, rather than uncalibrated raw field telemetry.
+The system uses three main machine learning models and an ensemble approach.
 
----
+1\. XGBoost Regressor
 
-## 💧 Water Savings Estimation Methodology
+- Uses gradient-boosted decision trees.
+- Handles structured agricultural data.
+- Predicts irrigation water requirements.
 
-The application displays an **Estimated Water Conserved** metric on the dashboard and executive reports:
-- **Baseline**: Conventional surface flood irrigation typically operates at 50–60% application efficiency and often over-irrigates by applying fixed water schedules regardless of current root-zone moisture deficits.
-- **Smart Precision Irrigation**: By calculating exact crop evapotranspiration ($ET_c$) and compensating only for the readily available water deficit ($RAW$), precision delivery (especially drip/sprinkler) eliminates runoff and deep percolation losses.
-- **Formula**:
-  $$\text{Water Saved (Litres)} = \text{Total Evaluated Demand (Litres)} \times 0.25$$
-- **Classification**: This figure is an **estimated ~25% conservation saving** against conventional unmetered surface flooding based on FAO-56 water efficiency benchmarks.
+2\. Artificial Neural Network (ANN)
 
----
+- Uses interconnected neural network layers.
+- Learns complex relationships between input features.
+- Predicts continuous water requirements.
 
-## 🛠️ Technology Stack
+3\. Long Short-Term Memory (LSTM)
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, Recharts, Lucide Icons |
-| **Backend API** | FastAPI, Uvicorn, Pydantic v2, Python 3.13 |
-| **Machine Learning** | PyTorch (`torch-cpu`), XGBoost, Scikit-learn, SHAP, NumPy, Pandas |
-| **Persistence** | SQLite3 (`backend/data/cropwater.db`), Joblib artifacts (`ml/saved_models/`) |
-| **Testing** | Pytest, AnyIO, TypeScript Compiler (`tsc`) |
+- Uses recurrent neural network architecture.
+- Learns temporal patterns in soil moisture and water depletion.
+- Predicts irrigation requirements using sequence information.
 
----
+4\. Ensemble Model
 
-## 🚀 Quick Start Guide
+- Combines predictions from multiple models.
+- Provides a weighted consensus prediction.
 
-### Prerequisites
-- Python 3.13 (or 3.11+)
-- Node.js v18+ or v20+ with npm
-- Git
+## 6. Model Performance
 
-### 1. Backend Setup & Startup
-```powershell
-# Open terminal in project root
-cd C:\Users\Ravi\OneDrive\Desktop\Cropwater-Compass
+The following values are reported in the repository README.
 
-# Activate existing Python 3.13 virtual environment
-.\.venv\Scripts\Activate.ps1
+| Model   | Test R² | RMSE (mm) | MAE (mm) |
+| ------- | ------- | --------- | -------- |
+| LSTM    | 0.9909  | 1.1791    | 0.8034   |
+| ANN     | 0.9759  | 1.9178    | 1.1586   |
+| XGBoost | 0.9259  | 3.3608    | 2.1758   |
 
-# (Optional) Verify dependencies
-pip install -r backend/requirements.txt
+Best-performing model: LSTM, based on the reported held-out test R².
 
-# Run backend unit & integration tests (27 tests)
-python -m pytest -v
+Note: These results are based on the project's generated/calibrated dataset. They should not be presented as proof of real-world farm validation.
 
-# Start FastAPI server on port 8000
-python -m uvicorn backend.app.main:app --reload --port 8000
-```
-- API is running at: [http://localhost:8000](http://localhost:8000)
-- Interactive Swagger UI: [http://localhost:8000/docs](http://localhost:8000/docs)
-- Interactive ReDoc: [http://localhost:8000/redoc](http://localhost:8000/redoc)
+## 7. Dataset Details
 
-### 2. Frontend Setup & Startup
-In a separate terminal:
-```powershell
-# Set Node.js path if using portable distribution
-$env:PATH = "$env:LOCALAPPDATA\Programs\nodejs;$env:PATH"
+Main dataset: `datasets/cropwater_dataset.csv`
 
-# Navigate to frontend
-cd frontend
+- Total records: 5,000.
+- Input features: 13.
+- Target: Water requirement in millimetres.
 
-# Install dependencies (if first time)
-npm install
+Input features include:
 
-# Start Vite development server
-npm run dev
-```
-- Frontend application is live at: [http://localhost:5173](http://localhost:5173)
+1. Crop type.
+2. Growth stage.
+3. Soil type.
+4. Soil moisture.
+5. Temperature.
+6. Humidity.
+7. Wind speed.
+8. Rainfall.
+9. Solar radiation.
+10. Reference evapotranspiration (ET₀).
+11. Crop coefficient (Kc).
+12. Irrigation method.
+13. Farm area.
 
----
+The main dataset is synthetically generated using agronomic calculations and physical constraints. It is not a collection of 5,000 real farm observations.
 
-## 🧪 Test Suite Verification
+## 8. SoilGrids Integration
 
-Run the automated test suite covering agronomic math, ML model interfaces, API schemas, and end-to-end user workflows:
-```powershell
-.\.venv\Scripts\python.exe -m pytest -v
-```
-**Results: 44 passed in 17.57s (100% pass rate).**
+The application integrates ISRIC SoilGrids 250m soil data.
 
-To verify the frontend TypeScript and production bundle:
-```powershell
-cd frontend
-npm run build
-```
-**Results: 2,392 modules transformed, built with 0 errors.**
+It retrieves soil properties such as:
 
----
+- Clay percentage.
+- Sand percentage.
+- Silt percentage.
+- Soil pH.
+- Soil organic carbon.
+- Bulk density.
+- Cation exchange capacity.
+- Nitrogen.
+- Soil water retention.
 
-## 📖 Comprehensive Documentation
-- [Agronomic Foundations & Mathematical Formulation](docs/project_description.md)
-- [System Architecture & API Route Reference](docs/architecture.md)
-- [Step-by-Step Setup & Deployment Guide](docs/setup_guide.md)
-- [Dataset Documentation & Provenance](datasets/README.md)
+The system uses these properties to classify soil into USDA soil texture classes and estimate available water characteristics.
 
----
+## 9. Weather Integration
 
-## 📜 License
-Developed for educational and precision agricultural management. All rights reserved.
+The system uses the Open-Meteo API to retrieve weather information.
+
+Weather parameters include:
+
+- Temperature.
+- Humidity.
+- Wind speed.
+- Rainfall.
+- Solar radiation.
+
+It also calculates reference evapotranspiration (ET₀) using the FAO-56 Penman-Monteith method.
+
+## 10. FAO-56 CROPWAT Calculation
+
+The project uses agricultural water requirement calculations.
+
+Important parameters:
+
+- ET₀: Reference evapotranspiration.
+- Kc: Crop coefficient.
+- ETc: Crop evapotranspiration.
+- TAW: Total Available Water.
+- RAW: Readily Available Water.
+- NIR: Net Irrigation Requirement.
+- GIR: Gross Irrigation Requirement.
+
+Main equations:
+
+\\[ ET_c=K_c\times ET_0 \\]
+
+\\[ P\_{eff}=\max(0,(P\times0.8)-5) \\]
+
+\\[ NIR=\max(0,ET_c-P\_{eff}+\Delta S) \\]
+
+\\[ GIR=\frac{NIR}{\eta\_{irrigation}} \\]
+
+The calculated water depth is converted into litres using:
+
+\\[ Water(L)=Depth(mm)\times Area(m^2) \\]
+
+## 11. Main Application Modules
+
+[Irrigation Dashboard - Concept by Satyajit Mane on Dribbble](https://images.openai.com/static-rsc-4/lkPuaPlt50-tfj7FJ5Sf9qAUq2v2y0Sy6tCNftn-Fy1wghsrzhs_KNhmVCw1Y4bvDonbx-WnhQCaSFcSR_7Y6mWuhelbKrBghDbJIy9Ec9zCxPQC8gEHuQ7wv1UlqIK-ShPoPgO6geD416lmd0n2i0GNce0doVCb8orVro5wIco?purpose=inline)
+
+1\. Dashboard
+
+Displays total recommended water, estimated water conserved, crop demand, and recent predictions.
+
+[CornSoyWater: Real-Time Aid for Corn and Soybean Irrigation Decisions | CropWatch | Nebraska](https://images.openai.com/static-rsc-4/CNNmPwKO1GBgbRwnW5mMnJlfn3FM6cxnjr3cavdJOyqcxRZpmgfxXtWNd1aW5n4bKb-uKNHLLCyA2hSX5i1qmbAUkCpSecyBAAhy9esjUJdcvj7MDoV28HYwrX6B4B4a3fjzQRviRfa59pP-M-TlR_Xc7u3ZoA9awMiCXr4Ky5w?purpose=inline)
+
+2\. Irrigation Prediction
+
+Accepts farm, crop, soil, and weather details to estimate water requirements.
+
+[PyCaret inside Streamlit - Using Streamlit - Streamlit](https://images.openai.com/static-rsc-4/8bwPUTzHvHzmq_tEY_r-u9y30G68EhBJkyuDHTnKees4788A7_1Yxa4YUfYsbf63DIgicJZb5PRKeISuCtWUpxmOSwxWpT7p2emTXva_8Kxl2gAH8UkvQ-iapqmI-0SmpbRRKNvnwApGjRAy6c_DdjZpClv9fJRAFCkOAQNJgAI?purpose=inline)
+
+3\. Model Comparison
+
+Compares XGBoost, ANN, and LSTM performance using regression metrics.
+
+[Lecture 12: Feature importances and model transparency — CPSC 330 Applied Machine Learning 2025S](https://images.openai.com/static-rsc-4/9UQYcM2qRY1M1IbBIKRRPDiBT8roiBzbo-SY-v4e7M4gPMWerBgg_ZS4jvKT3RxDyRxVuTg2rfh_aRrzEZALiqyGUsQa2HqPmA9y2QV0K_d3zVFKu1BhRLj54-w4a71tKn-9NRBSf1DCB1XLDG1KXEtXYnHeukdsEtk4tJXNLg0?purpose=inline)
+
+4\. SHAP Explainability
+
+Explains how soil and weather features influence predictions.
+
+[Weather Dashboard Examples | Explore Custom PWS Layouts](https://images.openai.com/static-rsc-4/7rKUhVU746M3M0boGDZBGw5Kpd-pSZs4B3LtGztabouWCJtSwT99UaA8WvHTh6yLrmS_8SbhkCTb6c25fDI-XGoIuyKYC2f7CzY-dWzGpSb8iVPHv4JVhX1Zyq6RcArf08siVeypUbKF-i5k9-nLsFS6OW8EkkOJXLs8K9fh5sI?purpose=inline)
+
+5\. Weather and ET₀
+
+Displays live weather information and evapotranspiration calculations.
+
+[Datasets - Docs - Faraday](https://images.openai.com/static-rsc-4/V5X6RDQZ4kdU8BRC16enRRkK729S5hznrZHnD-JvEairern1He54m_f_aARhKQd8_2MsFtpQ9-S7alDYZ5dtaaBT-i-JGA9k7sSn8Fdre5Sd0CfOBGfvIx9al1W9wclvlG7QfwY9kzDS-9W2SzS2R3R3mYhxQruHCZNsiGwoluo?purpose=inline)
+
+6\. Dataset Management
+
+Supports CSV uploads, batch prediction, and downloading results.
+
+[Mutus Tech | AI-Powered Farm Intelligence for Sustainable Agriculture](https://images.openai.com/static-rsc-4/Whun3ujEMf4wvmGCy49AgltWq-ljbNJ04SMMzpB-Q89c3B0uDG2tbuMa4r1REF52hOSy2tpdfynj-rGtFmfL9w0S_M4gLcROTr6roW1nqyd5E_f44vc7lhaYjvjxX5gZTYzylRDCn4CUzBv283jqFBLwEZiVP72rPUcm640HPvU?purpose=inline)
+
+7\. Prediction History
+
+Stores previous predictions and supports searching and filtering.
+
+[Water Efficiency Dashboard for Agriculture | Mokkup.ai](https://images.openai.com/static-rsc-4/oYRgOfLKjGiFQgdxU6pCqI7fN6qyLSyno_lBEWKrY7zkZSELuQIXtQWdhnILl2-rD5IWweSeMEEEaPbjT5Ar1RH2-Qcb5ZhL9HolnZNaVKsmSjsgtoVtBRlP5n8yE_5T2tbr06FuLY8SYxAaYcPVJpbwl65SR8sMjCY3rPOwoY8?purpose=inline)
+
+8\. Reports
+
+Generates printable reports containing prediction details and water-saving estimates.
+
+## 12. Water Conservation
+
+The application estimates water conservation by comparing recommended water demand with a conventional irrigation baseline.
+
+The project uses the following estimation:
+
+\\[ WaterSaved=TotalDemand\times0.25 \\]
+
+This represents an estimated 25% saving, not a measured result from field experiments.
+
+## 13. System Architecture
+
+User Interface
+
+React · TypeScript · Tailwind CSS
+
+Backend API
+
+FastAPI · Python · Pydantic
+
+ML Models
+
+XGBoost · ANN · LSTM
+
+Agronomic Engine
+
+FAO-56 · ET₀ · CROPWAT
+
+External Data
+
+Open-Meteo · SoilGrids
+
+Database
+
+SQLite
+
+Irrigation Prediction Results
+
+Litres · Cubic metres · Water depth · Reports
+
+## 14. Testing and Verification
+
+According to the repository README:
+
+- Backend tests: 44 passed.
+- Frontend TypeScript compilation: successful.
+- Frontend production build: successful.
+- Production backend API checks: previously reported successful.
+- Frontend deployment: Vercel.
+- Backend deployment: Render.
+
+## 15. Deployment Links
+
+| Component   | Platform |
+| ----------- | -------- |
+| Frontend    | Vercel   |
+| Backend     | Render   |
+| Source code | GitHub   |
+
+- Frontend: [https://frontend-two-chi-90.vercel.app/](https://frontend-two-chi-90.vercel.app/?utm_source=chatgpt.com)
+- Backend: [https://cropwater-compass.onrender.com](https://cropwater-compass.onrender.com?utm_source=chatgpt.com)
+- GitHub: [https://github.com/Ravi-M-2005/Cropwater-Compass](https://github.com/Ravi-M-2005/Cropwater-Compass?utm_source=chatgpt.com)
+
+## 16. Advantages
+
+1. Helps estimate crop-specific irrigation requirements.
+2. Supports multiple crops and soil types.
+3. Uses machine learning for prediction.
+4. Integrates real-time weather data.
+5. Retrieves soil information from SoilGrids.
+6. Provides explainable predictions.
+7. Supports batch CSV processing.
+8. Maintains prediction history.
+9. Generates printable reports.
+10. Helps reduce unnecessary water usage.
+
+## 17. Limitations
+
+1. The main training dataset is synthetically generated.
+2. Predictions require real-world agricultural validation.
+3. Live weather and soil data require internet access.
+4. Render free-tier services may take time to start after inactivity.
+5. Actual water savings depend on field conditions, irrigation equipment, and farmer practices.
+
+## 18. Future Enhancements
+
+1. Integrate IoT soil moisture sensors.
+2. Connect ESP32 or Arduino devices.
+3. Automate water pumps using relay modules.
+4. Collect real farm datasets.
+5. Improve model performance using field observations.
+6. Develop a mobile application.
+7. Add multilingual support for farmers.
+8. Provide automatic irrigation scheduling.
+
+## 19. Conclusion
+
+Cropwater Compass is a smart irrigation management platform that combines machine learning, agricultural calculations, weather information, and soil data to estimate crop water requirements. It provides predictions in litres, cubic metres, and millimetres, helping users make better irrigation decisions and reduce unnecessary water usage.
+
+The project demonstrates how machine learning and agricultural technology can be combined to support precision agriculture and sustainable water management.
+
+Important: The above is a complete organized explanation based on the GitHub README you shared. It is not a replacement for a formal college project report, which may additionally require an abstract, literature survey, methodology, implementation details, screenshots, references, and bibliography.
