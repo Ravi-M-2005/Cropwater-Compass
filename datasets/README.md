@@ -45,7 +45,7 @@ $$GIR = \frac{\max\left(0, ET_c - P_{eff} + \text{DepletionAdjustment}\right)}{\
 | **LSTM Regressor** | **0.9909** | **1.179** | -20.80 | 11.304 | 5.490 |
 
 > [!IMPORTANT]
-> **Generalization Insight**: Statistical models trained on regional synthetic/station distributions experience domain shift when evaluated on out-of-distribution independent field trials. The higher RMSE on external trials proves that hybrid systems blending physical FAO-56 safety boundaries with ML predictions provide indispensable resilience against out-of-distribution drift.
+> **Generalization Insight**: Statistical models trained on regional synthetic/station distributions experience domain shift when evaluated on simulated out-of-distribution benchmarks. The higher RMSE on out-of-distribution samples proves that hybrid systems blending physical FAO-56 safety boundaries with ML predictions provide indispensable resilience against domain shift.
 
 ---
 

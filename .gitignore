@@ -42,3 +42,7 @@ dist-ssr/
 Thumbs.db
 .vscode/
 .idea/
+
+# Local dev server logs
+*.log
+*_err.log

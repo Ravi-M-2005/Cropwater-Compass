@@ -291,6 +291,17 @@ export interface HistoryStatsResponse {
   urgency_distribution: Record<string, number>;
 }
 
+export interface ReportModelBenchmark {
+  model_name: string;
+  test_r2: number;
+  test_rmse: number;
+  test_mae: number;
+  cv_r2_mean?: number | null;
+  cv_r2_std?: number | null;
+  cv_rmse_mean?: number | null;
+  cv_rmse_std?: number | null;
+}
+
 export interface SummaryReportResponse {
   report_id: string;
   generated_at: string;
@@ -303,6 +314,7 @@ export interface SummaryReportResponse {
     primary_model: string;
     highest_accuracy_r2: number;
   };
+  model_benchmarks?: ReportModelBenchmark[];
   water_distribution_by_crop: Record<string, number>;
   soil_profile_breakdown: Record<string, number>;
   urgency_levels: Record<string, number>;

@@ -162,7 +162,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ onNavigate }) => {
               <span className="text-sm font-semibold text-teal-600">Litres</span>
             </div>
             <div className="text-xs text-teal-700 font-semibold mt-1">
-              ~25% vs conventional unmetered flood
+              Estimated ~25% conservation vs unmetered flood (FAO-56 baseline)
             </div>
           </div>
         </div>

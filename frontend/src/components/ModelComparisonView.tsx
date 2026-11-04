@@ -79,14 +79,14 @@ export const ModelComparisonView: React.FC = () => {
               Rigorous Empirical Validation
             </span>
             <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
-              5-Fold Cross-Validation • Residual Diagnostics • External Benchmark
+              5-Fold Cross-Validation • Residual Diagnostics • Simulated Benchmark
             </span>
           </div>
           <h1 className="text-2xl font-black text-slate-900 mt-2">
             Machine Learning Model Comparison & Evaluation
           </h1>
           <p className="text-sm text-slate-600 mt-1 max-w-4xl">
-            Strict regression evaluation of XGBoost, ANN (MLP), and LSTM architectures. Validated using continuous regression metrics (R², RMSE, MAE, MAPE), 5-fold cross-validation, residual bias distributions, and generalization testing on an independent ICAR agricultural field trial dataset.
+            Strict regression evaluation of XGBoost, ANN (MLP), and LSTM architectures. Validated using continuous regression metrics (R², RMSE, MAE, MAPE), 5-fold cross-validation, residual bias distributions, and generalization testing on a simulated out-of-distribution benchmark (calibrated to ICAR agro-climatic parameter ranges).
           </p>
         </div>
         <button
