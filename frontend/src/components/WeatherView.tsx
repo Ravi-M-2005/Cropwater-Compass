@@ -149,6 +149,16 @@ export const WeatherView: React.FC = () => {
     init();
   }, [detectLocation]);
 
+  // When switching into OFFLINE_DATASET mode dynamically, ensure an offline record is loaded
+  useEffect(() => {
+    if (mode === "OFFLINE_DATASET" && !selectedOfflineRecord) {
+      const match =
+        OFFLINE_DATASET.find((r) => r.location === selectedLocation) ||
+        OFFLINE_DATASET[0];
+      applyOfflineRecord(match);
+    }
+  }, [mode]);
+
   // Handle manual "Detect My Location" button click
   const handleDetectLocationClick = async () => {
     if (!navigator.onLine) {

@@ -315,18 +315,18 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                 min_temps = daily.get("temperature_2m_min", [])
                 precips = daily.get("precipitation_sum", [])
                 for i in range(min(7, len(dates))):
-                    t_max = max_temps[i] if i < len(max_temps) else temp_c + 3
-                    t_min = min_temps[i] if i < len(min_temps) else temp_c - 4
-                    r_sum = precips[i] if i < len(precips) else 0.0
-                    e_fao = daily_et0[i] if i < len(daily_et0) else et0_mm
+                    t_max = round(float(max_temps[i]), 1) if (i < len(max_temps) and max_temps[i] is not None) else round(float(temp_c) + 3.0, 1)
+                    t_min = round(float(min_temps[i]), 1) if (i < len(min_temps) and min_temps[i] is not None) else round(float(temp_c) - 4.0, 1)
+                    r_sum = round(float(precips[i]), 1) if (i < len(precips) and precips[i] is not None) else 0.0
+                    e_fao = round(float(daily_et0[i]), 2) if (i < len(daily_et0) and daily_et0[i] is not None) else round(float(et0_mm), 2)
                     forecast_daily.append({
                         "date": dates[i],
                         "temp_max_c": t_max,
                         "temp_min_c": t_min,
                         "temp_avg_c": round((t_max + t_min) / 2.0, 1),
                         "rainfall_mm": r_sum,
-                        "et0_mm": round(float(e_fao), 2) if e_fao is not None else 4.0,
-                        "condition": "Showers" if r_sum > 2 else "Clear"
+                        "et0_mm": e_fao,
+                        "condition": "Showers" if r_sum > 2.0 else "Clear"
                     })
 
                 # 24-hour hourly forecast format

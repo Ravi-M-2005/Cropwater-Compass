@@ -1,8 +1,8 @@
 /**
  * Cropwater Compass - Service Worker for Offline Caching
- * Ensures application shell and static assets load even when completely disconnected from the network.
+ * Ensures application shell, static assets, and offline dataset load even when completely disconnected.
  */
-const CACHE_NAME = 'cropwater-compass-v1';
+const CACHE_NAME = 'cropwater-compass-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/index.html',
@@ -36,8 +36,9 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  // Don't intercept API calls so network detection can probe them
   const url = new URL(event.request.url);
+
+  // Bypass API and weather requests so live network and reachability checks function as intended
   if (url.pathname.startsWith('/api') || url.hostname.includes('open-meteo.com')) {
     return;
   }
@@ -45,19 +46,22 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Revalidate in background
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
-            }
-          })
-          .catch(() => {
-            /* offline - cachedResponse serves */
-          });
+        // If online, revalidate in background without throwing errors if offline
+        if (typeof self.navigator !== 'undefined' && self.navigator.onLine) {
+          fetch(event.request)
+            .then((networkResponse) => {
+              if (networkResponse && networkResponse.status === 200) {
+                caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse));
+              }
+            })
+            .catch(() => {
+              // Ignore background refresh failure
+            });
+        }
         return cachedResponse;
       }
 
+      // Fetch from network and cache for offline usage
       return fetch(event.request)
         .then((networkResponse) => {
           if (!networkResponse || networkResponse.status !== 200) {
@@ -69,10 +73,13 @@ self.addEventListener('fetch', (event) => {
           });
           return networkResponse;
         })
-        .catch(() => {
+        .catch(async () => {
+          // Fallback to cached index.html for SPA page navigation when offline
           if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
+            const fallback = await caches.match('/index.html') || await caches.match('/');
+            if (fallback) return fallback;
           }
+          return caches.match(event.request);
         });
     })
   );

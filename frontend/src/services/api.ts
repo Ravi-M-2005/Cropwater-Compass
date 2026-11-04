@@ -15,6 +15,7 @@ import {
   CROP_PROFILES,
   SOIL_PROFILES,
 } from "./offlineIrrigationEngine";
+import { networkManager } from "./networkManager";
 
 const DEFAULT_PROD_API_BASE = "https://cropwater-compass.onrender.com/api";
 const DEFAULT_DEV_API_BASE = "/api";
@@ -91,7 +92,7 @@ async function request<T>(endpoint: string, options?: RequestInit): Promise<T> {
 export const api = {
   // Predictions
   predict: async (data: PredictionRequest): Promise<PredictionResponse> => {
-    if (!navigator.onLine) {
+    if (!navigator.onLine || networkManager.getStatus().mode === "OFFLINE_DATASET") {
       return calculateOfflineIrrigation(data);
     }
     try {

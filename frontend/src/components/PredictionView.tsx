@@ -229,6 +229,18 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
     fetchMetadataAndInitial();
   }, [detectLocation]);
 
+  // When switching into OFFLINE_DATASET mode dynamically, ensure a matching record is active
+  useEffect(() => {
+    if (mode === "OFFLINE_DATASET" && !selectedOfflineRecord) {
+      const match =
+        OFFLINE_DATASET.find((r) => r.crop_type === formData.crop_type && r.location === selectedLocation) ||
+        OFFLINE_DATASET.find((r) => r.crop_type === formData.crop_type) ||
+        OFFLINE_DATASET.find((r) => r.location === selectedLocation) ||
+        OFFLINE_DATASET[0];
+      handleSelectOfflineRecord(match);
+    }
+  }, [mode]);
+
   const handleChange = (field: keyof PredictionRequest, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -1004,11 +1016,11 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                   </div>
                 </div>
 
-                {/* Model Predictions Mini-Comparison */}
-                {result.model_predictions && (
+                {/* Model Predictions Mini-Comparison (Cloud ML Inference when connected) */}
+                {result.model_predictions && Object.keys(result.model_predictions).length > 0 ? (
                   <div className="mt-4 pt-4 border-t border-emerald-700/60">
                     <span className="text-[11px] font-semibold text-emerald-300 block mb-2">
-                      Multi-Model Estimates (mm depth):
+                      Cloud ML Multi-Model Estimates (mm depth):
                     </span>
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div className="bg-emerald-950/60 p-2 rounded-lg text-xs">
@@ -1029,6 +1041,16 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                           {result.model_predictions.lstm ?? "-"} mm
                         </span>
                       </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-4 pt-3 border-t border-emerald-700/60 text-[11px] text-emerald-200/90 flex items-start gap-2 bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-700/40">
+                    <Info className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold text-white block">Deterministic FAO-56 Agronomic Balance</span>
+                      <span>
+                        Trained ML neural models (XGBoost, ANN, LSTM) run on the cloud backend. When in offline dataset mode, irrigation requirements are calculated deterministically via standard FAO-56 Penman-Monteith physics equations.
+                      </span>
                     </div>
                   </div>
                 )}

@@ -26,9 +26,29 @@ class NetworkManager {
 
   constructor() {
     if (typeof window !== "undefined") {
+      // Automatic detection upon application startup
+      if (!this.isOnline) {
+        this.isOpenMeteoReachable = false;
+        this.mode = "OFFLINE_DATASET";
+        this.offlineReason = "No internet connection detected (device offline).";
+      } else {
+        // Initial reachability probe
+        this.verifyOpenMeteoReachability().then((reachable) => {
+          if (!reachable) {
+            this.mode = "OFFLINE_DATASET";
+            this.offlineReason = "Open-Meteo meteorological API unreachable. Switched to offline benchmark dataset.";
+            this.notify();
+          }
+        });
+      }
+
       window.addEventListener("online", () => {
         this.isOnline = true;
-        this.verifyOpenMeteoReachability().then(() => {
+        this.verifyOpenMeteoReachability().then((reachable) => {
+          if (reachable && this.offlineReason?.includes("offline")) {
+            this.mode = "LIVE_OPEN_METEO";
+            this.offlineReason = null;
+          }
           this.notify();
         });
       });
@@ -91,23 +111,34 @@ class NetworkManager {
   }
 
   public async verifyOpenMeteoReachability(): Promise<boolean> {
-    if (!navigator.onLine) {
+    if (typeof navigator !== "undefined" && !navigator.onLine) {
       this.isOnline = false;
       this.isOpenMeteoReachable = false;
       return false;
     }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=12.97&longitude=77.59&current=temperature_2m", {
-        method: "HEAD",
-        mode: "no-cors",
-        signal: controller.signal,
-      });
+      const res = await fetch(
+        "https://api.open-meteo.com/v1/forecast?latitude=12.97&longitude=77.59&current=temperature_2m",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+          signal: controller.signal,
+        }
+      );
       clearTimeout(timeoutId);
-      this.isOpenMeteoReachable = true;
-      return true;
+      if (res.ok) {
+        this.isOpenMeteoReachable = true;
+        return true;
+      } else {
+        this.isOpenMeteoReachable = false;
+        return false;
+      }
     } catch {
+      clearTimeout(timeoutId);
       this.isOpenMeteoReachable = false;
       return false;
     }

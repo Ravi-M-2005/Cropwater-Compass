@@ -137,11 +137,6 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
   const waterLitres = Math.round(girMm * areaSqMeters);
   const waterM3 = Number((waterLitres / 1000.0).toFixed(2));
 
-  // Multi-model predictions (harmonic variations)
-  const xgbPred = Number(girMm.toFixed(2));
-  const annPred = Number(Math.max(0.0, girMm + 0.05).toFixed(2));
-  const lstmPred = Number(Math.max(0.0, girMm - 0.03).toFixed(2));
-
   // Urgency logic
   let urgency: "Critical" | "High" | "Moderate" | "Low" | "None" = "Moderate";
   if (moisture <= pwp + 2.0 || depletionFraction >= 0.85) {
@@ -194,17 +189,13 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
       next_irrigation_date: tomorrow.toISOString().split("T")[0],
     },
     recommendations: [
-      `Computed using verified local FAO-56 Agronomic Irrigation Engine (Offline Fallback).`,
-      `Gross crop requirement: ${girMm} mm depth distributed over ${areaSqMeters.toLocaleString()} m².`,
+      `Computed using local deterministic FAO-56 Agronomic Engine (Offline Mode).`,
+      `Gross crop requirement: ${girMm} mm depth distributed over ${areaSqMeters.toLocaleString()} m² (${req.area} ${req.area_unit}).`,
       `Irrigation delivery efficiency calibrated to ${efficiencyPct}% for ${req.irrigation_method} systems.`,
-      `Apply during early morning hours to suppress evaporative wind drift losses.`,
+      `Cloud ML neural network inference (XGBoost, ANN, LSTM) requires online server connectivity. Offline mode provides standard FAO-56 Penman-Monteith physical balance.`,
     ],
-    model_used: req.model_name || "xgboost",
-    model_predictions: {
-      xgboost: xgbPred,
-      ann: annPred,
-      lstm: lstmPred,
-    },
+    model_used: "FAO-56 Deterministic Agronomic Engine (Offline)",
+    model_predictions: {},
     timestamp: new Date().toISOString(),
   };
 }
