@@ -9,6 +9,8 @@ import {
   IrrigationMethodInfo,
   HistoryStatsResponse,
   SummaryReportResponse,
+  SoilPropertiesResponse,
+  TextureClassifyResponse,
 } from "../types";
 import {
   calculateOfflineIrrigation,
@@ -167,6 +169,37 @@ export const api = {
         { name: "Sprinkler", efficiency_pct: 75.0, typical_pressure_bar: 2.5, suitable_crops: ["Cereals", "Pulses"], description: "Overhead pressurized distribution." },
         { name: "Surface/Flood", efficiency_pct: 60.0, typical_pressure_bar: 0.0, suitable_crops: ["Rice", "Sugarcane"], description: "Gravity-fed furrow flooding." },
       ];
+    }
+  },
+
+  // SoilGrids ISRIC 250m & USDA Texture
+  getSoilProperties: async (
+    lat: number,
+    lon: number,
+    depthInterval = "0-5cm",
+    useCache = true
+  ): Promise<SoilPropertiesResponse> => {
+    return request<SoilPropertiesResponse>(
+      `/soil/properties?lat=${lat}&lon=${lon}&depth_interval=${depthInterval}&use_cache=${useCache}`
+    );
+  },
+
+  classifySoilTexture: async (
+    sand: number,
+    silt: number,
+    clay: number
+  ): Promise<TextureClassifyResponse> => {
+    return request<TextureClassifyResponse>("/soil/classify-texture", {
+      method: "POST",
+      body: JSON.stringify({ sand_pct: sand, silt_pct: silt, clay_pct: clay }),
+    });
+  },
+
+  getSoilDepthIntervals: async (): Promise<string[]> => {
+    try {
+      return await request<string[]>("/soil/depth-intervals");
+    } catch {
+      return ["0-5cm", "5-15cm", "15-30cm", "30-60cm", "60-100cm", "100-200cm"];
     }
   },
 

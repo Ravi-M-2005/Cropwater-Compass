@@ -1,0 +1,601 @@
+crop_type,growth_stage,soil_type,state,location,soil_moisture_pct,soil_ph,temperature_c,humidity_pct,wind_speed_kmh,rainfall_mm,solar_radiation,et0_mm,irrigation_method,water_requirement_mm
+Rice (Paddy),Late,Sandy,Gujarat,Ahmedabad,31.5,7.8,28.5,44.4,8.6,2.5,23.1,1.8,Drip,1.8
+Soybean,Mid-season,Loamy,Gujarat,Ahmedabad,27.6,7.5,35.3,39.7,9.2,0.0,19.3,2.6,Drip,3.32
+Tomato,Mid-season,Sandy Loam,Maharashtra,Pune,27.8,6.6,28.6,58.1,20.0,0.0,21.8,2.25,Drip,2.88
+Sugarcane,Initial,Sandy Loam,Telangana,Hyderabad,33.3,7.2,28.4,29.8,13.1,1.2,23.4,1.8,Sprinkler,0.96
+Cotton,Mid-season,Silty,Punjab,Ludhiana,34.1,7.4,30.0,37.7,17.3,0.0,17.9,1.8,Sprinkler,2.88
+Cotton,Mid-season,Sandy,Tamil Nadu,Coimbatore,23.6,6.4,28.5,65.1,8.7,0.0,23.0,2.12,Drip,2.83
+Maize,Initial,Loamy,Punjab,Ludhiana,19.7,7.3,29.9,60.7,8.0,0.0,15.8,1.8,Sprinkler,3.06
+Rice (Paddy),Mid-season,Clay Loam,Telangana,Hyderabad,28.9,7.0,30.5,46.7,13.2,0.0,19.1,1.84,Drip,3.31
+Sugarcane,Vegetative,Silty,Gujarat,Ahmedabad,14.2,6.5,30.2,38.4,12.5,0.0,21.3,1.8,Sprinkler,2.04
+Rice (Paddy),Vegetative,Loamy,Karnataka,Devanahalli,22.3,6.6,23.3,49.3,2.3,0.0,16.8,1.8,Sprinkler,3.87
+Rice (Paddy),Initial,Clay,Gujarat,Ahmedabad,14.9,7.2,35.9,44.9,11.9,2.5,18.4,2.61,Drip,9.46
+Rice (Paddy),Vegetative,Sandy,Telangana,Hyderabad,26.2,7.7,33.8,53.4,7.9,0.0,17.9,2.42,Sprinkler,3.55
+Cotton,Vegetative,Sandy,Rajasthan,Jaipur,17.7,7.0,33.8,31.0,3.8,0.0,17.7,2.23,Drip,1.86
+Maize,Vegetative,Loamy,Tamil Nadu,Coimbatore,23.2,6.8,24.5,57.3,5.1,0.0,22.9,1.8,Drip,2.38
+Groundnut,Mid-season,Silty,Telangana,Hyderabad,17.0,6.8,29.3,43.3,32.0,0.0,21.5,1.8,Drip,2.3
+Groundnut,Vegetative,Sandy Loam,Karnataka,Mandya,36.5,7.2,31.3,58.9,11.5,0.0,20.3,2.77,Sprinkler,2.77
+Potato,Mid-season,Silty,Punjab,Ludhiana,30.8,6.1,24.8,38.1,9.7,0.0,21.0,1.8,Drip,2.3
+Tomato,Mid-season,Clay Loam,Karnataka,Belagavi,21.2,6.6,26.9,58.1,2.6,11.5,19.4,2.14,Drip,0.0
+Maize,Vegetative,Loamy,Karnataka,Belagavi,26.9,6.9,28.4,64.6,5.2,0.0,17.6,2.21,Drip,1.96
+Sugarcane,Vegetative,Sandy,Karnataka,Devanahalli,23.3,7.0,29.9,68.1,22.6,0.0,17.9,2.39,Drip,2.26
+Cotton,Vegetative,Clay,Punjab,Ludhiana,25.1,7.0,30.3,46.3,11.0,0.0,14.3,1.8,Surface/Flood,7.62
+Soybean,Vegetative,Loamy,Uttar Pradesh,Lucknow,20.4,6.7,31.6,68.1,5.1,0.0,16.2,2.0,Drip,3.33
+Chickpea,Vegetative,Sandy,Maharashtra,Pune,42.6,6.6,29.3,58.0,6.4,0.0,19.5,2.16,Drip,1.8
+Potato,Mid-season,Clay,Uttar Pradesh,Lucknow,33.7,6.5,34.3,67.3,22.4,0.0,17.7,2.71,Sprinkler,5.59
+Potato,Initial,Clay,Tamil Nadu,Coimbatore,18.4,7.0,29.4,63.3,10.9,8.3,13.0,1.8,Drip,2.21
+Tomato,Mid-season,Clay Loam,Rajasthan,Jaipur,32.3,7.2,37.3,37.5,30.9,0.0,17.8,2.95,Drip,3.77
+Tomato,Mid-season,Loamy,Tamil Nadu,Coimbatore,34.5,6.1,33.1,73.8,23.9,1.5,20.7,2.98,Sprinkler,4.57
+Maize,Vegetative,Sandy Loam,Maharashtra,Pune,17.1,7.0,29.6,65.3,2.0,0.0,24.0,2.74,Sprinkler,3.22
+Wheat,Vegetative,Silty,Uttar Pradesh,Lucknow,18.7,6.6,32.6,65.4,6.1,0.0,20.3,2.73,Drip,2.27
+Tomato,Mid-season,Clay,Rajasthan,Jaipur,33.6,6.7,31.0,39.4,27.2,0.0,19.2,1.8,Drip,3.52
+Soybean,Late,Sandy,Karnataka,Mandya,29.6,6.8,32.7,62.5,5.0,0.0,19.5,2.95,Drip,1.64
+Tomato,Vegetative,Sandy Loam,Tamil Nadu,Coimbatore,26.7,6.3,29.5,70.4,14.0,0.0,22.7,2.36,Drip,2.23
+Cotton,Initial,Clay,Karnataka,Mandya,22.8,7.0,33.0,82.5,2.0,0.0,22.7,3.51,Drip,5.59
+Soybean,Vegetative,Silty,Karnataka,Devanahalli,26.6,7.0,22.0,61.9,11.7,7.8,21.9,1.8,Drip,0.0
+Cotton,Mid-season,Clay Loam,Tamil Nadu,Coimbatore,17.1,6.3,29.1,53.3,3.5,0.0,21.0,2.09,Sprinkler,8.31
+Potato,Initial,Silty,Gujarat,Ahmedabad,30.1,6.9,34.0,20.0,2.0,0.0,18.0,2.14,Sprinkler,1.43
+Rice (Paddy),Late,Sandy,Karnataka,Belagavi,23.5,7.3,22.9,59.2,32.0,0.0,16.9,1.8,Surface/Flood,2.7
+Maize,Mid-season,Clay Loam,Tamil Nadu,Coimbatore,24.6,7.5,32.0,69.3,10.5,0.0,20.3,2.68,Drip,5.63
+Potato,Mid-season,Sandy,Tamil Nadu,Coimbatore,25.1,6.7,30.2,61.8,2.0,0.9,22.4,2.51,Drip,3.21
+Tomato,Initial,Clay,Rajasthan,Jaipur,22.7,7.3,32.2,40.2,19.7,0.0,24.9,2.66,Surface/Flood,9.04
+Cotton,Vegetative,Clay Loam,Rajasthan,Jaipur,24.2,7.1,31.0,30.3,2.4,0.2,20.7,1.9,Drip,3.75
+Wheat,Initial,Loamy,Maharashtra,Pune,30.0,7.5,28.6,49.1,3.9,4.4,18.3,1.89,Drip,0.73
+Sugarcane,Vegetative,Silty,Telangana,Hyderabad,24.9,6.9,37.5,45.7,4.7,7.7,20.6,3.63,Sprinkler,0.0
+Wheat,Vegetative,Sandy Loam,Telangana,Hyderabad,24.0,6.9,32.0,66.5,3.1,0.0,17.2,1.97,Drip,1.64
+Wheat,Mid-season,Loamy,Gujarat,Ahmedabad,28.0,6.3,33.5,35.3,16.0,8.6,16.1,1.82,Sprinkler,0.0
+Potato,Initial,Silty,Karnataka,Mandya,14.6,6.5,25.1,74.3,6.3,3.5,22.5,1.8,Drip,1.0
+Potato,Mid-season,Sandy,Karnataka,Belagavi,16.2,7.3,18.2,62.7,16.1,16.3,18.5,1.8,Sprinkler,0.0
+Wheat,Vegetative,Silty,Karnataka,Devanahalli,21.9,5.9,30.2,60.2,15.0,0.0,24.6,3.36,Surface/Flood,4.2
+Potato,Initial,Silty,Tamil Nadu,Coimbatore,21.3,6.2,28.6,54.8,20.1,0.0,24.3,2.27,Drip,1.26
+Rice (Paddy),Late,Clay Loam,Gujarat,Ahmedabad,31.6,6.7,39.2,49.7,15.0,0.0,16.3,2.92,Surface/Flood,4.55
+Sugarcane,Initial,Silty,Gujarat,Ahmedabad,23.9,6.3,35.2,42.7,3.2,0.0,16.2,2.16,Drip,0.96
+Maize,Late,Sandy Loam,Uttar Pradesh,Lucknow,22.6,7.2,31.8,66.7,14.7,0.0,23.2,2.92,Sprinkler,2.34
+Sugarcane,Vegetative,Clay,Rajasthan,Jaipur,32.8,7.3,31.6,36.1,2.0,15.3,18.6,1.85,Sprinkler,0.0
+Chickpea,Mid-season,Clay Loam,Karnataka,Mandya,27.9,7.2,26.4,56.1,32.0,0.0,18.0,1.8,Drip,3.24
+Sugarcane,Vegetative,Sandy,Maharashtra,Pune,24.3,7.2,30.1,61.4,2.0,0.0,21.8,2.61,Sprinkler,2.96
+Soybean,Initial,Silty,Tamil Nadu,Coimbatore,19.9,6.3,36.4,55.1,15.0,0.0,17.3,3.1,Sprinkler,1.65
+Soybean,Vegetative,Clay Loam,Uttar Pradesh,Lucknow,12.5,7.0,34.9,51.5,4.3,0.0,21.3,3.4,Sprinkler,10.13
+Chickpea,Mid-season,Sandy Loam,Punjab,Ludhiana,20.1,6.9,27.3,47.5,16.4,10.0,16.9,1.8,Drip,0.0
+Wheat,Vegetative,Silty,Punjab,Ludhiana,23.5,7.0,31.4,50.9,3.8,0.0,22.8,2.66,Surface/Flood,3.33
+Groundnut,Late,Sandy,Rajasthan,Jaipur,27.5,7.6,31.4,36.5,30.0,0.0,22.9,2.22,Drip,1.48
+Soybean,Late,Loamy,Karnataka,Devanahalli,23.2,7.0,22.4,65.9,2.0,4.6,23.7,1.8,Surface/Flood,2.67
+Potato,Vegetative,Loamy,Karnataka,Mandya,30.3,6.5,25.3,44.9,5.9,0.8,20.4,1.8,Drip,1.6
+Cotton,Initial,Clay Loam,Rajasthan,Jaipur,23.4,6.7,36.4,36.3,5.4,0.0,16.4,2.56,Surface/Flood,5.08
+Soybean,Mid-season,Loamy,Telangana,Hyderabad,30.8,7.3,30.0,45.5,6.8,0.0,21.8,1.96,Drip,2.5
+Chickpea,Late,Clay,Uttar Pradesh,Lucknow,18.4,6.8,27.8,63.3,4.8,0.0,17.7,1.8,Drip,6.14
+Wheat,Vegetative,Sandy Loam,Gujarat,Ahmedabad,23.5,7.0,31.9,35.8,13.1,5.0,20.9,1.92,Sprinkler,1.92
+Cotton,Mid-season,Sandy Loam,Karnataka,Devanahalli,26.5,7.0,22.8,56.0,4.5,0.0,19.1,1.8,Drip,2.4
+Soybean,Mid-season,Clay,Rajasthan,Jaipur,27.1,7.3,32.9,24.2,4.0,0.0,18.7,2.16,Drip,5.79
+Tomato,Vegetative,Clay,Punjab,Ludhiana,29.9,7.0,30.9,61.9,12.4,16.1,17.1,1.9,Drip,0.0
+Wheat,Vegetative,Sandy,Karnataka,Mandya,26.9,7.1,32.3,68.8,2.0,0.0,22.9,3.37,Surface/Flood,4.21
+Soybean,Mid-season,Sandy,Karnataka,Mandya,22.4,7.1,27.7,53.3,2.0,0.0,15.5,1.8,Sprinkler,2.76
+Soybean,Mid-season,Sandy,Punjab,Ludhiana,22.7,7.3,28.9,59.9,5.8,2.3,19.6,1.8,Sprinkler,2.76
+Sugarcane,Vegetative,Clay Loam,Karnataka,Mandya,31.5,6.6,24.3,65.0,32.0,0.0,23.9,1.8,Drip,1.84
+Groundnut,Mid-season,Loamy,Telangana,Hyderabad,30.9,6.5,37.1,37.3,2.0,0.0,20.8,3.57,Surface/Flood,6.84
+Chickpea,Late,Silty,Uttar Pradesh,Lucknow,29.2,6.9,23.5,55.8,2.0,0.0,18.2,1.8,Sprinkler,0.84
+Groundnut,Initial,Clay Loam,Rajasthan,Jaipur,34.0,7.1,30.7,36.3,6.8,23.2,22.6,1.98,Drip,0.0
+Maize,Mid-season,Silty,Karnataka,Devanahalli,16.6,6.8,26.0,56.5,32.0,4.5,18.0,1.8,Sprinkler,2.88
+Groundnut,Late,Clay,Punjab,Ludhiana,27.0,7.3,24.3,48.4,9.5,0.0,20.1,1.8,Surface/Flood,6.38
+Potato,Mid-season,Clay,Tamil Nadu,Coimbatore,20.6,6.3,35.9,67.3,8.7,0.0,16.8,2.92,Sprinkler,10.28
+Tomato,Vegetative,Sandy,Tamil Nadu,Coimbatore,19.7,6.2,30.7,56.1,7.1,0.0,20.2,2.38,Surface/Flood,3.37
+Potato,Vegetative,Clay,Karnataka,Devanahalli,25.3,6.8,30.3,53.0,32.0,7.5,19.7,2.71,Drip,2.33
+Cotton,Initial,Sandy,Karnataka,Mandya,29.4,6.9,30.8,61.0,2.0,0.0,17.6,2.31,Drip,0.9
+Tomato,Late,Silty,Punjab,Ludhiana,26.1,6.0,30.5,57.2,8.6,0.0,16.8,1.8,Drip,1.6
+Wheat,Mid-season,Silty,Rajasthan,Jaipur,33.7,6.4,35.1,27.7,32.0,0.0,21.6,3.05,Sprinkler,4.68
+Cotton,Mid-season,Sandy,Tamil Nadu,Coimbatore,19.0,6.7,37.3,50.4,18.5,6.7,20.9,3.94,Drip,2.26
+Potato,Late,Clay,Tamil Nadu,Coimbatore,27.2,7.0,34.2,50.1,5.6,0.0,20.0,3.12,Drip,5.6
+Rice (Paddy),Late,Silty,Maharashtra,Pune,19.4,6.9,28.7,65.3,17.4,0.0,20.8,2.17,Sprinkler,2.6
+Wheat,Mid-season,Sandy,Karnataka,Devanahalli,26.5,6.8,30.0,51.4,5.6,0.0,19.1,2.57,Sprinkler,3.94
+Wheat,Mid-season,Loamy,Karnataka,Mandya,26.6,6.1,32.2,71.9,7.6,0.0,17.7,2.59,Sprinkler,3.97
+Rice (Paddy),Vegetative,Sandy,Tamil Nadu,Coimbatore,11.6,6.4,30.4,50.1,2.0,0.0,20.6,2.36,Drip,3.55
+Maize,Vegetative,Clay,Rajasthan,Jaipur,21.9,7.2,37.3,23.7,2.6,0.0,20.8,3.45,Surface/Flood,11.31
+Soybean,Mid-season,Loamy,Rajasthan,Jaipur,23.5,7.0,35.1,24.6,8.0,0.0,19.7,2.78,Drip,4.25
+Cotton,Mid-season,Clay Loam,Karnataka,Belagavi,24.9,7.4,26.7,73.4,25.5,0.0,17.1,1.85,Drip,4.44
+Rice (Paddy),Late,Loamy,Gujarat,Ahmedabad,15.1,7.1,33.5,30.7,2.0,0.0,18.2,2.05,Surface/Flood,7.62
+Tomato,Initial,Clay,Maharashtra,Pune,27.9,7.2,28.8,63.5,24.6,0.0,17.0,1.8,Drip,4.01
+Wheat,Initial,Silty,Uttar Pradesh,Lucknow,24.8,6.3,29.8,55.3,14.9,0.0,22.1,2.27,Drip,0.88
+Groundnut,Vegetative,Clay Loam,Telangana,Hyderabad,45.1,6.8,34.1,57.0,2.0,7.6,21.6,2.99,Drip,0.0
+Wheat,Mid-season,Clay,Punjab,Ludhiana,29.2,7.2,28.4,59.7,3.8,0.0,16.5,1.8,Drip,4.74
+Potato,Late,Sandy Loam,Gujarat,Ahmedabad,20.2,7.5,35.1,50.4,18.4,0.0,18.5,2.45,Drip,2.04
+Chickpea,Mid-season,Sandy Loam,Telangana,Hyderabad,18.3,6.9,31.6,53.5,2.7,15.5,17.6,1.93,Surface/Flood,0.0
+Cotton,Late,Sandy,Rajasthan,Jaipur,24.8,6.5,30.5,34.0,13.9,0.0,17.8,1.8,Drip,1.3
+Sugarcane,Mid-season,Sandy Loam,Maharashtra,Pune,22.8,6.0,26.9,68.6,2.4,0.0,22.6,1.87,Surface/Flood,3.9
+Soybean,Mid-season,Loamy,Karnataka,Mandya,20.9,6.7,29.3,60.1,11.8,0.0,20.0,2.31,Surface/Flood,6.55
+Groundnut,Mid-season,Clay Loam,Uttar Pradesh,Lucknow,28.9,6.2,32.8,57.7,2.0,0.0,15.8,2.16,Sprinkler,4.35
+Maize,Mid-season,Loamy,Maharashtra,Pune,14.3,6.6,34.6,54.2,3.9,0.0,22.4,3.75,Sprinkler,9.9
+Cotton,Late,Clay,Rajasthan,Jaipur,25.5,7.1,32.2,46.0,3.5,0.0,20.4,2.18,Sprinkler,6.06
+Chickpea,Late,Sandy,Maharashtra,Pune,25.1,6.5,32.7,58.3,11.9,20.5,22.4,3.31,Sprinkler,0.0
+Groundnut,Initial,Silty,Gujarat,Ahmedabad,32.3,6.2,34.4,49.8,3.5,3.9,21.5,2.66,Drip,1.18
+Chickpea,Initial,Clay,Maharashtra,Pune,25.6,6.0,22.8,50.9,7.7,0.0,19.9,1.8,Sprinkler,5.09
+Potato,Vegetative,Clay Loam,Karnataka,Devanahalli,26.5,7.3,25.5,57.6,18.0,0.0,19.0,1.8,Sprinkler,3.75
+Chickpea,Initial,Loamy,Uttar Pradesh,Lucknow,23.4,7.0,27.3,55.0,6.8,0.0,18.2,1.8,Surface/Flood,2.28
+Maize,Vegetative,Clay,Tamil Nadu,Coimbatore,17.3,7.3,24.1,65.5,2.0,0.0,24.2,1.8,Drip,7.35
+Rice (Paddy),Initial,Clay Loam,Gujarat,Ahmedabad,37.9,7.3,37.0,28.5,3.1,0.0,18.3,2.82,Sprinkler,3.95
+Groundnut,Mid-season,Clay,Maharashtra,Pune,22.8,7.2,24.0,45.4,8.1,0.0,14.6,1.8,Drip,6.52
+Wheat,Vegetative,Clay,Rajasthan,Jaipur,24.8,7.2,25.4,55.6,9.9,0.0,18.5,1.8,Drip,5.17
+Rice (Paddy),Mid-season,Clay,Gujarat,Ahmedabad,24.4,6.3,34.0,41.7,9.3,0.0,16.2,1.93,Surface/Flood,9.53
+Sugarcane,Mid-season,Sandy Loam,Uttar Pradesh,Lucknow,21.2,7.2,31.4,41.2,11.9,0.0,22.5,2.73,Sprinkler,4.55
+Wheat,Vegetative,Clay,Uttar Pradesh,Lucknow,32.0,7.0,26.3,54.1,21.9,3.0,21.2,1.8,Drip,3.17
+Maize,Mid-season,Sandy,Karnataka,Belagavi,29.7,6.5,30.6,56.5,2.0,0.0,23.7,3.5,Drip,4.67
+Cotton,Mid-season,Sandy,Karnataka,Devanahalli,16.4,6.6,30.7,57.1,32.0,0.0,19.3,2.74,Drip,3.65
+Sugarcane,Mid-season,Clay Loam,Uttar Pradesh,Lucknow,21.0,6.5,27.4,50.2,2.0,0.0,23.8,1.8,Surface/Flood,8.33
+Soybean,Vegetative,Sandy Loam,Karnataka,Devanahalli,28.2,6.8,26.4,71.2,4.6,0.0,23.2,2.24,Surface/Flood,2.99
+Cotton,Initial,Loamy,Uttar Pradesh,Lucknow,34.6,6.9,28.8,59.2,9.6,19.3,17.4,1.8,Drip,0.0
+Maize,Mid-season,Sandy Loam,Gujarat,Ahmedabad,18.1,6.8,32.6,41.2,2.2,0.0,20.5,2.08,Surface/Flood,4.16
+Wheat,Mid-season,Silty,Uttar Pradesh,Lucknow,10.0,6.2,29.0,61.7,3.6,0.0,21.1,1.97,Sprinkler,4.35
+Maize,Vegetative,Clay Loam,Punjab,Ludhiana,35.9,6.6,30.3,48.5,21.4,0.0,18.4,1.91,Drip,1.7
+Potato,Mid-season,Loamy,Maharashtra,Pune,27.5,7.3,28.9,36.3,4.7,0.0,21.9,2.33,Drip,2.98
+Chickpea,Late,Loamy,Gujarat,Ahmedabad,28.5,6.8,31.8,45.5,2.0,0.0,18.4,1.8,Surface/Flood,1.05
+Soybean,Initial,Clay Loam,Uttar Pradesh,Lucknow,22.3,7.0,32.5,58.2,2.0,0.0,24.0,3.2,Sprinkler,4.94
+Cotton,Mid-season,Silty,Tamil Nadu,Coimbatore,31.2,7.2,27.3,63.6,32.0,0.0,18.9,1.8,Drip,2.4
+Chickpea,Vegetative,Loamy,Karnataka,Devanahalli,27.9,7.3,28.8,57.3,10.6,5.3,19.9,2.43,Drip,0.13
+Cotton,Vegetative,Sandy,Gujarat,Ahmedabad,27.6,6.8,29.3,51.0,2.0,0.0,20.1,1.8,Drip,1.5
+Chickpea,Mid-season,Clay Loam,Telangana,Hyderabad,25.4,6.5,31.4,51.9,7.0,0.0,17.9,1.92,Drip,4.07
+Tomato,Vegetative,Sandy,Karnataka,Belagavi,25.0,7.6,25.3,71.1,4.8,0.0,19.6,1.82,Drip,1.72
+Groundnut,Initial,Sandy Loam,Karnataka,Devanahalli,22.5,7.0,27.6,64.2,12.8,1.3,17.3,1.89,Surface/Flood,1.26
+Wheat,Initial,Clay Loam,Karnataka,Mandya,24.3,6.6,31.6,73.6,21.4,0.0,21.0,2.94,Sprinkler,3.94
+Chickpea,Vegetative,Clay Loam,Maharashtra,Pune,25.7,6.6,34.7,65.0,22.5,0.0,19.2,3.24,Sprinkler,5.34
+Groundnut,Vegetative,Loamy,Tamil Nadu,Coimbatore,19.2,6.9,33.6,55.9,9.2,0.0,17.5,2.62,Drip,4.07
+Potato,Mid-season,Loamy,Punjab,Ludhiana,20.7,7.2,28.8,42.1,32.0,8.2,24.0,2.05,Surface/Flood,0.0
+Groundnut,Mid-season,Clay,Karnataka,Mandya,38.7,6.8,31.9,46.8,2.0,0.0,18.5,2.65,Drip,3.39
+Rice (Paddy),Late,Clay Loam,Karnataka,Mandya,26.6,6.7,26.7,63.2,6.7,0.0,19.1,1.8,Drip,3.3
+Maize,Mid-season,Clay Loam,Uttar Pradesh,Lucknow,24.5,6.8,32.6,55.2,4.7,0.0,19.6,2.64,Drip,5.6
+Chickpea,Mid-season,Clay Loam,Punjab,Ludhiana,18.8,6.4,36.8,42.7,10.1,0.0,21.1,3.71,Surface/Flood,11.99
+Maize,Mid-season,Clay,Karnataka,Devanahalli,31.6,6.3,28.9,38.7,19.3,0.0,19.0,2.34,Surface/Flood,7.35
+Sugarcane,Mid-season,Sandy Loam,Telangana,Hyderabad,27.7,7.2,31.7,47.7,3.8,8.8,20.9,2.32,Drip,0.0
+Rice (Paddy),Initial,Loamy,Uttar Pradesh,Lucknow,22.8,5.7,30.2,39.9,11.9,0.0,19.2,2.06,Surface/Flood,4.94
+Wheat,Vegetative,Clay,Rajasthan,Jaipur,33.0,7.0,33.5,42.0,19.7,9.1,17.6,2.16,Sprinkler,0.0
+Rice (Paddy),Mid-season,Loamy,Punjab,Ludhiana,26.2,6.9,27.6,55.8,16.3,0.0,16.2,1.8,Sprinkler,2.88
+Soybean,Mid-season,Clay Loam,Tamil Nadu,Coimbatore,26.7,6.9,27.1,68.6,2.0,0.0,19.5,1.8,Sprinkler,4.53
+Soybean,Vegetative,Silty,Karnataka,Mandya,26.1,6.9,34.0,51.2,3.7,0.0,17.3,2.85,Sprinkler,3.04
+Sugarcane,Late,Sandy,Tamil Nadu,Coimbatore,23.8,6.9,29.1,53.0,13.7,0.0,17.7,1.8,Drip,1.5
+Groundnut,Mid-season,Sandy Loam,Punjab,Ludhiana,27.2,6.9,30.3,55.9,3.1,0.0,20.1,2.09,Surface/Flood,4.01
+Rice (Paddy),Late,Loamy,Karnataka,Mandya,34.2,6.9,26.1,60.6,4.4,0.0,23.4,1.83,Drip,1.83
+Tomato,Late,Sandy Loam,Karnataka,Devanahalli,10.4,7.1,30.1,46.8,13.1,0.0,21.6,2.93,Drip,4.72
+Maize,Vegetative,Loamy,Punjab,Ludhiana,29.6,6.5,26.8,58.5,5.2,0.0,19.7,1.8,Drip,1.6
+Wheat,Vegetative,Silty,Punjab,Ludhiana,23.6,6.8,29.1,50.1,16.3,1.1,18.9,1.8,Surface/Flood,2.25
+Groundnut,Initial,Sandy,Karnataka,Devanahalli,26.9,7.8,29.6,51.7,4.4,0.0,23.1,3.01,Drip,1.34
+Maize,Vegetative,Silty,Karnataka,Devanahalli,21.7,7.6,25.8,60.6,2.0,0.0,21.6,1.94,Drip,1.72
+Cotton,Mid-season,Clay Loam,Uttar Pradesh,Lucknow,29.8,7.0,30.4,56.1,12.9,12.1,20.4,2.24,Sprinkler,0.0
+Wheat,Mid-season,Loamy,Rajasthan,Jaipur,27.5,6.8,33.4,43.9,11.0,9.8,18.1,2.2,Drip,0.0
+Maize,Mid-season,Silty,Uttar Pradesh,Lucknow,30.6,7.0,33.6,55.0,11.7,0.0,21.5,3.13,Drip,4.17
+Maize,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,22.6,6.4,30.6,37.7,2.0,0.0,20.9,2.34,Drip,2.08
+Wheat,Vegetative,Clay Loam,Maharashtra,Pune,23.7,7.0,30.3,50.3,20.5,0.0,20.4,2.49,Sprinkler,5.26
+Potato,Vegetative,Sandy Loam,Karnataka,Mandya,25.4,7.7,28.1,69.7,2.8,0.0,19.7,2.01,Sprinkler,2.14
+Wheat,Vegetative,Sandy,Gujarat,Ahmedabad,25.6,7.1,29.7,41.8,21.4,0.0,18.4,1.8,Sprinkler,1.8
+Groundnut,Mid-season,Silty,Gujarat,Ahmedabad,20.2,6.8,34.5,42.1,7.7,0.0,17.9,2.24,Drip,2.86
+Sugarcane,Mid-season,Sandy Loam,Uttar Pradesh,Lucknow,22.2,6.8,31.9,63.6,2.0,0.0,17.7,2.25,Sprinkler,3.75
+Potato,Vegetative,Clay,Telangana,Hyderabad,22.7,6.7,33.7,49.8,5.0,0.0,20.8,2.79,Sprinkler,8.08
+Maize,Initial,Clay,Uttar Pradesh,Lucknow,27.1,6.6,29.6,61.4,4.0,0.0,15.7,1.8,Drip,3.83
+Sugarcane,Vegetative,Loamy,Gujarat,Ahmedabad,26.0,7.6,32.3,44.4,6.1,2.0,15.1,1.8,Drip,1.7
+Sugarcane,Vegetative,Sandy Loam,Karnataka,Mandya,19.9,6.6,33.7,70.5,5.4,0.0,20.1,3.25,Drip,3.07
+Wheat,Mid-season,Clay Loam,Rajasthan,Jaipur,23.5,7.4,32.9,52.7,7.7,0.0,19.1,2.21,Surface/Flood,7.78
+Soybean,Vegetative,Clay Loam,Rajasthan,Jaipur,27.0,7.3,38.5,45.5,6.7,0.0,16.6,2.97,Drip,4.03
+Potato,Initial,Loamy,Rajasthan,Jaipur,28.8,6.8,32.5,21.1,6.4,0.0,22.0,2.44,Surface/Flood,2.03
+Groundnut,Vegetative,Loamy,Telangana,Hyderabad,36.2,6.5,29.6,53.1,11.3,4.7,17.5,1.8,Drip,1.5
+Wheat,Initial,Sandy Loam,Telangana,Hyderabad,28.3,6.9,33.7,55.1,15.2,12.4,18.8,2.52,Sprinkler,0.0
+Potato,Vegetative,Sandy,Karnataka,Belagavi,23.6,6.8,24.9,59.6,4.6,0.0,20.1,1.8,Drip,1.6
+Potato,Mid-season,Loamy,Maharashtra,Pune,21.5,6.6,29.5,63.9,4.3,0.0,16.6,1.88,Drip,3.65
+Soybean,Mid-season,Loamy,Telangana,Hyderabad,31.4,6.6,35.7,49.6,12.0,7.3,21.5,3.36,Surface/Flood,1.26
+Groundnut,Mid-season,Silty,Telangana,Hyderabad,31.8,7.3,28.3,54.0,10.7,0.0,20.0,1.8,Drip,2.3
+Soybean,Vegetative,Sandy,Tamil Nadu,Coimbatore,27.0,6.6,28.9,68.2,5.6,0.0,17.2,1.8,Sprinkler,1.92
+Rice (Paddy),Vegetative,Sandy Loam,Rajasthan,Jaipur,37.0,7.3,32.3,32.1,4.4,0.0,22.9,2.48,Sprinkler,3.64
+Rice (Paddy),Initial,Clay Loam,Uttar Pradesh,Lucknow,15.3,6.8,31.7,44.2,3.8,0.0,19.8,2.47,Sprinkler,9.02
+Maize,Vegetative,Silty,Maharashtra,Pune,31.0,7.3,30.9,54.5,5.4,10.3,18.7,2.4,Surface/Flood,0.0
+Maize,Mid-season,Sandy Loam,Karnataka,Devanahalli,33.5,7.5,31.2,61.5,5.3,11.6,17.4,2.56,Surface/Flood,0.0
+Soybean,Mid-season,Sandy,Karnataka,Devanahalli,26.0,6.8,26.7,58.0,2.0,0.0,18.8,1.87,Drip,2.39
+Rice (Paddy),Late,Clay Loam,Punjab,Ludhiana,21.5,6.8,30.1,55.8,6.6,0.0,23.4,2.38,Sprinkler,6.36
+Sugarcane,Mid-season,Clay Loam,Gujarat,Ahmedabad,21.7,6.8,33.9,43.2,5.1,0.0,22.5,2.65,Sprinkler,7.85
+Rice (Paddy),Mid-season,Clay,Telangana,Hyderabad,38.7,6.6,32.2,54.7,3.8,0.0,16.1,1.88,Sprinkler,3.01
+Chickpea,Vegetative,Clay,Maharashtra,Pune,29.4,6.5,28.4,67.8,2.8,14.3,16.0,1.8,Sprinkler,0.0
+Groundnut,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,24.8,6.9,32.2,49.5,2.0,0.0,18.6,2.42,Sprinkler,2.42
+Soybean,Mid-season,Silty,Karnataka,Mandya,17.5,6.9,30.6,51.3,25.5,0.0,21.3,2.75,Sprinkler,4.22
+Wheat,Vegetative,Loamy,Gujarat,Ahmedabad,22.6,6.5,33.3,46.2,13.8,0.0,19.9,2.2,Sprinkler,3.33
+Soybean,Initial,Loamy,Tamil Nadu,Coimbatore,23.6,7.1,32.8,62.3,7.0,0.0,16.9,2.38,Drip,1.72
+Soybean,Vegetative,Clay Loam,Rajasthan,Jaipur,25.6,6.8,30.8,40.8,20.6,0.0,17.8,1.8,Sprinkler,4.05
+Maize,Vegetative,Sandy,Rajasthan,Jaipur,27.6,6.6,34.8,33.0,7.0,0.0,15.0,2.07,Drip,1.84
+Wheat,Mid-season,Silty,Tamil Nadu,Coimbatore,34.1,6.8,32.5,63.1,5.0,5.6,18.3,2.52,Sprinkler,1.3
+Maize,Initial,Sandy,Karnataka,Mandya,27.5,6.7,29.6,56.4,7.3,0.0,20.5,2.43,Sprinkler,1.3
+Potato,Vegetative,Loamy,Karnataka,Devanahalli,20.4,6.5,27.0,51.8,16.5,0.0,21.2,2.18,Drip,3.49
+Soybean,Late,Loamy,Gujarat,Ahmedabad,34.0,6.4,35.4,54.9,2.1,0.0,22.0,2.99,Sprinkler,1.99
+Sugarcane,Initial,Sandy Loam,Punjab,Ludhiana,33.7,6.8,32.6,50.2,13.5,0.0,19.3,2.52,Sprinkler,1.34
+Maize,Initial,Sandy,Karnataka,Belagavi,21.0,7.1,23.3,62.4,11.3,0.0,23.8,1.8,Drip,0.8
+Potato,Initial,Sandy Loam,Karnataka,Devanahalli,23.6,6.1,27.2,41.7,8.8,0.3,25.7,2.7,Drip,1.5
+Chickpea,Mid-season,Sandy,Karnataka,Belagavi,26.3,7.3,26.5,70.4,2.0,0.0,22.6,2.4,Drip,2.8
+Groundnut,Mid-season,Sandy,Karnataka,Belagavi,33.0,7.0,31.9,77.3,15.1,0.0,19.3,3.11,Surface/Flood,5.96
+Tomato,Mid-season,Sandy,Maharashtra,Pune,25.1,7.2,24.9,50.4,2.0,6.2,22.8,1.8,Sprinkler,0.0
+Rice (Paddy),Mid-season,Sandy,Karnataka,Belagavi,21.2,7.0,27.2,60.8,2.9,0.0,20.2,2.29,Sprinkler,3.66
+Cotton,Initial,Silty,Maharashtra,Pune,29.1,7.1,29.9,76.1,18.0,8.5,17.7,2.08,Drip,0.0
+Tomato,Mid-season,Clay,Karnataka,Devanahalli,24.6,6.7,25.2,54.2,10.0,0.0,18.7,1.8,Drip,6.02
+Maize,Late,Sandy Loam,Rajasthan,Jaipur,19.0,6.6,31.7,37.8,12.3,0.0,14.9,1.8,Drip,1.2
+Cotton,Mid-season,Silty,Maharashtra,Pune,16.3,7.4,35.0,50.6,32.0,0.0,21.1,3.62,Surface/Flood,7.24
+Sugarcane,Mid-season,Clay,Gujarat,Ahmedabad,17.3,6.3,31.8,45.2,11.2,0.0,21.6,1.96,Drip,8.47
+Wheat,Initial,Silty,Rajasthan,Jaipur,26.2,7.1,33.5,30.7,2.2,0.0,17.6,2.16,Drip,0.84
+Cotton,Late,Silty,Tamil Nadu,Coimbatore,23.9,7.0,35.1,46.1,4.2,0.0,23.7,3.92,Surface/Flood,4.25
+Maize,Initial,Loamy,Punjab,Ludhiana,31.8,7.3,27.7,61.5,2.0,11.0,17.3,1.8,Sprinkler,0.0
+Cotton,Mid-season,Clay,Tamil Nadu,Coimbatore,23.6,6.9,34.5,61.5,14.7,0.0,21.0,3.34,Drip,8.45
+Groundnut,Mid-season,Clay,Maharashtra,Pune,23.9,7.6,25.3,59.9,8.2,0.0,19.9,1.8,Drip,6.22
+Maize,Mid-season,Sandy Loam,Gujarat,Ahmedabad,26.1,7.0,38.7,49.8,2.0,1.0,20.4,3.54,Surface/Flood,7.08
+Soybean,Vegetative,Sandy Loam,Punjab,Ludhiana,27.3,6.7,28.8,53.7,2.0,0.0,18.5,1.8,Sprinkler,1.92
+Sugarcane,Vegetative,Clay Loam,Telangana,Hyderabad,31.5,6.6,32.6,56.3,26.5,0.5,24.9,3.03,Drip,3.0
+Chickpea,Vegetative,Clay Loam,Gujarat,Ahmedabad,26.0,6.8,33.4,38.7,7.9,3.7,16.5,1.84,Sprinkler,3.84
+Cotton,Mid-season,Loamy,Karnataka,Mandya,21.3,7.1,26.2,72.7,2.0,0.0,21.7,1.8,Sprinkler,4.45
+Wheat,Initial,Silty,Rajasthan,Jaipur,21.2,7.1,29.5,49.2,3.4,0.0,19.3,1.8,Drip,0.7
+Tomato,Mid-season,Silty,Telangana,Hyderabad,16.2,6.6,34.2,52.0,7.3,0.0,21.6,3.02,Sprinkler,4.63
+Potato,Mid-season,Silty,Telangana,Hyderabad,22.9,7.3,33.7,40.3,9.7,7.4,15.2,2.04,Sprinkler,0.0
+Soybean,Late,Clay Loam,Karnataka,Mandya,34.2,6.9,31.6,73.2,9.5,0.0,19.0,2.66,Drip,1.48
+Tomato,Vegetative,Sandy,Telangana,Hyderabad,38.7,6.3,31.7,45.0,6.1,7.3,16.6,1.84,Sprinkler,0.0
+Potato,Vegetative,Loamy,Karnataka,Belagavi,34.2,6.6,18.6,82.7,13.3,0.0,15.5,1.8,Sprinkler,1.92
+Maize,Late,Silty,Karnataka,Devanahalli,27.9,6.8,32.3,56.2,30.6,0.0,16.4,2.59,Drip,1.73
+Maize,Mid-season,Silty,Rajasthan,Jaipur,37.5,6.8,33.9,36.3,5.8,0.0,25.1,3.2,Surface/Flood,6.4
+Sugarcane,Mid-season,Clay Loam,Rajasthan,Jaipur,35.7,6.8,33.6,27.2,15.3,9.3,19.9,2.47,Drip,0.0
+Cotton,Vegetative,Clay,Uttar Pradesh,Lucknow,22.9,7.0,27.2,61.2,32.0,0.0,14.7,1.8,Drip,5.69
+Tomato,Vegetative,Clay Loam,Tamil Nadu,Coimbatore,27.7,6.4,26.9,69.8,4.6,2.8,20.0,1.8,Drip,2.89
+Groundnut,Initial,Clay Loam,Rajasthan,Jaipur,24.6,6.8,32.7,30.8,20.4,0.0,16.3,1.84,Drip,2.87
+Potato,Mid-season,Clay Loam,Punjab,Ludhiana,21.9,6.8,31.0,59.2,6.4,0.0,19.9,2.23,Surface/Flood,8.48
+Cotton,Vegetative,Loamy,Gujarat,Ahmedabad,34.2,7.1,36.2,39.6,32.0,0.0,25.1,3.64,Drip,3.03
+Soybean,Vegetative,Silty,Punjab,Ludhiana,25.7,7.0,30.7,55.6,10.9,9.6,19.4,2.11,Drip,0.0
+Cotton,Late,Sandy Loam,Gujarat,Ahmedabad,20.5,7.0,34.1,54.4,3.1,0.7,24.4,2.94,Surface/Flood,3.19
+Chickpea,Initial,Clay Loam,Karnataka,Belagavi,25.3,7.4,27.8,66.8,6.0,0.0,21.4,2.56,Drip,3.0
+Maize,Initial,Sandy,Telangana,Hyderabad,32.8,6.9,31.9,47.2,2.0,0.0,22.2,2.51,Drip,1.12
+Rice (Paddy),Mid-season,Clay Loam,Tamil Nadu,Coimbatore,15.9,6.7,28.7,63.0,22.2,0.0,20.1,1.9,Sprinkler,8.41
+Maize,Vegetative,Sandy Loam,Rajasthan,Jaipur,25.1,7.2,34.1,34.4,32.0,0.0,18.0,2.34,Surface/Flood,3.12
+Soybean,Initial,Clay Loam,Tamil Nadu,Coimbatore,29.2,6.6,30.0,58.6,2.5,0.0,18.2,2.0,Drip,1.67
+Groundnut,Vegetative,Clay Loam,Karnataka,Mandya,30.8,7.2,25.2,52.4,11.4,0.0,21.7,1.8,Surface/Flood,2.75
+Rice (Paddy),Vegetative,Sandy,Karnataka,Mandya,24.7,7.4,20.1,70.4,7.6,2.5,18.9,1.8,Surface/Flood,3.3
+Wheat,Mid-season,Sandy Loam,Uttar Pradesh,Lucknow,34.1,7.1,31.8,54.8,3.5,0.0,22.2,2.79,Surface/Flood,5.35
+Cotton,Initial,Clay,Punjab,Ludhiana,18.3,7.4,29.0,60.8,11.0,0.0,19.7,1.8,Drip,6.17
+Maize,Vegetative,Silty,Karnataka,Belagavi,22.3,7.2,30.5,74.8,8.2,0.0,16.4,2.41,Drip,2.14
+Potato,Vegetative,Sandy Loam,Karnataka,Devanahalli,18.7,6.4,30.2,59.4,4.6,0.0,15.7,2.14,Drip,1.9
+Groundnut,Mid-season,Clay,Punjab,Ludhiana,12.8,7.1,32.1,48.4,15.9,0.0,17.1,2.13,Sprinkler,11.67
+Wheat,Initial,Clay,Gujarat,Ahmedabad,34.5,6.2,29.9,44.6,11.6,0.0,17.6,1.8,Sprinkler,2.01
+Soybean,Vegetative,Silty,Gujarat,Ahmedabad,22.5,7.2,43.8,50.5,2.0,0.0,19.8,4.55,Sprinkler,4.85
+Sugarcane,Vegetative,Silty,Gujarat,Ahmedabad,40.0,6.1,37.8,39.6,14.8,0.0,19.1,3.12,Drip,2.95
+Chickpea,Vegetative,Silty,Rajasthan,Jaipur,21.1,7.3,31.0,45.9,9.6,0.0,20.6,1.89,Sprinkler,1.89
+Maize,Vegetative,Clay Loam,Karnataka,Mandya,32.7,6.6,31.0,54.9,3.4,4.7,13.8,1.84,Surface/Flood,2.45
+Groundnut,Vegetative,Silty,Uttar Pradesh,Lucknow,26.2,7.1,34.7,49.6,2.0,0.9,16.2,2.55,Drip,2.12
+Tomato,Vegetative,Loamy,Punjab,Ludhiana,26.2,6.3,32.1,54.4,11.7,0.0,16.5,2.06,Drip,1.95
+Potato,Vegetative,Clay Loam,Karnataka,Mandya,33.0,7.1,27.3,69.0,8.3,0.0,18.5,1.8,Sprinkler,1.92
+Soybean,Mid-season,Clay,Maharashtra,Pune,24.4,7.6,29.9,67.6,8.5,3.0,17.2,2.02,Drip,6.36
+Wheat,Late,Loamy,Punjab,Ludhiana,26.4,7.2,31.7,47.5,16.2,0.0,22.1,2.66,Drip,1.18
+Sugarcane,Vegetative,Sandy Loam,Telangana,Hyderabad,23.6,6.4,36.5,44.1,2.0,0.0,16.1,2.66,Drip,2.51
+Rice (Paddy),Late,Silty,Punjab,Ludhiana,35.5,7.6,34.0,60.3,12.0,0.0,20.0,2.92,Surface/Flood,4.38
+Groundnut,Late,Sandy,Karnataka,Mandya,26.8,7.1,29.9,54.5,32.0,0.0,21.7,2.64,Sprinkler,2.11
+Sugarcane,Vegetative,Clay,Maharashtra,Pune,17.8,6.8,28.7,53.1,13.9,0.0,23.8,2.48,Drip,7.95
+Soybean,Mid-season,Loamy,Telangana,Hyderabad,10.0,7.1,24.7,30.4,4.3,0.0,19.6,1.8,Drip,6.74
+Chickpea,Late,Sandy,Punjab,Ludhiana,31.0,7.2,31.6,45.8,2.0,0.0,18.6,2.22,Surface/Flood,1.3
+Rice (Paddy),Initial,Sandy Loam,Gujarat,Ahmedabad,22.2,6.7,36.8,40.7,7.0,0.0,17.9,2.72,Drip,3.17
+Maize,Mid-season,Sandy,Karnataka,Devanahalli,18.6,6.5,29.6,50.4,9.6,0.0,12.0,1.8,Drip,2.4
+Chickpea,Vegetative,Clay,Tamil Nadu,Coimbatore,34.3,7.3,32.6,58.2,12.9,0.0,16.6,2.3,Drip,2.94
+Soybean,Mid-season,Loamy,Karnataka,Devanahalli,28.8,7.2,27.6,67.6,18.5,0.0,18.9,2.07,Drip,2.64
+Wheat,Vegetative,Loamy,Tamil Nadu,Coimbatore,27.2,7.5,25.3,78.1,11.6,0.0,19.3,1.8,Drip,1.5
+Soybean,Vegetative,Sandy,Karnataka,Mandya,27.4,6.5,27.6,65.2,2.0,0.0,20.8,2.0,Sprinkler,2.13
+Cotton,Vegetative,Sandy,Gujarat,Ahmedabad,20.2,6.9,32.5,40.8,32.0,0.0,19.0,1.9,Surface/Flood,2.38
+Groundnut,Initial,Clay,Karnataka,Belagavi,16.1,6.9,23.2,71.1,15.1,0.0,21.1,1.8,Drip,6.88
+Wheat,Mid-season,Sandy,Maharashtra,Pune,32.0,6.1,28.1,48.9,6.2,0.0,16.8,1.8,Surface/Flood,3.45
+Maize,Initial,Loamy,Uttar Pradesh,Lucknow,28.0,6.9,32.2,51.6,7.0,14.0,16.1,2.1,Surface/Flood,0.0
+Cotton,Mid-season,Sandy,Punjab,Ludhiana,18.5,7.3,29.4,54.9,2.0,1.4,23.1,2.15,Drip,2.87
+Sugarcane,Mid-season,Clay,Maharashtra,Pune,24.2,7.3,31.5,55.5,2.3,0.0,20.9,2.82,Drip,7.75
+Sugarcane,Vegetative,Clay Loam,Karnataka,Belagavi,26.7,6.4,29.0,62.0,32.0,4.8,26.0,3.43,Surface/Flood,7.07
+Tomato,Late,Clay,Karnataka,Devanahalli,32.9,6.9,30.4,51.1,2.0,0.0,22.7,3.15,Sprinkler,5.06
+Potato,Mid-season,Clay Loam,Gujarat,Ahmedabad,27.7,7.2,34.2,46.4,23.3,0.0,19.0,2.31,Sprinkler,4.98
+Wheat,Late,Clay Loam,Karnataka,Devanahalli,20.6,7.0,29.7,62.9,2.5,4.2,19.6,2.58,Sprinkler,5.18
+Maize,Late,Clay,Karnataka,Devanahalli,27.6,6.5,27.9,55.4,16.2,0.0,18.5,2.08,Drip,4.28
+Potato,Mid-season,Clay,Karnataka,Mandya,35.4,6.5,30.7,43.7,2.0,0.0,21.4,2.79,Drip,4.29
+Wheat,Mid-season,Sandy,Karnataka,Belagavi,27.1,6.0,22.3,70.4,25.8,0.0,21.1,1.8,Drip,2.3
+Groundnut,Mid-season,Sandy,Uttar Pradesh,Lucknow,21.0,7.0,33.8,65.0,2.0,0.0,17.1,2.53,Drip,3.23
+Chickpea,Vegetative,Sandy,Punjab,Ludhiana,21.8,6.5,30.5,57.9,10.7,0.0,18.1,1.92,Drip,1.6
+Wheat,Vegetative,Clay,Rajasthan,Jaipur,26.8,6.1,36.8,27.7,18.2,0.0,18.6,2.98,Sprinkler,6.71
+Maize,Vegetative,Loamy,Karnataka,Mandya,26.6,7.6,29.2,73.7,13.5,0.0,17.9,2.04,Drip,1.81
+Chickpea,Mid-season,Sandy,Gujarat,Ahmedabad,24.6,6.8,29.1,44.2,2.0,2.2,15.7,1.8,Sprinkler,2.52
+Soybean,Vegetative,Sandy,Karnataka,Mandya,22.6,7.3,31.1,64.6,4.9,0.0,19.4,2.61,Drip,2.32
+Wheat,Mid-season,Sandy,Uttar Pradesh,Lucknow,23.1,6.4,30.1,50.7,8.6,2.4,18.4,1.96,Surface/Flood,3.76
+Maize,Initial,Loamy,Maharashtra,Pune,25.7,7.4,26.0,48.0,15.9,0.0,24.7,1.8,Drip,0.88
+Groundnut,Vegetative,Clay Loam,Rajasthan,Jaipur,27.5,7.7,34.1,34.2,3.8,0.0,19.7,2.56,Drip,3.38
+Maize,Mid-season,Sandy Loam,Tamil Nadu,Coimbatore,25.0,7.0,31.1,67.5,21.5,0.0,13.9,1.8,Drip,2.4
+Chickpea,Initial,Silty,Rajasthan,Jaipur,23.9,7.0,32.3,25.7,2.7,0.0,20.1,2.18,Surface/Flood,1.45
+Wheat,Initial,Clay,Karnataka,Devanahalli,14.0,6.2,29.2,65.0,25.2,0.0,20.5,2.59,Drip,7.67
+Groundnut,Initial,Sandy Loam,Karnataka,Mandya,20.8,6.5,28.5,57.4,11.7,0.0,18.0,1.92,Sprinkler,1.02
+Maize,Vegetative,Clay,Gujarat,Ahmedabad,24.6,6.9,32.2,34.3,2.0,0.0,22.1,2.13,Drip,5.62
+Groundnut,Late,Clay,Punjab,Ludhiana,27.6,7.0,30.2,49.3,2.1,0.0,18.4,1.89,Drip,4.15
+Sugarcane,Late,Sandy Loam,Karnataka,Mandya,22.8,6.9,30.3,58.9,11.7,0.0,15.8,1.99,Drip,1.66
+Potato,Vegetative,Clay,Karnataka,Belagavi,20.5,6.7,31.5,62.2,5.9,0.0,22.3,3.5,Drip,7.97
+Chickpea,Mid-season,Loamy,Karnataka,Devanahalli,28.5,6.7,25.8,57.2,2.0,0.0,16.4,1.8,Sprinkler,2.52
+Soybean,Vegetative,Silty,Punjab,Ludhiana,25.4,6.7,30.1,52.5,20.1,0.0,17.1,1.8,Drip,1.6
+Sugarcane,Initial,Silty,Tamil Nadu,Coimbatore,27.0,6.4,27.4,59.4,14.7,0.0,20.2,1.8,Sprinkler,0.96
+Tomato,Mid-season,Clay,Tamil Nadu,Coimbatore,21.8,6.2,32.0,62.4,10.7,0.7,15.4,2.04,Sprinkler,8.53
+Chickpea,Mid-season,Clay Loam,Karnataka,Belagavi,23.8,6.1,22.6,61.8,2.0,0.0,22.3,1.8,Sprinkler,5.25
+Maize,Vegetative,Sandy Loam,Karnataka,Belagavi,17.4,6.5,23.3,62.9,3.7,0.0,15.4,1.8,Drip,1.77
+Chickpea,Mid-season,Sandy Loam,Tamil Nadu,Coimbatore,22.5,6.9,26.8,64.2,9.7,0.0,18.9,1.8,Drip,2.1
+Potato,Vegetative,Silty,Karnataka,Belagavi,24.8,6.7,19.0,52.7,9.4,8.1,24.9,1.8,Drip,0.0
+Potato,Late,Sandy,Tamil Nadu,Coimbatore,22.4,7.3,30.0,54.5,3.2,0.0,22.6,2.48,Drip,2.07
+Tomato,Mid-season,Silty,Punjab,Ludhiana,26.9,6.5,29.4,58.4,14.5,0.0,22.7,2.11,Sprinkler,3.24
+Tomato,Initial,Loamy,Karnataka,Belagavi,22.4,6.5,28.8,63.7,5.5,0.0,20.5,2.66,Sprinkler,3.33
+Rice (Paddy),Vegetative,Clay Loam,Maharashtra,Pune,21.7,6.9,25.6,55.4,4.0,0.0,19.8,1.8,Drip,5.06
+Chickpea,Mid-season,Loamy,Rajasthan,Jaipur,28.4,6.8,29.6,61.9,7.2,4.9,24.0,1.8,Sprinkler,2.52
+Tomato,Initial,Clay,Gujarat,Ahmedabad,11.4,7.1,37.5,28.1,5.6,5.6,20.4,3.26,Drip,7.43
+Sugarcane,Vegetative,Sandy Loam,Maharashtra,Pune,19.2,7.8,27.9,55.1,2.0,0.0,18.2,1.8,Surface/Flood,2.55
+Potato,Vegetative,Sandy,Karnataka,Devanahalli,15.0,7.1,26.8,60.2,2.0,0.0,21.1,2.13,Sprinkler,2.27
+Soybean,Mid-season,Clay Loam,Maharashtra,Pune,16.7,6.7,26.7,52.1,9.3,0.0,20.3,1.8,Sprinkler,7.86
+Rice (Paddy),Mid-season,Clay Loam,Punjab,Ludhiana,32.0,7.2,27.1,59.9,27.3,0.0,18.7,1.8,Drip,2.4
+Groundnut,Vegetative,Silty,Gujarat,Ahmedabad,27.0,6.7,36.0,56.0,2.0,0.0,18.3,2.61,Sprinkler,2.61
+Potato,Late,Clay Loam,Gujarat,Ahmedabad,31.7,6.7,29.5,39.8,17.9,0.0,20.0,1.8,Drip,1.58
+Tomato,Vegetative,Loamy,Karnataka,Devanahalli,26.7,6.6,29.9,58.3,9.7,0.0,19.1,2.55,Sprinkler,2.89
+Soybean,Late,Silty,Karnataka,Belagavi,31.8,7.0,22.4,78.2,2.0,0.0,20.5,1.8,Sprinkler,1.2
+Tomato,Vegetative,Sandy,Maharashtra,Pune,29.8,6.8,28.8,57.0,2.0,0.0,17.4,1.83,Surface/Flood,2.59
+Maize,Mid-season,Loamy,Karnataka,Devanahalli,27.8,6.4,31.3,58.9,4.7,0.0,15.7,2.32,Drip,3.09
+Sugarcane,Initial,Clay,Karnataka,Devanahalli,29.0,7.5,28.1,50.2,2.0,0.0,19.7,2.26,Drip,3.5
+Potato,Late,Silty,Rajasthan,Jaipur,29.1,6.8,38.9,42.6,2.0,3.3,21.6,3.96,Drip,3.3
+Soybean,Mid-season,Loamy,Maharashtra,Pune,21.3,6.8,26.6,60.7,4.4,0.0,20.7,1.8,Drip,3.61
+Sugarcane,Vegetative,Clay,Gujarat,Ahmedabad,26.7,6.6,41.2,34.9,13.4,0.0,18.4,3.7,Drip,6.63
+Soybean,Late,Clay,Rajasthan,Jaipur,33.5,6.7,34.2,36.7,19.6,0.0,22.7,2.97,Sprinkler,3.48
+Chickpea,Vegetative,Sandy,Uttar Pradesh,Lucknow,23.8,6.0,27.2,56.8,19.3,0.0,16.2,1.8,Surface/Flood,2.25
+Tomato,Mid-season,Loamy,Maharashtra,Pune,31.3,6.9,25.5,62.2,2.0,0.0,18.8,1.8,Surface/Flood,3.45
+Groundnut,Mid-season,Sandy,Tamil Nadu,Coimbatore,38.4,6.3,28.9,48.8,21.5,21.8,24.6,2.39,Drip,0.0
+Maize,Late,Clay,Gujarat,Ahmedabad,20.6,5.8,35.5,38.7,3.7,0.0,17.8,2.44,Drip,6.46
+Sugarcane,Late,Clay,Maharashtra,Pune,29.3,7.0,31.3,69.0,19.4,0.0,22.2,2.95,Drip,4.88
+Rice (Paddy),Initial,Silty,Karnataka,Belagavi,30.3,6.6,25.6,72.1,16.2,0.0,26.0,2.51,Surface/Flood,4.39
+Rice (Paddy),Initial,Loamy,Karnataka,Devanahalli,18.9,6.5,27.9,65.7,9.5,2.8,22.9,2.58,Sprinkler,5.98
+Groundnut,Late,Silty,Karnataka,Mandya,17.8,6.7,29.4,64.6,3.5,0.0,13.1,1.8,Drip,1.2
+Rice (Paddy),Mid-season,Clay Loam,Tamil Nadu,Coimbatore,27.9,6.7,28.3,43.7,15.5,0.0,20.4,1.83,Surface/Flood,5.37
+Sugarcane,Mid-season,Clay Loam,Tamil Nadu,Coimbatore,33.9,6.5,26.6,62.4,2.0,0.0,18.8,1.8,Sprinkler,3.0
+Rice (Paddy),Initial,Clay,Telangana,Hyderabad,25.2,6.0,34.5,36.9,7.7,2.3,18.6,2.66,Sprinkler,7.99
+Maize,Initial,Clay Loam,Maharashtra,Pune,24.1,7.4,23.1,53.2,8.5,0.0,23.8,1.8,Sprinkler,3.59
+Sugarcane,Mid-season,Loamy,Maharashtra,Pune,13.0,6.4,35.6,56.7,2.0,0.0,14.6,2.6,Drip,7.22
+Groundnut,Mid-season,Silty,Gujarat,Ahmedabad,18.7,7.5,34.0,41.2,8.1,0.0,19.2,2.29,Drip,2.93
+Rice (Paddy),Vegetative,Sandy Loam,Karnataka,Belagavi,31.9,7.0,25.8,57.5,5.2,1.2,20.3,2.0,Drip,2.44
+Wheat,Mid-season,Sandy Loam,Karnataka,Mandya,33.5,6.8,27.7,57.6,4.6,0.0,22.3,2.17,Drip,2.77
+Groundnut,Late,Sandy Loam,Rajasthan,Jaipur,24.7,7.0,34.2,45.0,6.4,0.0,21.1,2.76,Sprinkler,2.21
+Potato,Vegetative,Sandy Loam,Karnataka,Mandya,23.0,7.4,31.0,67.4,11.9,0.0,19.2,2.56,Drip,2.28
+Cotton,Vegetative,Clay Loam,Tamil Nadu,Coimbatore,33.0,7.2,27.9,58.0,6.4,0.0,19.3,1.8,Drip,1.5
+Groundnut,Initial,Sandy,Rajasthan,Jaipur,33.2,6.3,33.9,46.1,2.3,0.0,19.4,2.47,Drip,1.1
+Tomato,Mid-season,Loamy,Karnataka,Mandya,38.5,7.1,24.6,64.2,2.0,26.4,21.3,1.8,Drip,0.0
+Groundnut,Mid-season,Clay Loam,Punjab,Ludhiana,26.0,7.5,34.0,51.1,29.8,0.0,20.1,2.93,Drip,5.41
+Potato,Late,Sandy Loam,Telangana,Hyderabad,13.3,7.0,31.0,59.9,2.0,4.3,20.7,2.12,Drip,3.07
+Potato,Vegetative,Sandy,Punjab,Ludhiana,25.8,7.4,30.6,59.4,2.7,0.0,21.0,2.26,Sprinkler,2.41
+Tomato,Vegetative,Silty,Rajasthan,Jaipur,24.6,7.0,37.9,42.8,11.7,0.0,21.0,3.62,Drip,3.42
+Chickpea,Mid-season,Silty,Rajasthan,Jaipur,31.3,7.5,33.8,41.2,32.0,0.0,16.2,2.05,Drip,2.39
+Rice (Paddy),Mid-season,Loamy,Uttar Pradesh,Lucknow,38.9,7.2,27.4,62.1,2.0,0.0,23.1,1.8,Drip,2.4
+Wheat,Initial,Loamy,Telangana,Hyderabad,22.8,7.0,35.3,53.8,17.4,8.2,21.8,3.31,Drip,0.0
+Potato,Initial,Silty,Punjab,Ludhiana,26.0,6.5,26.3,52.5,21.1,0.0,21.3,1.8,Sprinkler,1.2
+Rice (Paddy),Initial,Sandy,Maharashtra,Pune,24.1,7.0,33.1,45.6,7.0,1.0,15.7,2.38,Sprinkler,3.33
+Groundnut,Initial,Sandy Loam,Maharashtra,Pune,25.0,6.2,23.5,37.2,2.0,0.0,16.9,1.8,Sprinkler,0.96
+Chickpea,Initial,Clay,Rajasthan,Jaipur,17.1,7.9,31.2,31.9,2.0,0.0,16.3,1.8,Surface/Flood,9.91
+Rice (Paddy),Mid-season,Clay Loam,Karnataka,Mandya,25.0,6.7,22.4,58.9,4.7,0.0,17.8,1.8,Drip,4.34
+Soybean,Vegetative,Silty,Karnataka,Mandya,26.8,6.8,30.9,78.8,2.7,0.0,17.0,2.25,Drip,2.0
+Chickpea,Vegetative,Clay,Karnataka,Mandya,32.6,7.1,28.7,58.3,32.0,0.0,20.4,2.22,Surface/Flood,5.02
+Sugarcane,Mid-season,Silty,Karnataka,Devanahalli,19.4,7.6,29.7,57.1,14.7,0.7,18.2,2.39,Sprinkler,3.98
+Tomato,Late,Sandy,Rajasthan,Jaipur,18.2,7.2,36.0,42.7,2.0,0.0,19.7,2.98,Sprinkler,3.18
+Wheat,Initial,Sandy Loam,Karnataka,Mandya,20.3,7.2,31.5,66.3,32.0,0.0,19.7,2.73,Surface/Flood,1.59
+Rice (Paddy),Mid-season,Sandy,Gujarat,Ahmedabad,27.2,7.7,33.9,50.0,8.2,0.0,22.8,2.69,Sprinkler,4.3
+Sugarcane,Mid-season,Clay Loam,Rajasthan,Jaipur,36.2,6.6,30.1,41.6,13.1,0.0,21.9,1.8,Sprinkler,3.0
+Tomato,Mid-season,Sandy Loam,Karnataka,Devanahalli,19.9,6.8,28.6,64.4,20.5,0.0,16.7,2.0,Surface/Flood,3.83
+Tomato,Vegetative,Loamy,Maharashtra,Pune,32.1,6.3,21.0,62.2,5.9,0.0,24.4,1.8,Surface/Flood,2.55
+Potato,Mid-season,Silty,Telangana,Hyderabad,17.7,6.9,35.9,47.7,8.9,11.4,23.9,3.79,Drip,0.0
+Potato,Vegetative,Silty,Telangana,Hyderabad,37.9,6.8,33.7,44.0,32.0,0.0,17.1,2.29,Drip,2.04
+Rice (Paddy),Vegetative,Loamy,Maharashtra,Pune,29.5,6.6,31.0,41.2,4.9,0.0,17.2,2.23,Surface/Flood,4.09
+Sugarcane,Mid-season,Clay Loam,Punjab,Ludhiana,28.1,6.3,28.7,49.4,13.5,0.0,19.4,1.8,Drip,3.58
+Sugarcane,Vegetative,Clay Loam,Gujarat,Ahmedabad,25.9,6.7,35.9,54.0,2.0,0.0,22.3,3.16,Drip,4.68
+Rice (Paddy),Initial,Sandy Loam,Telangana,Hyderabad,28.0,6.5,35.4,43.8,2.3,0.0,18.2,2.79,Drip,3.25
+Maize,Initial,Silty,Karnataka,Mandya,20.3,7.2,30.5,54.6,2.0,0.0,21.5,2.76,Surface/Flood,1.84
+Maize,Vegetative,Clay,Punjab,Ludhiana,25.9,6.6,30.4,49.7,16.1,0.0,15.7,1.8,Sprinkler,5.95
+Tomato,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,22.8,6.4,29.9,61.7,3.6,23.5,18.9,1.97,Drip,0.0
+Groundnut,Vegetative,Silty,Uttar Pradesh,Lucknow,29.8,7.1,37.5,56.3,21.6,0.0,22.9,4.28,Sprinkler,4.28
+Tomato,Initial,Silty,Karnataka,Devanahalli,25.0,6.5,33.0,55.6,2.0,6.6,14.3,2.36,Drip,0.0
+Rice (Paddy),Vegetative,Clay,Maharashtra,Pune,20.7,7.1,30.3,60.7,2.0,0.0,19.2,2.34,Sprinkler,9.2
+Rice (Paddy),Initial,Sandy Loam,Punjab,Ludhiana,31.1,6.2,30.9,55.3,4.4,1.5,20.3,2.25,Drip,2.63
+Rice (Paddy),Mid-season,Sandy,Tamil Nadu,Coimbatore,46.5,7.3,30.8,64.7,2.0,0.0,21.7,2.58,Drip,3.44
+Cotton,Initial,Sandy,Karnataka,Mandya,28.0,6.8,28.4,51.0,22.4,0.0,20.9,2.2,Drip,0.86
+Potato,Initial,Clay,Tamil Nadu,Coimbatore,35.3,6.6,32.5,55.7,2.0,0.0,20.1,2.77,Sprinkler,2.75
+Sugarcane,Vegetative,Sandy Loam,Karnataka,Devanahalli,27.7,6.8,30.5,71.2,4.1,0.0,20.3,2.84,Surface/Flood,4.02
+Rice (Paddy),Vegetative,Sandy Loam,Telangana,Hyderabad,15.0,6.7,32.5,42.7,25.2,0.0,19.3,2.32,Drip,3.67
+Rice (Paddy),Vegetative,Silty,Rajasthan,Jaipur,29.2,6.6,35.5,36.4,6.6,0.0,19.7,2.87,Surface/Flood,5.26
+Groundnut,Initial,Sandy,Tamil Nadu,Coimbatore,25.8,5.9,33.7,60.4,10.7,3.9,21.1,3.18,Drip,1.41
+Chickpea,Late,Silty,Telangana,Hyderabad,17.9,7.1,30.9,52.7,28.9,0.3,18.1,1.83,Drip,0.71
+Soybean,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,28.4,6.3,31.7,55.0,18.8,0.0,20.3,2.53,Drip,2.25
+Rice (Paddy),Mid-season,Loamy,Maharashtra,Pune,30.4,6.4,25.7,56.7,29.9,0.0,16.9,1.8,Drip,2.4
+Soybean,Vegetative,Sandy,Karnataka,Belagavi,33.3,7.1,21.6,64.4,2.0,0.0,18.6,1.8,Drip,1.6
+Groundnut,Mid-season,Clay,Uttar Pradesh,Lucknow,27.0,7.3,25.0,55.2,2.1,0.0,16.6,1.8,Sprinkler,6.43
+Maize,Vegetative,Sandy,Rajasthan,Jaipur,27.0,6.4,38.4,45.4,8.7,0.0,18.9,3.37,Drip,3.0
+Maize,Mid-season,Silty,Tamil Nadu,Coimbatore,35.0,7.2,31.2,63.5,12.7,2.1,16.1,1.99,Drip,2.65
+Cotton,Initial,Clay Loam,Karnataka,Belagavi,34.3,6.7,27.8,76.6,2.0,0.0,17.6,2.1,Drip,0.82
+Chickpea,Mid-season,Sandy,Maharashtra,Pune,33.7,6.9,32.2,59.7,16.3,6.9,19.9,2.83,Drip,0.16
+Chickpea,Initial,Sandy,Maharashtra,Pune,28.5,7.3,28.7,45.3,8.2,0.0,19.0,1.98,Drip,0.88
+Sugarcane,Mid-season,Clay,Karnataka,Mandya,15.3,6.4,27.2,53.3,5.6,0.0,21.0,1.92,Drip,8.97
+Chickpea,Late,Silty,Tamil Nadu,Coimbatore,25.7,6.9,34.7,56.9,6.8,0.0,16.1,2.59,Surface/Flood,1.51
+Tomato,Mid-season,Loamy,Telangana,Hyderabad,31.2,6.6,30.2,60.1,9.0,0.0,17.8,1.8,Sprinkler,2.76
+Tomato,Initial,Sandy Loam,Telangana,Hyderabad,34.4,6.2,34.8,56.0,7.4,5.9,16.4,2.4,Drip,0.0
+Wheat,Vegetative,Clay Loam,Rajasthan,Jaipur,26.2,7.2,33.3,30.7,13.0,0.0,18.1,2.18,Sprinkler,4.11
+Groundnut,Initial,Clay Loam,Uttar Pradesh,Lucknow,30.7,6.8,30.3,54.7,2.9,0.0,16.7,1.82,Sprinkler,1.4
+Cotton,Mid-season,Loamy,Karnataka,Belagavi,32.8,6.8,23.2,51.5,15.8,0.0,16.8,1.8,Drip,2.4
+Soybean,Late,Clay,Karnataka,Devanahalli,32.7,7.2,26.1,48.2,28.1,6.7,16.6,1.8,Sprinkler,0.0
+Wheat,Initial,Clay,Telangana,Hyderabad,33.0,6.5,27.9,26.0,12.6,0.0,18.2,1.8,Drip,2.09
+Cotton,Initial,Clay,Punjab,Ludhiana,32.3,7.0,28.6,47.9,25.9,1.6,19.2,1.8,Surface/Flood,3.43
+Sugarcane,Mid-season,Silty,Karnataka,Devanahalli,26.9,7.0,29.5,55.4,2.0,9.4,18.2,2.36,Drip,0.0
+Tomato,Vegetative,Loamy,Gujarat,Ahmedabad,27.2,6.5,32.9,26.1,13.3,0.0,17.2,1.81,Drip,1.71
+Cotton,Mid-season,Clay Loam,Rajasthan,Jaipur,26.7,7.0,34.6,38.8,3.0,0.0,19.4,2.63,Drip,4.98
+Groundnut,Initial,Sandy Loam,Maharashtra,Pune,26.3,6.8,33.6,43.7,16.4,16.8,18.1,2.84,Sprinkler,0.0
+Soybean,Initial,Sandy Loam,Karnataka,Belagavi,23.5,7.3,24.7,75.1,2.0,0.0,22.4,1.94,Drip,0.86
+Cotton,Late,Clay,Punjab,Ludhiana,20.6,7.6,32.4,44.2,31.7,0.0,19.5,2.5,Drip,6.64
+Soybean,Vegetative,Clay Loam,Punjab,Ludhiana,25.2,7.5,29.9,49.4,2.0,2.3,21.5,2.13,Sprinkler,4.54
+Rice (Paddy),Initial,Loamy,Rajasthan,Jaipur,29.2,6.5,30.3,40.0,4.8,0.0,15.7,1.8,Surface/Flood,3.15
+Maize,Mid-season,Loamy,Uttar Pradesh,Lucknow,17.3,6.4,35.2,50.8,4.6,0.0,17.7,2.88,Sprinkler,7.51
+Soybean,Late,Sandy Loam,Tamil Nadu,Coimbatore,16.0,7.0,29.9,58.1,2.0,0.0,15.3,1.8,Surface/Flood,2.33
+Potato,Vegetative,Sandy,Rajasthan,Jaipur,25.2,6.7,33.8,25.3,4.9,0.0,15.9,2.01,Drip,1.79
+Tomato,Vegetative,Silty,Rajasthan,Jaipur,16.3,6.9,34.7,39.9,2.2,0.0,19.4,2.65,Drip,2.5
+Potato,Mid-season,Silty,Karnataka,Mandya,25.7,6.1,32.8,62.7,2.0,0.0,19.5,2.97,Drip,3.79
+Potato,Mid-season,Loamy,Rajasthan,Jaipur,31.4,7.1,30.6,38.2,21.9,0.0,23.1,1.99,Surface/Flood,3.81
+Sugarcane,Vegetative,Sandy,Karnataka,Belagavi,30.6,6.5,23.2,62.5,5.0,0.0,17.2,1.8,Sprinkler,2.04
+Potato,Late,Sandy,Uttar Pradesh,Lucknow,17.4,7.9,30.3,61.6,7.9,8.5,18.0,1.96,Drip,0.0
+Chickpea,Vegetative,Loamy,Maharashtra,Pune,21.2,6.7,27.9,58.2,4.6,11.3,21.3,2.02,Surface/Flood,0.0
+Sugarcane,Mid-season,Loamy,Rajasthan,Jaipur,32.0,7.1,31.4,49.9,2.0,0.0,21.1,2.04,Drip,2.83
+Cotton,Vegetative,Sandy Loam,Gujarat,Ahmedabad,20.8,7.6,35.9,53.5,8.3,0.0,21.8,3.09,Surface/Flood,3.86
+Cotton,Initial,Clay Loam,Tamil Nadu,Coimbatore,25.7,6.6,29.2,52.0,6.7,0.0,17.8,1.8,Drip,2.45
+Cotton,Initial,Sandy,Telangana,Hyderabad,25.7,7.2,29.5,52.9,2.0,0.0,22.4,1.86,Surface/Flood,1.09
+Rice (Paddy),Mid-season,Sandy,Uttar Pradesh,Lucknow,14.9,6.9,31.2,43.6,13.6,0.0,18.8,2.24,Sprinkler,3.58
+Rice (Paddy),Mid-season,Sandy Loam,Tamil Nadu,Coimbatore,27.8,6.4,27.2,51.5,8.7,0.0,19.6,1.8,Drip,2.4
+Chickpea,Mid-season,Sandy Loam,Rajasthan,Jaipur,32.6,6.2,38.2,31.0,2.0,0.0,17.2,3.02,Surface/Flood,5.29
+Wheat,Vegetative,Loamy,Tamil Nadu,Coimbatore,28.2,6.5,29.6,54.8,2.0,2.1,21.4,2.25,Drip,1.88
+Sugarcane,Mid-season,Loamy,Punjab,Ludhiana,33.4,6.3,27.1,61.6,8.8,0.0,18.9,1.8,Drip,2.5
+Rice (Paddy),Mid-season,Sandy,Karnataka,Belagavi,21.3,6.7,28.6,71.6,10.4,0.0,18.0,2.3,Drip,3.07
+Rice (Paddy),Vegetative,Sandy,Gujarat,Ahmedabad,19.5,6.9,31.2,36.9,12.0,0.0,24.9,2.05,Sprinkler,3.01
+Chickpea,Vegetative,Silty,Gujarat,Ahmedabad,21.7,6.8,40.2,29.3,18.4,0.0,21.0,3.99,Drip,3.33
+Sugarcane,Vegetative,Loamy,Tamil Nadu,Coimbatore,20.2,7.2,26.4,58.3,2.0,1.3,23.6,1.8,Drip,3.31
+Sugarcane,Vegetative,Silty,Karnataka,Mandya,32.0,7.0,28.0,53.4,3.1,0.7,16.3,1.8,Surface/Flood,2.55
+Maize,Late,Sandy Loam,Telangana,Hyderabad,29.1,6.6,32.5,34.3,13.1,0.0,15.1,1.82,Sprinkler,1.46
+Wheat,Initial,Clay Loam,Karnataka,Devanahalli,17.3,7.7,22.5,58.0,21.7,0.0,17.9,1.8,Drip,4.78
+Groundnut,Late,Sandy Loam,Gujarat,Ahmedabad,25.7,6.9,34.4,53.0,12.8,0.0,22.7,2.81,Sprinkler,2.25
+Potato,Vegetative,Sandy Loam,Karnataka,Belagavi,38.7,7.3,28.2,71.7,11.0,0.0,23.1,2.86,Drip,2.54
+Rice (Paddy),Vegetative,Clay,Punjab,Ludhiana,29.4,6.8,28.8,48.9,5.0,0.0,21.6,1.84,Surface/Flood,6.96
+Maize,Late,Loamy,Karnataka,Devanahalli,27.1,6.2,24.6,53.1,15.4,10.3,18.9,1.8,Sprinkler,0.0
+Wheat,Mid-season,Sandy,Punjab,Ludhiana,27.2,6.3,32.5,61.3,10.5,1.8,19.8,2.56,Surface/Flood,4.91
+Tomato,Mid-season,Sandy Loam,Karnataka,Belagavi,30.2,6.4,27.5,66.3,5.2,0.0,17.7,2.06,Sprinkler,3.16
+Wheat,Mid-season,Clay Loam,Karnataka,Devanahalli,25.8,6.9,28.5,64.9,6.1,0.0,23.9,2.84,Sprinkler,6.42
+Rice (Paddy),Vegetative,Sandy Loam,Karnataka,Mandya,33.0,6.2,27.8,72.5,5.1,0.0,17.8,1.8,Drip,2.2
+Chickpea,Late,Silty,Punjab,Ludhiana,22.4,7.5,30.0,51.3,11.6,0.0,20.2,2.03,Sprinkler,0.95
+Cotton,Vegetative,Sandy,Telangana,Hyderabad,19.1,7.0,29.6,41.6,2.3,9.1,21.4,1.81,Drip,0.0
+Soybean,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,24.3,6.8,28.5,61.4,3.1,0.0,25.5,2.22,Sprinkler,2.37
+Cotton,Vegetative,Clay,Karnataka,Devanahalli,29.5,6.3,29.6,62.1,3.7,0.0,20.6,2.69,Surface/Flood,6.9
+Tomato,Mid-season,Loamy,Punjab,Ludhiana,25.8,6.8,30.6,47.0,11.0,0.0,18.7,2.01,Sprinkler,3.15
+Groundnut,Late,Loamy,Uttar Pradesh,Lucknow,24.5,7.5,29.5,57.4,7.7,0.0,15.8,1.8,Surface/Flood,2.43
+Tomato,Mid-season,Clay Loam,Karnataka,Mandya,26.0,7.3,30.1,59.1,25.2,0.0,18.2,2.26,Surface/Flood,6.83
+Chickpea,Late,Loamy,Gujarat,Ahmedabad,19.9,6.8,31.6,48.7,2.0,0.0,21.5,1.89,Drip,2.43
+Wheat,Vegetative,Clay,Karnataka,Belagavi,23.0,7.6,29.9,78.6,11.7,0.0,18.7,2.63,Sprinkler,7.63
+Soybean,Mid-season,Loamy,Karnataka,Mandya,25.9,7.4,31.5,70.2,7.0,0.0,16.3,2.26,Sprinkler,3.5
+Cotton,Vegetative,Clay Loam,Tamil Nadu,Coimbatore,27.5,6.7,27.6,65.5,2.0,0.0,18.5,1.8,Surface/Flood,4.12
+Rice (Paddy),Mid-season,Sandy,Telangana,Hyderabad,14.0,6.9,32.1,51.8,2.0,3.8,19.1,2.21,Sprinkler,3.54
+Maize,Initial,Loamy,Karnataka,Devanahalli,26.1,7.1,28.3,53.9,4.2,0.0,16.1,1.88,Surface/Flood,1.25
+Chickpea,Late,Loamy,Telangana,Hyderabad,32.7,6.0,28.4,44.7,2.2,0.0,18.0,1.8,Surface/Flood,1.05
+Maize,Vegetative,Loamy,Karnataka,Belagavi,19.9,6.9,26.5,72.9,11.3,0.0,15.6,1.8,Drip,3.29
+Cotton,Vegetative,Loamy,Maharashtra,Pune,26.7,6.4,31.3,45.2,2.0,0.0,17.2,2.28,Drip,1.9
+Groundnut,Initial,Clay,Punjab,Ludhiana,32.0,6.8,30.4,50.8,5.8,0.8,16.9,1.8,Sprinkler,2.96
+Groundnut,Initial,Sandy,Karnataka,Devanahalli,24.8,6.7,27.7,64.0,21.2,0.0,19.8,2.19,Sprinkler,1.17
+Groundnut,Mid-season,Loamy,Tamil Nadu,Coimbatore,28.0,7.5,30.0,60.8,3.1,0.0,20.4,2.24,Drip,2.86
+Potato,Mid-season,Clay,Uttar Pradesh,Lucknow,22.1,6.7,27.3,47.2,2.0,0.0,22.5,1.8,Surface/Flood,10.08
+Maize,Vegetative,Silty,Maharashtra,Pune,24.6,6.6,29.1,42.3,16.7,1.9,20.7,2.25,Sprinkler,2.4
+Tomato,Mid-season,Sandy,Gujarat,Ahmedabad,22.9,6.7,35.3,31.7,11.9,0.0,21.9,2.95,Drip,3.77
+Sugarcane,Initial,Sandy Loam,Uttar Pradesh,Lucknow,22.0,6.4,33.4,58.1,23.5,14.1,19.6,2.81,Sprinkler,0.0
+Maize,Mid-season,Loamy,Gujarat,Ahmedabad,18.2,7.1,36.2,43.2,10.1,0.0,13.5,1.96,Surface/Flood,7.17
+Soybean,Vegetative,Silty,Gujarat,Ahmedabad,28.3,7.0,33.2,36.6,2.0,0.0,19.2,2.1,Surface/Flood,2.8
+Groundnut,Mid-season,Sandy Loam,Gujarat,Ahmedabad,23.0,6.7,30.8,36.5,3.2,3.3,15.7,1.8,Drip,2.3
+Tomato,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,23.8,6.4,33.4,58.3,2.0,0.0,17.3,2.48,Drip,2.34
+Sugarcane,Initial,Sandy Loam,Gujarat,Ahmedabad,19.6,6.2,34.3,34.4,2.1,6.4,21.4,2.63,Drip,0.0
+Soybean,Initial,Sandy Loam,Gujarat,Ahmedabad,22.8,7.1,38.1,45.4,2.0,0.0,21.8,3.63,Drip,1.61
+Potato,Vegetative,Loamy,Rajasthan,Jaipur,35.5,7.1,33.5,49.1,2.0,0.0,18.7,2.3,Sprinkler,2.45
+Potato,Vegetative,Clay,Tamil Nadu,Coimbatore,16.5,6.7,27.7,55.8,12.7,0.0,24.6,2.02,Surface/Flood,11.65
+Potato,Mid-season,Sandy,Gujarat,Ahmedabad,24.1,6.7,33.4,44.8,2.0,0.0,14.5,1.8,Surface/Flood,3.45
+Chickpea,Vegetative,Sandy,Punjab,Ludhiana,33.8,6.6,34.7,60.8,6.4,2.7,22.1,3.39,Surface/Flood,4.24
+Chickpea,Vegetative,Silty,Rajasthan,Jaipur,23.4,6.6,30.7,27.4,2.0,0.0,20.4,1.8,Sprinkler,1.8
+Chickpea,Initial,Clay Loam,Punjab,Ludhiana,14.5,7.6,33.0,37.3,6.7,0.0,16.1,2.17,Surface/Flood,8.74
+Groundnut,Vegetative,Loamy,Telangana,Hyderabad,16.1,6.6,32.1,63.4,4.3,0.0,20.5,2.37,Sprinkler,5.67
+Chickpea,Mid-season,Sandy Loam,Karnataka,Devanahalli,20.9,6.4,28.6,82.0,9.2,0.0,23.4,2.81,Surface/Flood,4.92
+Groundnut,Late,Clay Loam,Uttar Pradesh,Lucknow,22.2,6.3,31.0,42.5,18.3,0.0,24.5,2.86,Drip,4.63
+Maize,Initial,Clay Loam,Rajasthan,Jaipur,19.7,6.9,30.5,41.5,3.7,0.0,19.5,1.8,Sprinkler,5.06
+Cotton,Vegetative,Clay,Rajasthan,Jaipur,28.1,6.6,35.4,36.6,22.5,0.0,17.5,2.53,Sprinkler,5.83
+Cotton,Vegetative,Sandy Loam,Punjab,Ludhiana,11.8,7.0,36.9,50.7,21.9,2.4,15.9,2.82,Surface/Flood,6.11
+Rice (Paddy),Initial,Sandy Loam,Punjab,Ludhiana,31.2,6.8,34.0,51.8,3.9,0.0,14.4,2.1,Drip,2.45
+Soybean,Vegetative,Loamy,Telangana,Hyderabad,33.2,7.3,36.7,40.0,2.4,1.3,19.5,3.26,Sprinkler,3.48
+Sugarcane,Vegetative,Sandy,Maharashtra,Pune,23.3,6.8,29.0,46.0,2.2,0.0,16.5,1.8,Drip,1.7
+Cotton,Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,32.3,6.9,25.4,54.8,3.1,0.0,20.8,1.8,Sprinkler,1.8
+Chickpea,Mid-season,Loamy,Karnataka,Belagavi,28.8,7.1,24.9,71.6,2.8,2.9,17.6,1.8,Drip,2.1
+Maize,Mid-season,Silty,Karnataka,Mandya,35.5,6.4,33.9,66.5,6.1,0.0,24.1,3.95,Sprinkler,6.32
+Maize,Mid-season,Silty,Telangana,Hyderabad,36.3,7.6,28.8,44.3,8.4,0.0,17.6,1.8,Sprinkler,2.88
+Rice (Paddy),Mid-season,Clay,Punjab,Ludhiana,32.8,6.4,27.6,43.8,2.0,16.4,22.8,1.8,Sprinkler,0.0
+Potato,Vegetative,Sandy Loam,Punjab,Ludhiana,25.6,6.9,34.0,54.4,4.8,4.1,15.7,2.29,Sprinkler,2.44
+Tomato,Mid-season,Sandy,Karnataka,Belagavi,24.6,6.2,25.3,71.0,2.0,0.0,21.9,2.04,Drip,2.61
+Potato,Initial,Sandy,Punjab,Ludhiana,11.5,6.6,28.6,48.7,16.6,0.0,18.8,1.8,Sprinkler,2.03
+Chickpea,Vegetative,Sandy,Punjab,Ludhiana,22.8,6.3,31.9,65.3,8.5,0.0,23.8,2.92,Drip,2.43
+Cotton,Late,Sandy Loam,Karnataka,Mandya,15.6,7.7,22.7,69.1,4.2,22.5,17.6,1.8,Sprinkler,0.0
+Potato,Late,Clay,Punjab,Ludhiana,31.0,7.0,26.6,61.9,32.0,0.0,18.4,1.8,Drip,3.44
+Rice (Paddy),Initial,Clay Loam,Rajasthan,Jaipur,28.6,7.2,35.7,44.3,4.7,0.0,18.9,2.8,Surface/Flood,6.32
+Wheat,Initial,Loamy,Karnataka,Belagavi,26.8,6.0,29.5,70.7,7.4,9.4,23.3,3.19,Drip,0.0
+Groundnut,Mid-season,Sandy Loam,Karnataka,Devanahalli,26.4,7.5,30.6,58.9,9.8,15.3,20.0,2.81,Surface/Flood,0.0
+Potato,Late,Loamy,Uttar Pradesh,Lucknow,27.5,6.7,26.7,44.5,4.0,7.4,12.0,1.8,Surface/Flood,0.0
+Groundnut,Mid-season,Clay Loam,Karnataka,Belagavi,32.0,6.6,27.5,74.9,9.9,0.0,23.5,2.74,Sprinkler,4.2
+Rice (Paddy),Late,Clay,Gujarat,Ahmedabad,14.2,6.9,31.9,35.4,20.0,0.0,21.9,2.02,Surface/Flood,12.95
+Potato,Mid-season,Clay,Punjab,Ludhiana,22.7,6.6,26.2,50.8,4.4,0.0,21.1,1.8,Drip,6.55
+Wheat,Vegetative,Silty,Karnataka,Mandya,25.1,6.7,24.2,64.9,27.3,0.0,18.6,1.8,Drip,1.5
+Groundnut,Mid-season,Silty,Rajasthan,Jaipur,31.1,6.7,33.0,39.4,6.9,0.0,24.8,2.9,Drip,3.71
+Sugarcane,Initial,Sandy,Karnataka,Mandya,28.8,7.0,26.5,61.3,2.0,0.0,21.3,1.8,Drip,0.8
+Soybean,Mid-season,Sandy,Maharashtra,Pune,14.4,7.0,34.7,52.3,21.4,0.0,24.3,4.09,Drip,5.23
+Chickpea,Mid-season,Silty,Uttar Pradesh,Lucknow,10.0,6.9,35.0,61.3,2.0,0.0,17.6,2.83,Surface/Flood,6.62
+Chickpea,Mid-season,Clay Loam,Karnataka,Mandya,33.0,6.9,26.0,55.1,16.6,19.8,24.6,1.89,Sprinkler,0.0
+Potato,Mid-season,Loamy,Uttar Pradesh,Lucknow,32.0,6.7,25.3,55.6,13.4,0.0,17.0,1.8,Drip,2.3
+Maize,Initial,Sandy,Telangana,Hyderabad,26.9,6.7,25.6,47.5,15.6,0.0,20.7,1.8,Sprinkler,0.96
+Chickpea,Vegetative,Loamy,Tamil Nadu,Coimbatore,21.8,7.1,31.5,56.4,2.0,0.0,18.3,2.32,Drip,3.1
+Groundnut,Mid-season,Silty,Maharashtra,Pune,33.4,6.7,24.3,46.8,5.7,0.0,18.9,1.8,Drip,2.3
+Rice (Paddy),Mid-season,Sandy Loam,Punjab,Ludhiana,22.9,7.8,30.4,42.7,3.8,0.0,18.6,1.95,Sprinkler,3.12
+Sugarcane,Mid-season,Clay Loam,Gujarat,Ahmedabad,31.1,6.9,29.7,25.4,4.3,0.0,19.7,1.8,Drip,2.75
+Wheat,Vegetative,Loamy,Karnataka,Mandya,29.6,6.4,26.5,72.8,2.9,0.6,24.5,2.04,Drip,1.7
+Chickpea,Late,Clay,Gujarat,Ahmedabad,17.9,6.2,33.3,46.3,26.2,0.0,16.1,1.8,Surface/Flood,9.43
+Groundnut,Vegetative,Clay Loam,Karnataka,Devanahalli,24.9,7.8,27.4,49.3,9.5,0.0,25.0,2.68,Sprinkler,5.05
+Groundnut,Vegetative,Silty,Maharashtra,Pune,21.9,6.7,33.1,61.7,3.1,0.0,21.3,3.23,Sprinkler,3.23
+Sugarcane,Vegetative,Sandy,Gujarat,Ahmedabad,34.4,7.0,41.7,36.4,10.3,0.0,22.5,4.65,Sprinkler,5.27
+Sugarcane,Mid-season,Sandy,Telangana,Hyderabad,18.1,6.9,34.0,31.2,4.1,0.0,19.8,2.72,Sprinkler,4.53
+Cotton,Mid-season,Silty,Uttar Pradesh,Lucknow,24.6,7.0,24.2,62.3,24.0,0.0,21.3,1.8,Sprinkler,2.88
+Soybean,Vegetative,Sandy Loam,Telangana,Hyderabad,28.6,7.2,30.5,55.4,8.2,0.0,26.0,2.5,Sprinkler,2.67
+Groundnut,Initial,Silty,Karnataka,Mandya,22.8,6.1,28.0,64.6,2.0,0.0,21.6,2.18,Sprinkler,1.16
+Cotton,Vegetative,Sandy,Uttar Pradesh,Lucknow,33.0,7.2,27.5,56.7,2.0,0.0,22.8,1.8,Drip,1.5
+Groundnut,Vegetative,Loamy,Tamil Nadu,Coimbatore,24.1,7.0,31.8,50.5,2.3,7.2,15.2,1.98,Sprinkler,0.0
+Chickpea,Initial,Silty,Karnataka,Mandya,16.3,6.6,31.6,52.8,27.1,0.0,26.0,3.64,Surface/Flood,2.43
+Potato,Late,Loamy,Telangana,Hyderabad,32.9,6.7,33.3,57.6,6.2,0.0,19.7,2.55,Surface/Flood,3.19
+Maize,Late,Clay Loam,Maharashtra,Pune,24.4,8.0,29.8,55.0,3.6,0.0,26.0,3.03,Drip,4.13
+Chickpea,Vegetative,Silty,Punjab,Ludhiana,30.0,6.8,29.7,47.8,8.8,0.0,19.0,1.84,Drip,1.53
+Wheat,Vegetative,Sandy,Rajasthan,Jaipur,22.2,6.6,27.8,29.6,7.8,0.0,19.6,1.8,Drip,1.5
+Groundnut,Vegetative,Sandy,Uttar Pradesh,Lucknow,27.9,6.9,31.1,50.0,20.2,1.1,21.0,2.48,Sprinkler,2.48
+Tomato,Vegetative,Clay,Gujarat,Ahmedabad,30.7,7.3,30.9,43.7,9.5,0.0,19.5,1.8,Drip,3.73
+Rice (Paddy),Mid-season,Loamy,Karnataka,Belagavi,35.1,7.2,23.9,51.4,12.1,0.0,20.5,1.8,Drip,2.4
+Wheat,Mid-season,Loamy,Gujarat,Ahmedabad,25.1,6.6,37.3,59.2,32.0,0.0,18.9,2.98,Surface/Flood,6.09
+Wheat,Initial,Loamy,Gujarat,Ahmedabad,30.1,6.6,31.3,36.8,22.5,0.0,20.6,1.8,Drip,0.7
+Rice (Paddy),Late,Silty,Punjab,Ludhiana,21.3,7.4,32.4,51.2,5.1,0.0,18.0,2.31,Surface/Flood,3.47
+Maize,Mid-season,Sandy,Karnataka,Devanahalli,27.4,6.3,23.7,60.8,6.3,0.0,19.0,1.8,Drip,2.4
+Rice (Paddy),Vegetative,Sandy Loam,Uttar Pradesh,Lucknow,23.8,6.8,34.9,52.8,32.0,9.5,22.3,3.56,Sprinkler,0.0
+Rice (Paddy),Vegetative,Silty,Rajasthan,Jaipur,30.9,6.8,28.3,33.0,15.7,0.0,16.4,1.8,Sprinkler,2.64
+Cotton,Late,Clay,Karnataka,Belagavi,21.5,7.4,29.9,64.7,2.2,8.0,18.4,2.59,Drip,2.45
+Cotton,Mid-season,Sandy,Maharashtra,Pune,12.5,6.9,25.7,44.5,9.9,0.0,21.6,1.8,Surface/Flood,4.23
+Soybean,Vegetative,Sandy Loam,Rajasthan,Jaipur,13.7,6.5,32.6,34.3,12.9,0.0,21.8,2.44,Sprinkler,4.04
+Soybean,Mid-season,Clay Loam,Maharashtra,Pune,28.9,6.9,28.2,55.1,2.0,0.0,18.4,1.81,Sprinkler,3.81
+Maize,Late,Clay,Rajasthan,Jaipur,20.5,6.2,30.2,53.8,2.0,0.0,23.5,1.89,Surface/Flood,9.18
+Groundnut,Vegetative,Sandy Loam,Punjab,Ludhiana,26.6,6.3,31.9,44.7,11.7,0.0,17.8,2.18,Sprinkler,2.18
+Maize,Vegetative,Sandy,Punjab,Ludhiana,29.4,6.7,33.3,41.3,4.3,0.0,18.0,2.49,Sprinkler,2.66
+Maize,Initial,Sandy,Telangana,Hyderabad,24.4,6.6,36.3,48.6,18.0,0.0,23.9,3.89,Surface/Flood,2.59
+Wheat,Initial,Silty,Karnataka,Belagavi,34.8,6.1,29.9,65.7,4.2,37.3,22.1,3.11,Sprinkler,0.0
+Potato,Initial,Clay,Gujarat,Ahmedabad,13.8,7.6,38.2,47.7,2.0,0.0,20.1,3.37,Sprinkler,10.31
+Soybean,Mid-season,Clay,Punjab,Ludhiana,23.8,7.4,34.5,47.5,12.3,0.0,19.3,2.92,Surface/Flood,11.51
+Groundnut,Vegetative,Clay Loam,Rajasthan,Jaipur,26.4,6.8,33.5,31.5,19.7,0.0,23.0,2.82,Drip,3.91
+Maize,Initial,Silty,Uttar Pradesh,Lucknow,18.9,6.6,28.0,52.9,8.1,1.8,16.7,1.8,Sprinkler,0.96
+Wheat,Late,Clay Loam,Telangana,Hyderabad,24.8,7.2,31.5,44.4,7.7,19.4,19.4,2.1,Drip,0.0
+Tomato,Mid-season,Sandy Loam,Tamil Nadu,Coimbatore,22.2,7.0,28.2,71.8,2.3,9.9,15.9,1.8,Surface/Flood,0.0
+Groundnut,Mid-season,Loamy,Punjab,Ludhiana,22.3,7.0,30.7,57.2,7.0,0.0,23.9,2.6,Drip,4.35
+Sugarcane,Mid-season,Sandy Loam,Karnataka,Mandya,27.1,6.3,26.9,64.4,11.1,0.0,18.4,1.8,Drip,2.5
+Sugarcane,Vegetative,Loamy,Karnataka,Mandya,30.7,6.7,30.1,62.2,3.9,0.0,22.5,2.79,Surface/Flood,3.95
+Sugarcane,Mid-season,Loamy,Tamil Nadu,Coimbatore,29.3,7.1,31.6,66.4,13.9,0.4,23.2,2.96,Surface/Flood,6.17
+Chickpea,Initial,Sandy Loam,Maharashtra,Pune,21.6,6.4,29.0,62.3,28.8,0.0,16.8,1.81,Drip,0.8
+Sugarcane,Initial,Silty,Telangana,Hyderabad,29.7,6.7,31.0,55.3,9.0,0.0,16.2,1.8,Drip,0.8
+Sugarcane,Vegetative,Sandy Loam,Punjab,Ludhiana,28.9,6.5,29.8,54.4,9.0,0.0,19.0,1.86,Drip,1.76
+Cotton,Vegetative,Loamy,Maharashtra,Pune,22.8,7.3,25.1,64.2,4.1,0.0,20.7,1.8,Sprinkler,2.87
+Chickpea,Late,Silty,Karnataka,Devanahalli,21.5,7.4,24.2,49.2,4.2,18.7,15.8,1.8,Drip,0.0
+Groundnut,Late,Clay,Karnataka,Mandya,28.5,7.6,24.0,58.3,16.1,22.6,17.7,1.8,Drip,0.0
+Sugarcane,Initial,Silty,Karnataka,Devanahalli,32.4,7.0,25.7,47.2,6.6,0.0,18.9,1.8,Surface/Flood,1.2
+Chickpea,Late,Sandy,Karnataka,Mandya,23.3,5.9,31.6,50.2,6.3,0.0,24.3,3.4,Drip,1.32
+Sugarcane,Mid-season,Clay,Tamil Nadu,Coimbatore,24.3,7.1,32.0,43.3,9.3,0.0,22.2,2.93,Sprinkler,9.45
+Tomato,Mid-season,Clay,Rajasthan,Jaipur,31.0,6.9,34.7,39.2,4.0,0.0,22.4,3.06,Sprinkler,7.03
+Soybean,Mid-season,Silty,Karnataka,Belagavi,25.5,7.1,28.6,65.9,21.1,0.0,19.2,2.45,Surface/Flood,4.7
+Wheat,Vegetative,Sandy,Karnataka,Mandya,27.8,5.9,26.6,52.5,2.0,0.0,17.6,1.8,Drip,1.5
+Groundnut,Vegetative,Sandy Loam,Karnataka,Belagavi,14.3,6.6,27.7,71.2,32.0,0.0,17.2,2.04,Sprinkler,3.27
+Maize,Vegetative,Clay,Uttar Pradesh,Lucknow,32.9,6.6,31.8,58.3,2.0,7.6,18.2,2.29,Surface/Flood,0.0
+Sugarcane,Initial,Clay Loam,Telangana,Hyderabad,21.2,5.8,29.6,42.4,3.1,0.0,14.9,1.8,Surface/Flood,5.7
+Wheat,Vegetative,Sandy,Gujarat,Ahmedabad,29.9,6.0,34.7,39.5,14.2,0.0,19.2,2.45,Drip,2.04
+Groundnut,Vegetative,Sandy Loam,Gujarat,Ahmedabad,24.8,7.4,28.4,42.7,32.0,4.0,16.2,1.8,Drip,1.5
+Cotton,Vegetative,Clay Loam,Karnataka,Belagavi,37.3,6.8,19.6,59.2,8.5,9.7,13.5,1.8,Drip,0.0
+Potato,Initial,Clay,Uttar Pradesh,Lucknow,31.2,6.3,32.7,56.7,6.9,0.0,19.2,2.61,Drip,3.34
+Cotton,Initial,Clay Loam,Telangana,Hyderabad,27.0,7.0,27.5,56.8,2.0,5.2,20.0,1.8,Drip,0.27
+Groundnut,Initial,Loamy,Karnataka,Mandya,19.6,6.7,25.9,60.6,3.7,3.9,22.8,1.8,Drip,2.58
+Potato,Mid-season,Sandy,Uttar Pradesh,Lucknow,18.8,6.5,26.5,51.8,2.1,10.3,18.9,1.8,Surface/Flood,0.0
+Groundnut,Initial,Clay,Uttar Pradesh,Lucknow,22.3,6.8,31.4,49.1,3.1,6.8,17.7,2.15,Surface/Flood,3.38
+Cotton,Mid-season,Sandy Loam,Rajasthan,Jaipur,22.4,6.3,30.6,51.2,2.0,2.0,15.9,1.8,Drip,2.4
+Potato,Mid-season,Loamy,Uttar Pradesh,Lucknow,32.3,6.7,32.1,52.9,28.6,20.1,17.1,2.21,Sprinkler,0.0
+Tomato,Mid-season,Loamy,Maharashtra,Pune,35.7,7.2,26.3,59.0,2.0,0.0,18.1,1.8,Surface/Flood,3.45
+Wheat,Vegetative,Sandy,Karnataka,Mandya,20.4,6.2,24.1,74.3,14.5,16.4,24.9,1.8,Sprinkler,0.0
+Soybean,Mid-season,Clay,Karnataka,Belagavi,23.4,6.5,23.1,62.8,7.0,0.8,17.2,1.8,Surface/Flood,9.53

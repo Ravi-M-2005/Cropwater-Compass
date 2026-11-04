@@ -513,7 +513,9 @@ def calculate_soil_water_balance(
     soil_type: str,
     soil_moisture_pct: float,
     root_depth_m: float,
-    critical_depletion_p: float
+    critical_depletion_p: float,
+    custom_fc: float = None,
+    custom_pwp: float = None
 ) -> Tuple[float, float, float, float]:
     """
     Computes soil moisture metrics:
@@ -521,10 +523,13 @@ def calculate_soil_water_balance(
     - readily_available_water_mm (RAW)
     - root_zone_depletion_mm (Dr)
     - depletion_fraction
+    Supports custom FC and PWP from ISRIC SoilGrids 250m.
     """
     soil = SOIL_DATABASE.get(soil_type, SOIL_DATABASE["Loamy"])
-    fc = soil["field_capacity_pct"]
-    pwp = soil["wilting_point_pct"]
+    fc = custom_fc if (custom_fc is not None and custom_fc > 0) else soil["field_capacity_pct"]
+    pwp = custom_pwp if (custom_pwp is not None and custom_pwp >= 0) else soil["wilting_point_pct"]
+    if pwp >= fc:
+        pwp = max(0.0, round(fc * 0.45, 1))
 
     # TAW in mm = 1000 * (FC - PWP)/100 * Zr
     taw = max(10.0, 10.0 * (fc - pwp) * root_depth_m)
@@ -553,7 +558,11 @@ def calculate_irrigation_recommendation(
     rainfall_mm: float,
     reference_et0_mm: float,
     irrigation_method: str = "Drip",
-    ml_predicted_mm: float = None
+    ml_predicted_mm: float = None,
+    custom_fc: float = None,
+    custom_pwp: float = None,
+    soil_source: str = "manual",
+    usda_soil_texture: str = None
 ) -> Dict[str, Any]:
     """
     Complete FAO-56 Agronomic calculation engine.
@@ -574,7 +583,8 @@ def calculate_irrigation_recommendation(
     root_depth = crop["root_depth_meters"]
     p_depletion = crop["critical_depletion_fraction"]
     taw, raw, depletion_mm, depletion_fraction = calculate_soil_water_balance(
-        soil_type, soil_moisture_pct, root_depth, p_depletion
+        soil_type, soil_moisture_pct, root_depth, p_depletion,
+        custom_fc=custom_fc, custom_pwp=custom_pwp
     )
 
     # Net Irrigation Requirement (NIR) in mm/day
@@ -661,6 +671,13 @@ def calculate_irrigation_recommendation(
             f"Next recommended soil moisture inspection on {next_date}."
         )
 
+    if soil_source == "isric_soilgrids_250m" or usda_soil_texture:
+        fc_val = custom_fc if custom_fc is not None else soil["field_capacity_pct"]
+        pwp_val = custom_pwp if custom_pwp is not None else soil["wilting_point_pct"]
+        recommendations.append(
+            f"Soil parameters calibrated using ISRIC SoilGrids 250m (USDA texture: {usda_soil_texture or 'Classified'}, FC: {fc_val:.1f}%, PWP: {pwp_val:.1f}%)."
+        )
+
     return {
         "crop_type": crop_type,
         "growth_stage": growth_stage,
@@ -682,6 +699,8 @@ def calculate_irrigation_recommendation(
         "irrigation_efficiency_pct": irr_info["efficiency_pct"],
         "irrigation_recommended": irrigation_recommended,
         "urgency_level": urgency,
+        "soil_source": soil_source,
+        "usda_soil_texture": usda_soil_texture,
         "recommended_schedule": {
             "frequency_days": freq_days,
             "duration_hours": duration_hrs,

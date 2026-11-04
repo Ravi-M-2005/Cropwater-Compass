@@ -8,7 +8,8 @@
 [![React](https://img.shields.io/badge/Frontend-React_18_TypeScript-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Styles-Tailwind_CSS-38B2AC.svg?style=flat&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Standard](https://img.shields.io/badge/Agronomy-FAO--56_CROPWAT-2E7D32.svg?style=flat)](https://www.fao.org/land-water/databases-and-software/cropwat/en/)
-[![Tests](https://img.shields.io/badge/Tests-27_Passed-brightgreen.svg?style=flat)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-44_Passed-brightgreen.svg?style=flat)](tests/)
+[![ISRIC SoilGrids](https://img.shields.io/badge/Soil_Data-ISRIC_SoilGrids_250m-2E7D32.svg?style=flat)](https://docs.isric.org/globaldata/soilgrids/)
 
 **Cropwater Compass** is a full-stack, machine learning–powered precision agriculture platform that predicts the volumetric irrigation water requirements for crops in **Litres** (alongside $m^3$ and millimeter depth). Moving far beyond simple binary ("irrigation required: yes/no") triggers, Cropwater Compass combines standard **FAO-56 CROPWAT** agronomic physics with a multi-model ML suite (**XGBoost**, **Artificial Neural Networks**, **PyTorch LSTM**, and **Ensemble**) to eliminate water wastage, prevent crop water stress, and optimize irrigation schedules.
 
@@ -53,31 +54,38 @@ Printable, high-fidelity operational reports complete with water stewardship rec
 ## 🌟 Key Capabilities
 
 1. **Volumetric Output in Litres**: Translates millimeter depth directly into tangible volume ($1\text{ mm} \times 1\text{ m}^2 = 1\text{ Litre}$, or $10,000\text{ Litres}$ per millimeter per hectare).
-2. **Multi-Model Suite**:
+2. **ISRIC SoilGrids 250m Integration**: Retrieves authentic global 250m soil layers via OGC WCS 2.0.1 (clay %, sand %, silt %, pH, SOC, bulk density, CEC, nitrogen, and volumetric water retention at 10, 33, and 1500 kPa). Classified into 12 standard USDA Soil Texture Triangle classes with local SQLite caching.
+3. **Multi-Model Suite**:
    - **XGBoost Regressor**: Gradient-boosted decision trees for tabular agro-climatic interactions.
    - **Artificial Neural Network (ANN)**: 3-layer deep Multi-Layer Perceptron (128-64-32) capturing continuous non-linearities.
    - **LSTM Sequence Regressor**: 2-layer PyTorch LSTM modeling temporal depletion trajectories.
    - **Ensemble Regressor**: Weighted consensus combining tree-based, neural, and sequence predictors.
-3. **SHAP TreeExplainer**: Local waterfall charts showing positive and negative marginal feature impacts.
-4. **FAO-56 CROPWAT Foundation**: Complete integration of crop coefficients ($K_c$), Total Available Water ($TAW$), Readily Available Water ($RAW$), and distribution efficiency adjustments (Drip 90%, Sprinkler 75%, Flood 60%).
-5. **Real-Time Weather Integration**: Live weather parameters with dynamic FAO-56 Penman-Monteith $ET_0$ calculation.
-6. **Batch Ingestion**: Evaluate arbitrary agricultural CSV files with instant downloadable results.
-7. **SQLite Audit Trail**: Persistent storage of every prediction with full parameter telemetry.
-8. **Printable Executive Reports**: Standardized reporting designed for farm managers and agronomists.
+4. **Strict Error Validation & Error Diagnostics**: Pydantic v2 and client-side boundary validation preventing invalid predictions (negative rainfall, area $\le 0$, out-of-range soil moisture or pH).
+5. **5-Fold Cross-Validation & Residual Diagnostics**: 5-Fold CV metrics ($R^2$, RMSE, MAE, MAPE mean $\pm$ std) and residual error distributions ($y - \hat{y}$) for all models.
+6. **Simulated Out-of-Distribution Benchmark Validation**: Stress-tested against an out-of-distribution benchmark dataset (600 records across 10 crops and 10 Indian regions calibrated to ICAR agronomic ranges) to evaluate domain shift robustness.
+7. **SHAP TreeExplainer**: Local waterfall charts showing positive and negative marginal feature impacts.
+8. **FAO-56 CROPWAT Foundation**: Complete integration of crop coefficients ($K_c$), Total Available Water ($TAW$), Readily Available Water ($RAW$), and distribution efficiency adjustments (Drip 90%, Sprinkler 75%, Flood 60%).
+9. **Automatic GPS & Real-Time Weather Integration**: Browser GPS location detection with real-time Open-Meteo meteorological integration and offline dataset fallback.
+10. **Batch Ingestion**: Evaluate arbitrary agricultural CSV files with instant downloadable results.
+11. **SQLite Audit Trail**: Persistent storage of every prediction with full parameter telemetry.
+12. **Printable Executive Reports**: Standardized reporting designed for farm managers and agronomists.
 
 ---
 
-## 📊 Machine Learning Model Evaluation
+## 📊 Machine Learning Model Evaluation & 5-Fold Cross-Validation
 
-All models were trained on held-out test splits from the 5,000-sample agro-climatic benchmark dataset. Evaluation metrics were empirically measured and saved to `ml/saved_models/evaluation_metrics.json`:
+All models were evaluated using strictly regression metrics ($R^2$, RMSE, MAE, MAPE, 5-Fold Cross-Validation, and residual distribution) saved in `ml/saved_models/evaluation_metrics.json`:
 
-| Model Architecture | $R^2$ Score | RMSE ($mm$) | MAE ($mm$) | Training Time | Inference Latency | Primary Drivers |
-|:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **LSTM Regressor (PyTorch)** ⭐ | **0.9941** | **0.8836** | **0.5769** | 11.81 s | 0.55 ms | $ET_0$, Rainfall, Soil Moisture |
-| **Artificial Neural Network (ANN)** | **0.9869** | **1.3182** | **0.8514** | 3.97 s | 0.12 ms | Soil Moisture, $ET_0$, Temperature |
-| **XGBoost Regressor** | **0.9595** | **2.3203** | **1.5550** | 1.97 s | 0.73 ms | Soil Type, Soil Moisture, $ET_0$ |
+| Model Architecture | 5-Fold CV $R^2$ (Mean ± Std) | Test $R^2$ Score | RMSE ($mm$) | MAE ($mm$) | MAPE (%) | Inference Latency |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|
+| **LSTM Regressor (PyTorch)** ⭐ | **0.9867 ± 0.0008** | **0.9909** | **1.1791** | **0.8034** | **14.28%** | 0.52 ms |
+| **Artificial Neural Network (ANN)** | **0.9800 ± 0.0020** | **0.9759** | **1.9178** | **1.1586** | **23.95%** | 0.12 ms |
+| **XGBoost Regressor** | **0.9342 ± 0.0037** | **0.9259** | **3.3608** | **2.1758** | **34.66%** | 0.45 ms |
 
-> **Note on Model Selection**: The PyTorch LSTM achieved the lowest error ($RMSE = 0.88\text{ mm}$) and highest variance explanation ($R^2 = 99.41\%$), while the ANN achieved the lowest latency ($0.12\text{ ms}$).
+> **Model Selection Justification**:
+> - **XGBoost**: Handles tabular agro-climatic interactions without feature scaling; exact local/global explainability via TreeSHAP.
+> - **ANN (MLP)**: Universal continuous function approximator; lowest inference latency ($0.12\text{ ms}$).
+> - **LSTM**: Highest explained variance ($R^2 = 99.09\%$, CV $R^2 = 0.9867$); models temporal lag in root-zone soil drying cycles.
 
 ---
 
@@ -171,14 +179,14 @@ Run the automated test suite covering agronomic math, ML model interfaces, API s
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -v
 ```
-**Results: 27 passed in 14.19s (100% pass rate).**
+**Results: 44 passed in 17.57s (100% pass rate).**
 
 To verify the frontend TypeScript and production bundle:
 ```powershell
 cd frontend
 npm run build
 ```
-**Results: 2,384 modules transformed, built with 0 errors.**
+**Results: 2,392 modules transformed, built with 0 errors.**
 
 ---
 

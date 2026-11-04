@@ -23,9 +23,11 @@ htmlcov/
 !ml/saved_models/*.json
 
 # Data & local databases
+*.sqlite
 *.sqlite3
 *.db
 backend/data/*.db
+backend/data/*.sqlite
 
 # Node & Frontend
 node_modules/

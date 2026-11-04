@@ -53,7 +53,18 @@ def predict_irrigation(request: PredictionRequest):
     input_dict["et0_mm"] = et0
     primary_predicted_mm, all_model_predictions = predict_water_requirements(input_dict)
 
-    # 3. Calculate full agronomic recommendation & exact litres
+    # 3. Check for SoilGrids texture and water retention parameters
+    usda_texture = None
+    custom_fc = request.volumetric_water_content_fc_pct
+    custom_pwp = request.volumetric_water_content_wp_pct
+    if request.sand_pct is not None and request.silt_pct is not None and request.clay_pct is not None:
+        try:
+            from backend.app.services.soilgrids import classify_usda_texture
+            usda_texture = classify_usda_texture(request.sand_pct, request.silt_pct, request.clay_pct)
+        except Exception:
+            pass
+
+    # 4. Calculate full agronomic recommendation & exact litres
     result = calculate_irrigation_recommendation(
         crop_type=request.crop_type,
         growth_stage=request.growth_stage,
@@ -67,13 +78,20 @@ def predict_irrigation(request: PredictionRequest):
         rainfall_mm=request.rainfall_mm,
         reference_et0_mm=et0,
         irrigation_method=request.irrigation_method,
-        ml_predicted_mm=primary_predicted_mm
+        ml_predicted_mm=primary_predicted_mm,
+        custom_fc=custom_fc,
+        custom_pwp=custom_pwp,
+        soil_source=request.soil_source or "manual",
+        usda_soil_texture=usda_texture
     )
 
     result["model_used"] = request.model_name or "xgboost"
     result["model_predictions"] = all_model_predictions
+    result["soil_source"] = request.soil_source or "manual"
+    result["usda_soil_texture"] = usda_texture
+    result["soil_depth_interval"] = request.soil_depth_interval
 
-    # 4. Save to persistent history database
+    # 5. Save to persistent history database
     pred_id = save_prediction(result)
     result["id"] = pred_id
 

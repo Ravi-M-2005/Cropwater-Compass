@@ -13,6 +13,7 @@ from backend.app.routes import (
     dataset_router,
     history_router,
     reports_router,
+    soil_router,
 )
 from backend.app.schemas.schemas import HistoryStatsResponse
 from backend.app.services.history import init_db, get_history_stats
@@ -67,6 +68,7 @@ app.include_router(weather_router)
 app.include_router(dataset_router)
 app.include_router(history_router)
 app.include_router(reports_router)
+app.include_router(soil_router)
 
 
 @app.get("/")

@@ -24,6 +24,9 @@ import {
   Wifi,
   Sliders,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
+  FileText,
 } from "lucide-react";
 import { api } from "../services/api";
 import {
@@ -33,6 +36,7 @@ import {
   SoilInfo,
   IrrigationMethodInfo,
   WeatherData,
+  SoilPropertiesResponse,
 } from "../types";
 import { SearchableSelect, SelectOption } from "./SearchableSelect";
 import { useGeolocation } from "../hooks/useGeolocation";
@@ -89,6 +93,12 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
   const [isGpsActive, setIsGpsActive] = useState<boolean>(false);
   const [currentCoords, setCurrentCoords] = useState<{ lat: number; lon: number } | null>(null);
 
+  // ISRIC SoilGrids 250m State
+  const [soilDepthInterval, setSoilDepthInterval] = useState<string>("0-5cm");
+  const [soilGridsData, setSoilGridsData] = useState<SoilPropertiesResponse | null>(null);
+  const [soilLoading, setSoilLoading] = useState<boolean>(false);
+  const [showSoilDetails, setShowSoilDetails] = useState<boolean>(false);
+
   // Selected Offline Record
   const [selectedOfflineRecord, setSelectedOfflineRecord] = useState<OfflineDatasetRecord | null>(null);
 
@@ -136,34 +146,99 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
     setResult(offlineRes);
   };
 
+  // Helper to fetch authentic ISRIC SoilGrids 250m properties
+  const fetchSoilGrids = async (lat: number, lon: number, depth: string = soilDepthInterval): Promise<SoilPropertiesResponse | null> => {
+    if (!navigator.onLine) return null;
+    try {
+      setSoilLoading(true);
+      const res = await api.getSoilProperties(lat, lon, depth);
+      setSoilGridsData(res);
+      return res;
+    } catch (sErr) {
+      console.warn("SoilGrids fetch notice:", sErr);
+      return null;
+    } finally {
+      setSoilLoading(false);
+    }
+  };
+
+  const handleDepthIntervalChange = async (newDepth: string) => {
+    setSoilDepthInterval(newDepth);
+    setFormData((prev) => ({ ...prev, soil_depth_interval: newDepth }));
+    if (currentCoords) {
+      const soilRes = await fetchSoilGrids(currentCoords.lat, currentCoords.lon, newDepth);
+      if (soilRes && soilRes.is_available) {
+        setFormData((prev) => ({
+          ...prev,
+          soil_type: soilRes.cropwater_soil_type || prev.soil_type,
+          sand_pct: soilRes.properties?.sand?.converted_value,
+          silt_pct: soilRes.properties?.silt?.converted_value,
+          clay_pct: soilRes.properties?.clay?.converted_value,
+          volumetric_water_content_fc_pct: soilRes.field_capacity_pct,
+          volumetric_water_content_wp_pct: soilRes.wilting_point_pct,
+          awc_volumetric_pct: soilRes.available_water_capacity_mm_per_m ? soilRes.available_water_capacity_mm_per_m / 10.0 : undefined,
+          soil_ph: soilRes.properties?.phh2o?.converted_value ?? prev.soil_ph,
+        }));
+      }
+    }
+  };
+
   // Helper to sync weather given coordinates
   const syncWeatherFromCoords = async (lat: number, lon: number, cityName?: string) => {
     try {
       setWeatherLoading(true);
       setWeatherError(null);
-      const w: WeatherData = await api.getCurrentWeather(lat, lon, cityName);
+      setCurrentCoords({ lat, lon });
+
+      // Run weather fetch and SoilGrids fetch in parallel
+      const weatherPromise = api.getCurrentWeather(lat, lon, cityName);
+      const soilPromise = fetchSoilGrids(lat, lon, soilDepthInterval);
+
+      const [w, soilRes] = await Promise.all([weatherPromise, soilPromise]);
+
       setFormData((prev) => ({
         ...prev,
+        latitude: lat,
+        longitude: lon,
         temperature_c: w.temperature_c,
         humidity_pct: w.humidity_pct,
         wind_speed_kmh: w.wind_speed_kmh,
         rainfall_mm: w.rainfall_mm,
         solar_radiation: w.solar_radiation,
         et0_mm: w.et0_mm,
+        soil_type: (soilRes && soilRes.is_available && soilRes.cropwater_soil_type) ? soilRes.cropwater_soil_type : prev.soil_type,
+        sand_pct: soilRes?.properties?.sand?.converted_value,
+        silt_pct: soilRes?.properties?.silt?.converted_value,
+        clay_pct: soilRes?.properties?.clay?.converted_value,
+        volumetric_water_content_fc_pct: soilRes?.field_capacity_pct,
+        volumetric_water_content_wp_pct: soilRes?.wilting_point_pct,
+        awc_volumetric_pct: soilRes?.available_water_capacity_mm_per_m ? soilRes.available_water_capacity_mm_per_m / 10.0 : undefined,
+        soil_source: (soilRes && soilRes.is_available) ? "isric_soilgrids_250m" : "manual",
+        soil_depth_interval: soilDepthInterval,
+        soil_ph: soilRes?.properties?.phh2o?.converted_value ?? prev.soil_ph,
       }));
       setWeatherSource(w.source);
       setLastWeatherUpdate(w.last_updated || "Just now");
-      setCurrentCoords({ lat, lon });
 
       // Run automatic irrigation prediction with the updated weather parameters
       const updatedReq: PredictionRequest = {
         ...formData,
+        latitude: lat,
+        longitude: lon,
         temperature_c: w.temperature_c,
         humidity_pct: w.humidity_pct,
         wind_speed_kmh: w.wind_speed_kmh,
         rainfall_mm: w.rainfall_mm,
         solar_radiation: w.solar_radiation,
         et0_mm: w.et0_mm,
+        soil_type: (soilRes && soilRes.is_available && soilRes.cropwater_soil_type) ? soilRes.cropwater_soil_type : formData.soil_type,
+        sand_pct: soilRes?.properties?.sand?.converted_value,
+        silt_pct: soilRes?.properties?.silt?.converted_value,
+        clay_pct: soilRes?.properties?.clay?.converted_value,
+        volumetric_water_content_fc_pct: soilRes?.field_capacity_pct,
+        volumetric_water_content_wp_pct: soilRes?.wilting_point_pct,
+        soil_source: (soilRes && soilRes.is_available) ? "isric_soilgrids_250m" : "manual",
+        soil_depth_interval: soilDepthInterval,
       };
       try {
         const predRes = await api.predict(updatedReq);
@@ -276,6 +351,39 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Input Validation (Reviewer Feedback Part A)
+    const validationErrors: string[] = [];
+    if (!formData.crop_type) validationErrors.push("Crop variety is required.");
+    if (!formData.growth_stage) validationErrors.push("Crop growth stage is required.");
+    if (!formData.soil_type) validationErrors.push("Soil classification is required.");
+    if (formData.area <= 0 || isNaN(formData.area)) {
+      validationErrors.push("Farm area must be strictly greater than 0.");
+    }
+    if (formData.rainfall_mm < 0 || isNaN(formData.rainfall_mm)) {
+      validationErrors.push("Rainfall cannot be negative.");
+    }
+    if (formData.soil_moisture_pct < 0 || formData.soil_moisture_pct > 100 || isNaN(formData.soil_moisture_pct)) {
+      validationErrors.push("Soil moisture percentage must be between 0% and 100%.");
+    }
+    if (formData.soil_ph !== undefined && (formData.soil_ph < 3.0 || formData.soil_ph > 11.0)) {
+      validationErrors.push("Soil pH must be between 3.0 and 11.0.");
+    }
+    if (formData.temperature_c < -20.0 || formData.temperature_c > 60.0 || isNaN(formData.temperature_c)) {
+      validationErrors.push("Air temperature must be between -20°C and 60°C.");
+    }
+    if (formData.humidity_pct < 0 || formData.humidity_pct > 100 || isNaN(formData.humidity_pct)) {
+      validationErrors.push("Relative humidity must be between 0% and 100%.");
+    }
+    if (formData.wind_speed_kmh < 0 || isNaN(formData.wind_speed_kmh)) {
+      validationErrors.push("Wind speed cannot be negative.");
+    }
+
+    if (validationErrors.length > 0) {
+      setError(`Validation Error: ${validationErrors.join(" ")}`);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
@@ -589,14 +697,157 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
             </div>
           </div>
 
-          {/* Card 2: Soil Properties */}
+          {/* Card 2: Soil Properties & ISRIC SoilGrids 250m */}
           <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-5">
-            <div className="flex items-center gap-2 text-slate-900 font-bold border-b border-slate-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">
-                2
-              </span>
-              <h3>Soil & Root Zone Hydrology</h3>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2 text-slate-900 font-bold">
+                <span className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">
+                  2
+                </span>
+                <h3>Soil & ISRIC SoilGrids 250m Hydrology</h3>
+              </div>
+
+              {/* SoilGrids Live Badge & Depth Selector */}
+              <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                <span
+                  className={`text-[11px] font-bold px-2.5 py-1 rounded-full border flex items-center gap-1.5 ${
+                    soilGridsData?.is_available
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                      : "bg-slate-100 text-slate-700 border-slate-300"
+                  }`}
+                >
+                  <span
+                    className={`w-2 h-2 rounded-full ${
+                      soilGridsData?.is_available
+                        ? "bg-emerald-500 animate-pulse"
+                        : "bg-slate-400"
+                    }`}
+                  />
+                  <span>
+                    {soilGridsData?.is_available
+                      ? "ISRIC SoilGrids 250m Active"
+                      : "Manual Soil Baseline"}
+                  </span>
+                </span>
+
+                {/* Depth Interval Selector */}
+                <div className="flex items-center gap-1 text-xs">
+                  <span className="text-[11px] text-slate-500 font-medium">Depth:</span>
+                  <select
+                    value={soilDepthInterval}
+                    onChange={(e) => handleDepthIntervalChange(e.target.value)}
+                    disabled={soilLoading}
+                    className="bg-slate-50 border border-slate-300 rounded-lg px-2 py-1 text-xs text-slate-800 font-semibold focus:ring-1 focus:ring-emerald-500"
+                    title="Standard ISRIC SoilGrids depth intervals"
+                  >
+                    <option value="0-5cm">0-5 cm (Topsoil)</option>
+                    <option value="5-15cm">5-15 cm</option>
+                    <option value="15-30cm">15-30 cm (Root Zone)</option>
+                    <option value="30-60cm">30-60 cm (Subsoil)</option>
+                    <option value="60-100cm">60-100 cm</option>
+                    <option value="100-200cm">100-200 cm (Deep)</option>
+                  </select>
+                </div>
+
+                {currentCoords && (
+                  <button
+                    type="button"
+                    onClick={() => handleDepthIntervalChange(soilDepthInterval)}
+                    disabled={soilLoading}
+                    className="p-1 text-slate-500 hover:text-emerald-700 rounded-md transition-colors"
+                    title="Refresh SoilGrids layers"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${soilLoading ? "animate-spin text-emerald-600" : ""}`} />
+                  </button>
+                )}
+              </div>
             </div>
+
+            {/* Derived USDA Soil Texture Triangle Classification Banner */}
+            {soilGridsData?.is_available && (
+              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3.5 text-xs text-emerald-950 space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 font-bold">
+                  <div className="flex items-center gap-2">
+                    <span className="bg-emerald-200 text-emerald-900 text-[10px] font-black uppercase px-2 py-0.5 rounded-md">
+                      USDA Triangle
+                    </span>
+                    <span className="text-sm text-emerald-900">
+                      Derived Texture: <strong>{soilGridsData.derived_usda_texture}</strong>
+                    </span>
+                    <span className="text-slate-600 font-normal">
+                      &rarr; Mapped to: <strong>{soilGridsData.cropwater_soil_type}</strong>
+                    </span>
+                  </div>
+                  <span className="text-[11px] font-mono text-emerald-800">
+                    Depth: {soilDepthInterval} • 250m Resolution
+                  </span>
+                </div>
+
+                {/* Key Soil Composition & Hydrology Values */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 font-mono text-[11px]">
+                  <div className="bg-white/80 p-2 rounded-lg border border-emerald-200/60">
+                    <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">Clay Fraction</span>
+                    <span className="font-bold text-slate-800">{soilGridsData.properties?.clay?.converted_value ?? "-"}%</span>
+                    <span className="text-[9px] text-slate-400 font-sans block">(&lt; 2 µm)</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded-lg border border-emerald-200/60">
+                    <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">Sand Fraction</span>
+                    <span className="font-bold text-slate-800">{soilGridsData.properties?.sand?.converted_value ?? "-"}%</span>
+                    <span className="text-[9px] text-slate-400 font-sans block">(50–2000 µm)</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded-lg border border-emerald-200/60">
+                    <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">Field Capacity (FC)</span>
+                    <span className="font-bold text-emerald-800">{soilGridsData.field_capacity_pct}%</span>
+                    <span className="text-[9px] text-slate-400 font-sans block">33 kPa suction</span>
+                  </div>
+                  <div className="bg-white/80 p-2 rounded-lg border border-emerald-200/60">
+                    <span className="text-[10px] text-slate-500 font-sans block uppercase font-bold">Available Water (AWC)</span>
+                    <span className="font-bold text-emerald-800">{soilGridsData.available_water_capacity_mm_per_m} mm/m</span>
+                    <span className="text-[9px] text-slate-400 font-sans block">FC - PWP balance</span>
+                  </div>
+                </div>
+
+                {/* Toggle for 13 SoilGrids Properties Table */}
+                <div className="pt-1 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() => setShowSoilDetails(!showSoilDetails)}
+                    className="text-[11px] font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1 transition-colors"
+                  >
+                    <span>{showSoilDetails ? "Hide Detailed SoilGrids Layers" : "View All 13 SoilGrids Physical Properties & Units"}</span>
+                    {showSoilDetails ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                  </button>
+                  <span className="text-[10px] text-slate-500 italic">
+                    ISRIC SoilGrids 2.0 (CC BY 4.0)
+                  </span>
+                </div>
+
+                {showSoilDetails && (
+                  <div className="mt-2 pt-2 border-t border-emerald-200/80 overflow-x-auto animate-fadeIn">
+                    <table className="w-full text-left text-[11px] border-collapse">
+                      <thead>
+                        <tr className="border-b border-emerald-200 text-slate-600 font-bold">
+                          <th className="py-1 px-2">Layer / Property</th>
+                          <th className="py-1 px-2">Raw Value (ISRIC)</th>
+                          <th className="py-1 px-2">Converted Standard</th>
+                          <th className="py-1 px-2">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-emerald-100 font-mono text-slate-800">
+                        {Object.entries(soilGridsData.properties).map(([propKey, propItem]: [string, any]) => (
+                          <tr key={propKey} className="hover:bg-white/60">
+                            <td className="py-1 px-2 font-sans font-semibold text-slate-900">{propItem.display_name}</td>
+                            <td className="py-1 px-2 text-slate-600">{propItem.raw_value} {propItem.raw_units}</td>
+                            <td className="py-1 px-2 font-bold text-emerald-900">{propItem.converted_value} {propItem.target_units}</td>
+                            <td className="py-1 px-2 font-sans text-[10px] text-slate-500">{propItem.description}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Soil Type */}
@@ -633,16 +884,16 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                 <input
                   type="range"
                   step="0.1"
-                  min="4.5"
-                  max="9.0"
+                  min="3.0"
+                  max="11.0"
                   value={formData.soil_ph || 6.8}
                   onChange={(e) => handleChange("soil_ph", parseFloat(e.target.value))}
                   className="w-full accent-emerald-600 cursor-pointer"
                 />
                 <div className="flex justify-between text-[10px] text-slate-600">
-                  <span>Acidic (4.5)</span>
+                  <span>Acidic (3.0)</span>
                   <span>Neutral (7.0)</span>
-                  <span>Alkaline (9.0)</span>
+                  <span>Alkaline (11.0)</span>
                 </div>
               </div>
 
@@ -667,8 +918,8 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                 <input
                   type="range"
                   step="0.5"
-                  min="5"
-                  max="55"
+                  min="0"
+                  max="100"
                   value={formData.soil_moisture_pct}
                   onChange={(e) => handleChange("soil_moisture_pct", parseFloat(e.target.value))}
                   className="w-full accent-emerald-600 cursor-pointer"
@@ -1014,6 +1265,26 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                       {result.gross_irrigation_requirement_mm.toFixed(1)} mm
                     </span>
                   </div>
+                </div>
+
+                {/* Soil Profile & Texture Calibration Tag */}
+                <div className="mt-4 pt-3 border-t border-emerald-700/60 flex flex-wrap items-center justify-between text-xs text-emerald-200/90 gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Soil: <strong>{result.usda_soil_texture ? `USDA ${result.usda_soil_texture}` : result.soil_type}</strong></span>
+                    {result.soil_depth_interval && (
+                      <span className="text-[10px] bg-emerald-950/80 px-2 py-0.5 rounded text-emerald-300 font-mono">
+                        {result.soil_depth_interval}
+                      </span>
+                    )}
+                  </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    result.soil_source === "isric_soilgrids_250m"
+                      ? "bg-emerald-500/30 text-emerald-200 border border-emerald-400/50"
+                      : "bg-emerald-950/70 text-emerald-300 border border-emerald-700/50"
+                  }`}>
+                    {result.soil_source === "isric_soilgrids_250m" ? "ISRIC SoilGrids 250m Calibrated" : "Manual Soil Baseline"}
+                  </span>
                 </div>
 
                 {/* Model Predictions Mini-Comparison (Cloud ML Inference when connected) */}

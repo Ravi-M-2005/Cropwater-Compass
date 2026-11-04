@@ -14,6 +14,16 @@ export interface PredictionRequest {
   et0_mm?: number;
   irrigation_method: string;
   model_name?: string;
+  latitude?: number;
+  longitude?: number;
+  soil_source?: string;
+  soil_depth_interval?: string;
+  sand_pct?: number;
+  silt_pct?: number;
+  clay_pct?: number;
+  volumetric_water_content_fc_pct?: number;
+  volumetric_water_content_wp_pct?: number;
+  awc_volumetric_pct?: number;
 }
 
 export interface ScheduleRecommendation {
@@ -50,7 +60,54 @@ export interface PredictionResponse {
   recommendations: string[];
   model_used: string;
   model_predictions: Record<string, number>;
+  soil_source?: string;
+  usda_soil_texture?: string;
+  soil_depth_interval?: string;
   timestamp: string;
+}
+
+export interface FoldScore {
+  fold: number;
+  r2: number;
+  rmse: number;
+  mae: number;
+  mape: number;
+}
+
+export interface CrossValidationResult {
+  k_folds: number;
+  r2_mean: number;
+  r2_std: number;
+  rmse_mean: number;
+  rmse_std: number;
+  mae_mean: number;
+  mae_std: number;
+  mape_mean: number;
+  mape_std: number;
+  fold_scores: FoldScore[];
+}
+
+export interface DistributionBin {
+  bin_start: number;
+  bin_end: number;
+  label: string;
+  count: number;
+}
+
+export interface ActualVsPredictedPair {
+  actual: number;
+  predicted: number;
+  residual: number;
+}
+
+export interface ResidualAnalysis {
+  residual_mean: number;
+  residual_std: number;
+  residual_min?: number;
+  residual_max?: number;
+  quantiles: Record<string, number>;
+  distribution_bins: DistributionBin[];
+  actual_vs_predicted_sample?: ActualVsPredictedPair[];
 }
 
 export interface ModelMetric {
@@ -59,10 +116,33 @@ export interface ModelMetric {
   rmse: number;
   mae: number;
   mse: number;
+  mape?: number;
   training_time_sec: number;
   inference_latency_ms: number;
   best_features: string[];
   description: string;
+  strengths?: string[];
+  limitations?: string[];
+  suitability_reason?: string;
+  cross_validation?: CrossValidationResult;
+  residual_analysis?: ResidualAnalysis;
+}
+
+export interface ExternalDatasetValidation {
+  dataset_name: string;
+  source_url: string;
+  license: string;
+  total_records: number;
+  features: string[];
+  target_variable: string;
+  target_description: string;
+  limitations: string;
+  metrics_by_model: Record<string, {
+    r2_score: number;
+    rmse: number;
+    mae: number;
+    mape_pct: number;
+  }>;
 }
 
 export interface ModelsComparisonResponse {
@@ -71,6 +151,52 @@ export interface ModelsComparisonResponse {
   target_variable: string;
   evaluation_date: string;
   recommended_model: string;
+  model_justifications?: Record<string, {
+    strengths: string[];
+    limitations: string[];
+    suitability_reason: string;
+  }>;
+  external_dataset_validation?: ExternalDatasetValidation;
+}
+
+export interface SoilPropertyItem {
+  display_name: string;
+  description: string;
+  raw_value: number;
+  raw_units: string;
+  converted_value: number;
+  target_units: string;
+  conversion_factor: number;
+  citation: string;
+}
+
+export interface SoilPropertiesResponse {
+  latitude: number;
+  longitude: number;
+  depth_interval: string;
+  spatial_resolution: string;
+  is_available: boolean;
+  source: string;
+  citation: string;
+  retrieval_date: string;
+  properties: Record<string, SoilPropertyItem>;
+  derived_usda_texture: string;
+  cropwater_soil_type: string;
+  field_capacity_pct: number;
+  wilting_point_pct: number;
+  available_water_capacity_mm_per_m: number;
+  error_message?: string | null;
+}
+
+export interface TextureClassifyResponse {
+  sand_pct: number;
+  silt_pct: number;
+  clay_pct: number;
+  usda_texture_class: string;
+  mapped_cropwater_soil: string;
+  field_capacity_pct: number;
+  wilting_point_pct: number;
+  awc_mm_per_m: number;
 }
 
 export interface FeatureImportanceItem {
