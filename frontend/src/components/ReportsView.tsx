@@ -191,12 +191,12 @@ export const ReportsView: React.FC = () => {
                         </td>
                         <td className="py-2.5 px-3 font-mono text-slate-800 font-semibold">
                           {mb.cv_r2_mean != null && mb.cv_r2_std != null
-                            ? `${mb.cv_r2_mean.toFixed(4)} \u00B1 ${mb.cv_r2_std.toFixed(4)}`
+                            ? `${mb.cv_r2_mean.toFixed(4)} ± ${mb.cv_r2_std.toFixed(4)}`
                             : "-"}
                         </td>
                         <td className="py-2.5 px-3 font-mono text-slate-700">
                           {mb.cv_rmse_mean != null && mb.cv_rmse_std != null
-                            ? `${mb.cv_rmse_mean.toFixed(3)} \u00B1 ${mb.cv_rmse_std.toFixed(3)}`
+                            ? `${mb.cv_rmse_mean.toFixed(3)} ± ${mb.cv_rmse_std.toFixed(3)}`
                             : "-"}
                         </td>
                       </tr>
