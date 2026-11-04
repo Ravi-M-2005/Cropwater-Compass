@@ -101,6 +101,14 @@ export interface DailyForecast {
   condition: string;
 }
 
+export interface HourlyForecast {
+  time: string;
+  temp_c: number;
+  humidity_pct: number;
+  precipitation_probability?: number;
+  et0_mm: number;
+}
+
 export interface WeatherData {
   temperature_c: number;
   humidity_pct: number;
@@ -113,7 +121,10 @@ export interface WeatherData {
   latitude: number;
   longitude: number;
   forecast_daily?: DailyForecast[];
+  forecast_hourly?: HourlyForecast[];
   source: string;
+  last_updated?: string;
+  is_gps?: boolean;
 }
 
 export interface CropInfo {

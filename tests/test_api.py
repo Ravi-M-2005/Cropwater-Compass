@@ -187,6 +187,18 @@ def test_weather_and_et0_routes():
     assert weather["humidity_pct"] is not None
     assert weather["et0_mm"] > 0
     assert len(weather["forecast_daily"]) == 7
+    assert "forecast_hourly" in weather
+    assert len(weather["forecast_hourly"]) == 24
+    assert "last_updated" in weather
+
+    # Test GPS custom coordinates (arbitrary farm location)
+    gps_weather = get_current_weather(lat=13.1234, lon=80.1234, city=None)
+    assert gps_weather["latitude"] == 13.1234
+    assert gps_weather["longitude"] == 80.1234
+    assert gps_weather["temperature_c"] is not None
+    assert gps_weather["et0_mm"] > 0
+    assert len(gps_weather["forecast_hourly"]) == 24
+    assert gps_weather["is_gps"] is True
 
     et0_calc = calculate_custom_et0(
         ET0CalculationRequest(

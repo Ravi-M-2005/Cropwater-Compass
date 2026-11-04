@@ -52,6 +52,28 @@ POPULAR_LOCATIONS: Dict[str, Dict[str, Any]] = {
 }
 
 
+def find_nearest_preset_location(lat: float, lon: float) -> Optional[Dict[str, Any]]:
+    """Calculates Haversine distance to popular locations to find nearest regional hub."""
+    min_dist_km = float("inf")
+    nearest = None
+    nearest_name = None
+
+    for name, loc in POPULAR_LOCATIONS.items():
+        dlat = math.radians(loc["lat"] - lat)
+        dlon = math.radians(loc["lon"] - lon)
+        a = math.sin(dlat / 2)**2 + math.cos(math.radians(lat)) * math.cos(math.radians(loc["lat"])) * math.sin(dlon / 2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        dist_km = 6371.0 * c
+        if dist_km < min_dist_km:
+            min_dist_km = dist_km
+            nearest = loc
+            nearest_name = name
+
+    if nearest and min_dist_km <= 65.0:
+        return {"name": nearest_name, "distance_km": round(min_dist_km, 1), **nearest}
+    return None
+
+
 def calculate_fao56_et0(
     temp_c: float,
     humidity_pct: float,
@@ -181,6 +203,38 @@ def get_simulated_weather(lat: float, lon: float, city: Optional[str] = None) ->
             "condition": "Showers" if f_rain > 0 else ("Sunny" if f_temp > 28 else "Partly Cloudy")
         })
 
+    # Generate 24-hour hourly forecast
+    forecast_hourly = []
+    for h in range(24):
+        h_time = (now + timedelta(hours=h)).strftime("%Y-%m-%d %H:00")
+        hour_of_day = (now.hour + h) % 24
+        diurnal_factor = math.cos((hour_of_day - 14) * math.pi / 12)
+        h_temp = round(temp_c + diurnal_factor * 3.5, 1)
+        h_hum = round(max(20.0, min(95.0, humidity_pct - diurnal_factor * 15.0)), 1)
+        h_prob = round(max(0.0, min(100.0, (h_hum - 65.0) * 2.0)), 0) if h_hum > 65 else 0.0
+        solar_weight = max(0.0, math.sin((hour_of_day - 6) * math.pi / 12)) if 6 <= hour_of_day <= 18 else 0.05
+        h_et0 = round((et0 / 8.0) * solar_weight, 2)
+        forecast_hourly.append({
+            "time": h_time,
+            "temp_c": h_temp,
+            "humidity_pct": h_hum,
+            "precipitation_probability": h_prob,
+            "et0_mm": h_et0
+        })
+
+    # Determine resolved location name and GPS indicator
+    nearest = find_nearest_preset_location(lat, lon)
+    is_preset_match = any(abs(l["lat"] - lat) < 0.005 and abs(l["lon"] - lon) < 0.005 for l in POPULAR_LOCATIONS.values())
+    is_gps = not is_preset_match
+
+    if not city:
+        if nearest:
+            city_name = f"Near {nearest['name']} ({lat:.4f}°N, {lon:.4f}°E)"
+        else:
+            city_name = f"GPS Farm Location ({lat:.4f}°N, {lon:.4f}°E)"
+    else:
+        city_name = city
+
     return {
         "temperature_c": temp_c,
         "humidity_pct": humidity_pct,
@@ -189,23 +243,27 @@ def get_simulated_weather(lat: float, lon: float, city: Optional[str] = None) ->
         "solar_radiation": solar_radiation,
         "et0_mm": et0,
         "weather_condition": weather_desc,
-        "city": city or f"Farm Region ({lat:.2f}, {lon:.2f})",
-        "latitude": lat,
-        "longitude": lon,
+        "city": city_name,
+        "latitude": round(lat, 4),
+        "longitude": round(lon, 4),
         "forecast_daily": forecast_daily,
-        "source": "physics_simulation"
+        "forecast_hourly": forecast_hourly,
+        "source": "physics_simulation",
+        "last_updated": now.strftime("%Y-%m-%d %H:%M:%S"),
+        "is_gps": is_gps
     }
 
 
 def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] = None) -> Dict[str, Any]:
     """
-    Attempts to fetch live weather from Open-Meteo free API.
+    Attempts to fetch live weather from Open-Meteo free API for arbitrary GPS coordinates.
     Gracefully falls back to physical simulation if offline, network restricted, or timed out.
     """
     url = (
         f"https://api.open-meteo.com/v1/forecast?"
         f"latitude={lat}&longitude={lon}&"
         f"current=temperature_2m,relative_humidity_2m,wind_speed_10m,precipitation,weather_code&"
+        f"hourly=temperature_2m,relative_humidity_2m,precipitation_probability,et0_fao_evapotranspiration&"
         f"daily=temperature_2m_max,temperature_2m_min,et0_fao_evapotranspiration,precipitation_sum,shortwave_radiation_sum&"
         f"timezone=auto"
     )
@@ -220,6 +278,7 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                 data = json.loads(response.read().decode("utf-8"))
                 current = data.get("current", {})
                 daily = data.get("daily", {})
+                hourly = data.get("hourly", {})
 
                 temp_c = current.get("temperature_2m", 25.0)
                 humidity_pct = current.get("relative_humidity_2m", 50.0)
@@ -249,7 +308,7 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                 elif w_code in [95, 96, 99]:
                     condition = "Thunderstorm"
 
-                # 7-day forecast format
+                # 7-day daily forecast format
                 forecast_daily = []
                 dates = daily.get("time", [])
                 max_temps = daily.get("temperature_2m_max", [])
@@ -270,6 +329,45 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                         "condition": "Showers" if r_sum > 2 else "Clear"
                     })
 
+                # 24-hour hourly forecast format
+                forecast_hourly = []
+                h_times = hourly.get("time", [])
+                h_temps = hourly.get("temperature_2m", [])
+                h_hums = hourly.get("relative_humidity_2m", [])
+                h_probs = hourly.get("precipitation_probability", [])
+                h_et0s = hourly.get("et0_fao_evapotranspiration", [])
+
+                now_iso_prefix = datetime.now().strftime("%Y-%m-%dT%H:00")
+                start_h = 0
+                for idx, t_str in enumerate(h_times):
+                    if t_str >= now_iso_prefix:
+                        start_h = idx
+                        break
+
+                for i in range(start_h, min(start_h + 24, len(h_times))):
+                    forecast_hourly.append({
+                        "time": h_times[i],
+                        "temp_c": round(float(h_temps[i]), 1) if (i < len(h_temps) and h_temps[i] is not None) else round(float(temp_c), 1),
+                        "humidity_pct": round(float(h_hums[i]), 1) if (i < len(h_hums) and h_hums[i] is not None) else round(float(humidity_pct), 1),
+                        "precipitation_probability": float(h_probs[i]) if (i < len(h_probs) and h_probs[i] is not None) else 0.0,
+                        "et0_mm": round(float(h_et0s[i]), 2) if (i < len(h_et0s) and h_et0s[i] is not None) else 0.2
+                    })
+
+                # Resolve display name
+                nearest = find_nearest_preset_location(lat, lon)
+                is_preset_match = any(abs(l["lat"] - lat) < 0.005 and abs(l["lon"] - lon) < 0.005 for l in POPULAR_LOCATIONS.values())
+                is_gps = not is_preset_match
+
+                if not city:
+                    if nearest:
+                        city_name = f"Near {nearest['name']} ({lat:.4f}°N, {lon:.4f}°E)"
+                    else:
+                        city_name = f"GPS Farm Location ({lat:.4f}°N, {lon:.4f}°E)"
+                else:
+                    city_name = city
+
+                obs_time = current.get("time", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
                 return {
                     "temperature_c": round(float(temp_c), 1),
                     "humidity_pct": round(float(humidity_pct), 1),
@@ -278,11 +376,14 @@ def fetch_live_or_simulated_weather(lat: float, lon: float, city: Optional[str] 
                     "solar_radiation": solar_radiation,
                     "et0_mm": round(float(et0_mm), 2),
                     "weather_condition": condition,
-                    "city": city or f"Farm Region ({lat:.2f}, {lon:.2f})",
-                    "latitude": lat,
-                    "longitude": lon,
+                    "city": city_name,
+                    "latitude": round(lat, 4),
+                    "longitude": round(lon, 4),
                     "forecast_daily": forecast_daily,
-                    "source": "open_meteo_live"
+                    "forecast_hourly": forecast_hourly,
+                    "source": "open_meteo_live",
+                    "last_updated": obs_time,
+                    "is_gps": is_gps
                 }
     except Exception as e:
         logger.info(f"Using physical simulation fallback: {e}")

@@ -12,6 +12,7 @@ import {
   X,
   Activity,
 } from "lucide-react";
+import { DataSourceBadge } from "./DataSourceBadge";
 
 interface NavbarProps {
   activeTab: string;
@@ -86,8 +87,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             })}
           </div>
 
-          {/* Backend Status Badge */}
+          {/* Right Status Actions: Data Source & Backend Indicator */}
           <div className="hidden sm:flex items-center space-x-3">
+            <DataSourceBadge />
+
             <div
               className={`flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-medium border ${
                 systemHealthy
@@ -140,6 +143,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             );
           })}
           <div className="pt-2 px-3 border-t border-emerald-900 flex items-center justify-between text-xs">
+            <span className="text-emerald-300 font-medium">Data Source</span>
+            <DataSourceBadge />
+          </div>
+          <div className="pt-1 px-3 flex items-center justify-between text-xs">
             <span className="text-emerald-300 font-medium">Backend Status</span>
             <span
               className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${

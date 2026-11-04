@@ -119,7 +119,10 @@ class WeatherData(BaseModel):
     latitude: float
     longitude: float
     forecast_daily: Optional[List[Dict[str, Any]]] = None
+    forecast_hourly: Optional[List[Dict[str, Any]]] = None
     source: str  # live_api, simulation, or fallback
+    last_updated: Optional[str] = None
+    is_gps: Optional[bool] = False
 
 
 class ET0CalculationRequest(BaseModel):
