@@ -782,7 +782,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
+                  step="any"
                   min="0.1"
                   max="10000"
                   value={formData.area}
@@ -1186,7 +1186,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
+                  step="any"
                   value={formData.temperature_c}
                   onChange={(e) => handleChange("temperature_c", parseFloat(e.target.value) || 0)}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-800 font-medium"
@@ -1199,7 +1199,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
+                  step="any"
                   min="0"
                   max="100"
                   value={formData.humidity_pct}
@@ -1214,7 +1214,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
+                  step="any"
                   min="0"
                   value={formData.wind_speed_kmh}
                   onChange={(e) => handleChange("wind_speed_kmh", parseFloat(e.target.value) || 0)}
@@ -1228,7 +1228,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
+                  step="any"
                   min="0"
                   value={formData.rainfall_mm}
                   onChange={(e) => handleChange("rainfall_mm", parseFloat(e.target.value) || 0)}
@@ -1242,10 +1242,13 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 </label>
                 <input
                   type="number"
-                  step="0.1"
-                  min="0.5"
-                  value={formData.et0_mm || 4.5}
-                  onChange={(e) => handleChange("et0_mm", parseFloat(e.target.value) || 0)}
+                  step="any"
+                  min="0.1"
+                  value={formData.et0_mm ?? ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    handleChange("et0_mm", val === "" ? undefined : parseFloat(val));
+                  }}
                   className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-sm text-slate-800 font-medium"
                 />
               </div>

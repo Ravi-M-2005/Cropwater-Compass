@@ -17,6 +17,12 @@ import { api } from "../services/api";
 export const DatasetView: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<{
+    processed_rows: number;
+    total_rows: number;
+    progress_pct: number;
+    status: string;
+  } | null>(null);
   const [uploadResult, setUploadResult] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -46,6 +52,7 @@ export const DatasetView: React.FC = () => {
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setError(null);
+      setUploadResult(null);
     }
   };
 
@@ -57,12 +64,15 @@ export const DatasetView: React.FC = () => {
     try {
       setUploading(true);
       setError(null);
-      const res = await api.uploadCSV(file);
+      setUploadResult(null);
+      setUploadProgress(null);
+      const res = await api.uploadCSV(file, (prog) => setUploadProgress(prog));
       setUploadResult(res);
     } catch (err: any) {
       setError(err.message || "Failed to parse and process CSV file.");
     } finally {
       setUploading(false);
+      setUploadProgress(null);
     }
   };
 
@@ -129,24 +139,47 @@ export const DatasetView: React.FC = () => {
             />
           </div>
 
-          <div className="mt-5 flex justify-end">
-            <button
-              onClick={handleUpload}
-              disabled={!file || uploading}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-md transition-all text-xs flex items-center gap-2 disabled:opacity-50"
-            >
-              {uploading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Processing Rows...</span>
-                </>
-              ) : (
-                <>
-                  <FileCheck className="w-4 h-4" />
-                  <span>Process Dataset & Run Predictions</span>
-                </>
-              )}
-            </button>
+          <div className="mt-5 space-y-3">
+            {uploading && uploadProgress && uploadProgress.total_rows > 0 && (
+              <div className="bg-emerald-50/70 border border-emerald-200 rounded-xl p-3 space-y-1.5">
+                <div className="flex justify-between text-xs font-semibold text-emerald-900">
+                  <span>
+                    Processing {uploadProgress.processed_rows.toLocaleString()} /{" "}
+                    {Math.min(uploadProgress.total_rows, 100000).toLocaleString()} rows
+                  </span>
+                  <span>{uploadProgress.progress_pct.toFixed(1)}%</span>
+                </div>
+                <div className="w-full bg-emerald-200/70 rounded-full h-2 overflow-hidden">
+                  <div
+                    className="bg-emerald-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${Math.min(100, uploadProgress.progress_pct)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleUpload}
+                disabled={!file || uploading}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-6 py-2.5 rounded-xl shadow-md transition-all text-xs flex items-center gap-2 disabled:opacity-50"
+              >
+                {uploading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>
+                      {uploadProgress && uploadProgress.total_rows > 0
+                        ? `Processing Rows... (${uploadProgress.progress_pct.toFixed(0)}%)`
+                        : "Processing Rows..."}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <FileCheck className="w-4 h-4" />
+                    <span>Process Dataset & Run Predictions</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 

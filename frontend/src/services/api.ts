@@ -250,18 +250,125 @@ export const api = {
   },
 
   // Dataset Management
-  uploadCSV: async (file: File) => {
+  uploadCSV: async (
+    file: File,
+    onProgress?: (progress: {
+      processed_rows: number;
+      total_rows: number;
+      progress_pct: number;
+      status: string;
+    }) => void
+  ) => {
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch(buildApiUrl("/dataset/upload"), {
-      method: "POST",
-      body: formData,
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || "CSV upload failed");
+
+    // 1. Start async upload job (prevents Render 100s HTTP proxy timeout on 100k rows)
+    const uploadCtrl = new AbortController();
+    const uploadTimer = setTimeout(() => uploadCtrl.abort(), 60000);
+    let initRes: Response;
+    try {
+      initRes = await fetch(buildApiUrl("/dataset/upload/async"), {
+        method: "POST",
+        body: formData,
+        signal: uploadCtrl.signal,
+      });
+    } catch (err: any) {
+      if (err?.name === "AbortError") {
+        throw new Error("CSV upload timed out while sending file to server. Please try again.");
+      }
+      throw new Error(err?.message || "Network error while uploading CSV file.");
+    } finally {
+      clearTimeout(uploadTimer);
     }
-    return await res.json();
+
+    // Fallback to legacy synchronous endpoint if /upload/async is not available
+    if (initRes.status === 404) {
+      const syncCtrl = new AbortController();
+      const syncTimer = setTimeout(() => syncCtrl.abort(), 120000);
+      try {
+        const res = await fetch(buildApiUrl("/dataset/upload"), {
+          method: "POST",
+          body: formData,
+          signal: syncCtrl.signal,
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.detail || `CSV upload failed (${res.status})`);
+        }
+        return await res.json();
+      } finally {
+        clearTimeout(syncTimer);
+      }
+    }
+
+    if (!initRes.ok) {
+      const err = await initRes.json().catch(() => ({}));
+      throw new Error(err.detail || `CSV upload failed (${initRes.status})`);
+    }
+
+    const initData = await initRes.json();
+    const jobId = initData.job_id;
+    onProgress?.({
+      processed_rows: initData.processed_rows ?? 0,
+      total_rows: initData.total_rows ?? 0,
+      progress_pct: initData.progress_pct ?? 0,
+      status: initData.status ?? "processing",
+    });
+
+    // 2. Poll job status until completed or failed (max 15 minutes)
+    const maxDeadline = Date.now() + 15 * 60 * 1000;
+    let consecutivePollErrors = 0;
+
+    while (Date.now() < maxDeadline) {
+      await new Promise((r) => setTimeout(r, 1500));
+      const pollCtrl = new AbortController();
+      const pollTimer = setTimeout(() => pollCtrl.abort(), 20000);
+      try {
+        const statusRes = await fetch(buildApiUrl(`/dataset/upload/status/${jobId}`), {
+          signal: pollCtrl.signal,
+        });
+        clearTimeout(pollTimer);
+
+        if (!statusRes.ok) {
+          const err = await statusRes.json().catch(() => ({}));
+          if (statusRes.status === 404) {
+            throw new Error(err.detail || "Upload job expired on server. Please retry.");
+          }
+          consecutivePollErrors += 1;
+          if (consecutivePollErrors >= 5) {
+            throw new Error(err.detail || `Failed to check upload status (${statusRes.status}).`);
+          }
+          continue;
+        }
+
+        consecutivePollErrors = 0;
+        const statusData = await statusRes.json();
+        onProgress?.({
+          processed_rows: statusData.processed_rows ?? 0,
+          total_rows: statusData.total_rows ?? 0,
+          progress_pct: statusData.progress_pct ?? 0,
+          status: statusData.status ?? "processing",
+        });
+
+        if (statusData.status === "completed") {
+          return statusData.result;
+        }
+        if (statusData.status === "failed") {
+          throw new Error(statusData.error || "Batch CSV processing failed on server.");
+        }
+      } catch (err: any) {
+        clearTimeout(pollTimer);
+        if (err?.message && !err.message.includes("Failed to fetch") && err?.name !== "AbortError") {
+          throw err;
+        }
+        consecutivePollErrors += 1;
+        if (consecutivePollErrors >= 5) {
+          throw new Error("Lost connection while tracking CSV batch progress. Please check History or retry.");
+        }
+      }
+    }
+
+    throw new Error("Batch processing timed out after 15 minutes.");
   },
 
   getSampleCSV: () =>

@@ -24,20 +24,26 @@ def get_db_path() -> Path:
 # For backwards-compatibility with module-level references
 DB_DIR = DEFAULT_DB_DIR
 DB_PATH = DEFAULT_DB_PATH
+_INITIALIZED_DBS: set = set()
 
 
 def get_connection() -> sqlite3.Connection:
     db_path = get_db_path()
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(str(db_path), timeout=30.0)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def init_db():
-    """Initializes tables if not already present."""
+    """Initializes tables if not already present (cached per resolved DB path)."""
+    db_key = str(get_db_path().resolve())
+    if db_key in _INITIALIZED_DBS and get_db_path().exists():
+        return
     with get_connection() as conn:
         cursor = conn.cursor()
+        cursor.execute("PRAGMA journal_mode=WAL;")
+        cursor.execute("PRAGMA synchronous=NORMAL;")
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS predictions (
                 id TEXT PRIMARY KEY,
@@ -66,6 +72,7 @@ def init_db():
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_crop ON predictions(crop_type);")
         cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON predictions(timestamp);")
         conn.commit()
+    _INITIALIZED_DBS.add(db_key)
 
 
 def save_prediction(record: Dict[str, Any]) -> str:
@@ -119,12 +126,38 @@ def save_predictions_batch(records: List[Dict[str, Any]]) -> None:
     if not records:
         return
     init_db()
+    batch_ts = datetime.now().isoformat()
+    compact_mode = len(records) > 100
     rows = []
     for record in records:
         pred_id = record.get("id") or str(uuid.uuid4())[:8]
         record["id"] = pred_id
-        timestamp = record.get("timestamp") or datetime.now().isoformat()
+        timestamp = record.get("timestamp") or batch_ts
         record["timestamp"] = timestamp
+        if compact_mode:
+            details_payload = {
+                "id": pred_id,
+                "timestamp": timestamp,
+                "crop_type": record.get("crop_type", "Wheat"),
+                "growth_stage": record.get("growth_stage", "Mid-season"),
+                "area": float(record.get("area", 1.0)),
+                "area_unit": record.get("area_unit", "hectares"),
+                "soil_type": record.get("soil_type", "Loamy"),
+                "soil_moisture_pct": float(record.get("soil_moisture_pct", 30.0)),
+                "reference_et0_mm": float(record.get("reference_et0_mm", 4.0)),
+                "irrigation_method": record.get("irrigation_method", "Drip"),
+                "model_used": record.get("model_used", "xgboost"),
+                "water_requirement_litres": float(record.get("water_requirement_litres", 0.0)),
+                "water_requirement_mm": float(record.get("water_requirement_mm", 0.0)),
+                "net_irrigation_requirement_mm": float(record.get("net_irrigation_requirement_mm", 0.0)),
+                "gross_irrigation_requirement_mm": float(record.get("gross_irrigation_requirement_mm", 0.0)),
+                "irrigation_recommended": bool(record.get("irrigation_recommended")),
+                "urgency_level": record.get("urgency_level", "Moderate"),
+            }
+            details_str = json.dumps(details_payload)
+        else:
+            details_str = json.dumps(record)
+
         rows.append((
             pred_id,
             timestamp,
@@ -146,7 +179,7 @@ def save_predictions_batch(records: List[Dict[str, Any]]) -> None:
             float(record.get("net_irrigation_requirement_mm", 0.0)),
             1 if record.get("irrigation_recommended") else 0,
             record.get("urgency_level", "Moderate"),
-            json.dumps(record)
+            details_str
         ))
 
     with get_connection() as conn:
@@ -230,7 +263,10 @@ def get_history_stats() -> Dict[str, Any]:
     init_db()
     with get_connection() as conn:
         cursor = conn.cursor()
-        total_predictions = cursor.execute("SELECT COUNT(*) FROM predictions").fetchone()[0]
+        agg_row = cursor.execute(
+            "SELECT COUNT(*), SUM(water_requirement_litres), AVG(water_requirement_litres) FROM predictions"
+        ).fetchone()
+        total_predictions = agg_row[0] or 0
 
         if total_predictions == 0:
             return {
@@ -243,8 +279,8 @@ def get_history_stats() -> Dict[str, Any]:
                 "urgency_distribution": {}
             }
 
-        total_water = cursor.execute("SELECT SUM(water_requirement_litres) FROM predictions").fetchone()[0] or 0.0
-        avg_water = cursor.execute("SELECT AVG(water_requirement_litres) FROM predictions").fetchone()[0] or 0.0
+        total_water = agg_row[1] or 0.0
+        avg_water = agg_row[2] or 0.0
 
         # Group by crop
         crop_rows = cursor.execute("SELECT crop_type, SUM(water_requirement_litres) FROM predictions GROUP BY crop_type").fetchall()
