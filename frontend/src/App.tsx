@@ -9,8 +9,16 @@ import { DatasetView } from "./components/DatasetView";
 import { HistoryView } from "./components/HistoryView";
 import { ReportsView } from "./components/ReportsView";
 import { api } from "./services/api";
-import { PredictionRequest } from "./types";
+import { PredictionRequest, WeatherData } from "./types";
 import { Sprout, Github, CheckCircle, ExternalLink } from "lucide-react";
+
+export interface SharedLocationWeather {
+  locationName: string;
+  lat: number;
+  lon: number;
+  isGps: boolean;
+  weather: WeatherData | null;
+}
 
 export const App: React.FC = () => {
   const getInitialTab = () => {
@@ -29,6 +37,7 @@ export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [systemHealthy, setSystemHealthy] = useState(false);
   const [shapRequest, setShapRequest] = useState<PredictionRequest | undefined>(undefined);
+  const [sharedLocation, setSharedLocation] = useState<SharedLocationWeather | null>(null);
 
   useEffect(() => {
     window.location.hash = activeTab;
@@ -75,8 +84,19 @@ export const App: React.FC = () => {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {activeTab === "dashboard" && <DashboardView onNavigate={setActiveTab} />}
-        {activeTab === "predict" && <PredictionView onNavigateToShap={handleNavigateToShap} />}
-        {activeTab === "weather" && <WeatherView />}
+        {activeTab === "predict" && (
+          <PredictionView
+            onNavigateToShap={handleNavigateToShap}
+            sharedLocation={sharedLocation}
+            onLocationWeatherChange={setSharedLocation}
+          />
+        )}
+        {activeTab === "weather" && (
+          <WeatherView
+            sharedLocation={sharedLocation}
+            onLocationWeatherChange={setSharedLocation}
+          />
+        )}
         {activeTab === "models" && <ModelComparisonView />}
         {activeTab === "explainability" && <ExplainabilityView initialRequest={shapRequest} />}
         {activeTab === "dataset" && <DatasetView />}

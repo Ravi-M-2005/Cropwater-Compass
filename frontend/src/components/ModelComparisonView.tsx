@@ -597,7 +597,7 @@ export const ModelComparisonView: React.FC = () => {
                   </li>
                   <li className="flex items-start gap-1.5">
                     <Check className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0 mt-0.5" />
-                    <span>Achieves highest explained variance on temporal sequences (R²=0.9909).</span>
+                    <span>Achieves highest explained variance on temporal sequences (R²={(data?.models.find((m) => m.model_name.includes("LSTM"))?.r2_score ?? 0.9898).toFixed(4)}).</span>
                   </li>
                 </ul>
               </div>

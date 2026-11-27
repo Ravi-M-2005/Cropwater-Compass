@@ -42,8 +42,17 @@ import { useNetworkStatus } from "../hooks/useNetworkStatus";
 import { OfflineDatasetSelector } from "./OfflineDatasetSelector";
 import { OfflineDatasetRecord, OFFLINE_DATASET } from "../data/offlineDataset";
 import { DataSourceBadge } from "./DataSourceBadge";
+import type { SharedLocationWeather } from "../App";
 
-export const WeatherView: React.FC = () => {
+interface WeatherViewProps {
+  sharedLocation?: SharedLocationWeather | null;
+  onLocationWeatherChange?: (loc: SharedLocationWeather) => void;
+}
+
+export const WeatherView: React.FC<WeatherViewProps> = ({
+  sharedLocation,
+  onLocationWeatherChange,
+}) => {
   const { isOnline, isOpenMeteoReachable, mode, offlineReason, switchToLive, switchToOffline, switchToManual } = useNetworkStatus();
 
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -75,6 +84,13 @@ export const WeatherView: React.FC = () => {
       setWeather(data);
       setLat(latitude);
       setLon(longitude);
+      onLocationWeatherChange?.({
+        locationName: city || selectedLocation,
+        lat: latitude,
+        lon: longitude,
+        isGps: city === "Current Farm Location (GPS)",
+        weather: data,
+      });
     } catch (err: any) {
       console.warn("Open-Meteo live API failed or unreachable:", err);
       // Auto-fallback to offline dataset mode
@@ -90,8 +106,14 @@ export const WeatherView: React.FC = () => {
     applyOfflineRecord(defaultRec);
   };
 
-  const applyOfflineRecord = (rec: OfflineDatasetRecord) => {
+  const applyOfflineRecord = (rec: OfflineDatasetRecord, locMap?: Record<string, any>) => {
     setSelectedOfflineRecord(rec);
+    const mapSource = locMap || locations;
+    const recCoords = mapSource[rec.location];
+    const recLat = recCoords?.lat ?? lat;
+    const recLon = recCoords?.lon ?? lon;
+    setLat(recLat);
+    setLon(recLon);
     setWeather({
       temperature_c: rec.temperature_c,
       humidity_pct: rec.humidity_pct,
@@ -101,8 +123,8 @@ export const WeatherView: React.FC = () => {
       et0_mm: rec.et0_mm,
       weather_condition: rec.rainfall_mm > 5 ? "Moderate Rain" : rec.rainfall_mm > 0 ? "Light Showers" : "Sunny / Clear",
       city: `${rec.location}, ${rec.state} (Offline Record ${rec.id})`,
-      latitude: lat,
-      longitude: lon,
+      latitude: recLat,
+      longitude: recLon,
       forecast_daily: [],
       forecast_hourly: [],
       source: "offline_dataset",
@@ -128,6 +150,17 @@ export const WeatherView: React.FC = () => {
       // If user is already offline or Open-Meteo is known unreachable, load offline record directly
       if (!navigator.onLine || mode === "OFFLINE_DATASET") {
         loadDefaultOfflineRecord();
+        setLoading(false);
+        return;
+      }
+
+      // If shared location & weather already exist from PredictionView, reuse exact coordinates & observation
+      if (sharedLocation && sharedLocation.weather) {
+        setIsGpsActive(sharedLocation.isGps);
+        setSelectedLocation(sharedLocation.locationName);
+        setLat(sharedLocation.lat);
+        setLon(sharedLocation.lon);
+        setWeather(sharedLocation.weather);
         setLoading(false);
         return;
       }

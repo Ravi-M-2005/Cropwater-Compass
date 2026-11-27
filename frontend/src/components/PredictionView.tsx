@@ -46,12 +46,19 @@ import { OfflineDatasetRecord, OFFLINE_DATASET } from "../data/offlineDataset";
 import { OFFLINE_CROPS_LIST } from "../data/cropProfiles";
 import { calculateOfflineIrrigation } from "../services/offlineIrrigationEngine";
 import { DataSourceBadge } from "./DataSourceBadge";
+import type { SharedLocationWeather } from "../App";
 
 interface PredictionViewProps {
   onNavigateToShap?: (data: PredictionRequest) => void;
+  sharedLocation?: SharedLocationWeather | null;
+  onLocationWeatherChange?: (loc: SharedLocationWeather) => void;
 }
 
-export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap }) => {
+export const PredictionView: React.FC<PredictionViewProps> = ({
+  onNavigateToShap,
+  sharedLocation,
+  onLocationWeatherChange,
+}) => {
   // Network & Data Source Status
   const {
     isOnline,
@@ -221,6 +228,13 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
       }));
       setWeatherSource(w.source);
       setLastWeatherUpdate(w.last_updated || "Just now");
+      onLocationWeatherChange?.({
+        locationName: cityName || selectedLocation,
+        lat,
+        lon,
+        isGps: cityName === "Current Farm Location (GPS)",
+        weather: w,
+      });
 
       // Run automatic irrigation prediction with the updated weather parameters
       const updatedReq: PredictionRequest = {
@@ -285,6 +299,28 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
       if (!navigator.onLine || mode === "OFFLINE_DATASET") {
         const defaultRec = OFFLINE_DATASET[0];
         handleSelectOfflineRecord(defaultRec);
+        return;
+      }
+
+      // If shared location & weather already exist from WeatherView, reuse exact coordinates & observation
+      if (sharedLocation && sharedLocation.weather) {
+        const w = sharedLocation.weather;
+        setIsGpsActive(sharedLocation.isGps);
+        setSelectedLocation(sharedLocation.locationName);
+        setCurrentCoords({ lat: sharedLocation.lat, lon: sharedLocation.lon });
+        setWeatherSource(w.source);
+        setLastWeatherUpdate(w.last_updated || "Just now");
+        setFormData((prev) => ({
+          ...prev,
+          latitude: sharedLocation.lat,
+          longitude: sharedLocation.lon,
+          temperature_c: w.temperature_c,
+          humidity_pct: w.humidity_pct,
+          wind_speed_kmh: w.wind_speed_kmh,
+          rainfall_mm: w.rainfall_mm,
+          solar_radiation: w.solar_radiation,
+          et0_mm: w.et0_mm,
+        }));
         return;
       }
 
@@ -1230,9 +1266,9 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
-                  { id: "xgboost", name: "XGBoost", desc: "R²=0.93" },
-                  { id: "ann", name: "ANN (MLP)", desc: "R²=0.98" },
-                  { id: "lstm", name: "LSTM", desc: "R²=0.99" },
+                  { id: "xgboost", name: "XGBoost", desc: "R²=0.9259" },
+                  { id: "ann", name: "ANN (MLP)", desc: "R²=0.9759" },
+                  { id: "lstm", name: "LSTM", desc: "R²=0.9898" },
                   { id: "ensemble", name: "Ensemble", desc: "Blended" },
                 ].map((m) => (
                   <button

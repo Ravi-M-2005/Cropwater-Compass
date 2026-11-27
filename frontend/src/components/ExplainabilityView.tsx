@@ -53,22 +53,36 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
 
   const [explanation, setExplanation] = useState<ShapExplanationResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchExplanation = async (reqData: PredictionRequest) => {
     try {
       setLoading(true);
+      setError(null);
       const res = await api.getShapExplanation(reqData);
+      if (!res || !res.feature_importances || res.feature_importances.length === 0) {
+        setExplanation(null);
+        setError("SHAP feature attribution returned no features for this input.");
+        return;
+      }
       setExplanation(res);
-    } catch (err) {
+    } catch (err: any) {
       console.error("SHAP computation failed:", err);
+      setExplanation(null);
+      setError(err?.message || "SHAP computation is currently unavailable. Please verify backend connectivity and try again.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchExplanation(params);
-  }, []);
+    if (initialRequest) {
+      setParams(initialRequest);
+      fetchExplanation(initialRequest);
+    } else {
+      fetchExplanation(params);
+    }
+  }, [initialRequest]);
 
   const chartData = explanation?.feature_importances.map((item) => ({
     name: item.display_name,
@@ -101,6 +115,22 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
         </button>
       </div>
 
+      {/* Active Prediction Context Strip */}
+      <div className="bg-slate-100/80 rounded-xl px-4 py-2.5 border border-slate-200 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-700">
+        <span><strong>Crop:</strong> {params.crop_type} ({params.growth_stage})</span>
+        <span><strong>Soil:</strong> {params.soil_type} ({params.soil_moisture_pct}%)</span>
+        <span><strong>Temp:</strong> {params.temperature_c}°C</span>
+        <span><strong>Humidity:</strong> {params.humidity_pct}%</span>
+        <span><strong>ET₀:</strong> {params.et0_mm ?? "Auto"} mm/d</span>
+        <span><strong>Model:</strong> {explanation?.model_name || params.model_name || "xgboost"}</span>
+      </div>
+
+      {error && (
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-xl text-amber-900 text-sm">
+          <strong>SHAP Unavailable:</strong> {error}
+        </div>
+      )}
+
       {/* Baseline to Prediction Waterfall Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
@@ -108,7 +138,7 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
             Base Value (Mean Baseline)
           </span>
           <div className="text-2xl font-black text-slate-800 mt-2">
-            {explanation?.base_value.toFixed(2)} mm
+            {loading ? "Computing..." : explanation ? `${explanation.base_value.toFixed(2)} mm` : "Unavailable"}
           </div>
           <p className="text-xs text-slate-600 mt-1">
             Expected gross irrigation requirement across all baseline conditions.
@@ -120,7 +150,7 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
             Estimated Requirement
           </span>
           <div className="text-2xl font-black text-emerald-800 mt-2">
-            {explanation?.predicted_value.toFixed(2)} mm
+            {loading ? "Computing..." : explanation ? `${explanation.predicted_value.toFixed(2)} mm` : "Unavailable"}
           </div>
           <p className="text-xs text-slate-600 mt-1">
             Final output after aggregating positive and negative feature attributions.
