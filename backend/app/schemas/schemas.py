@@ -306,6 +306,9 @@ class ShapExplanationResponse(BaseModel):
     top_positive_features: List[str]
     top_negative_features: List[str]
     explanation_summary: str
+    raw_ml_prediction_mm: Optional[float] = None
+    hybrid_recommendation_mm: Optional[float] = None
+    fao56_blend_note: Optional[str] = None
 
 
 class HistoryFilter(BaseModel):

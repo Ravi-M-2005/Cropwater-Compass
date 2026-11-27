@@ -215,6 +215,9 @@ export interface ShapExplanationResponse {
   top_positive_features: string[];
   top_negative_features: string[];
   explanation_summary: string;
+  raw_ml_prediction_mm?: number;
+  hybrid_recommendation_mm?: number;
+  fao56_blend_note?: string;
 }
 
 export interface DailyForecast {

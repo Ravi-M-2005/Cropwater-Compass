@@ -20,7 +20,8 @@ from backend.app.services.irrigation import (
     ML_TRAINED_CROPS,
     SOIL_DATABASE,
     IRRIGATION_METHODS,
-    calculate_irrigation_recommendation
+    calculate_irrigation_recommendation,
+    resolve_crop_name
 )
 from backend.app.services.weather import calculate_fao56_et0
 from backend.app.services.ml_service import (
@@ -161,6 +162,7 @@ def get_shap_analysis(request: PredictionRequest):
     """
     Computes SHAP-based feature importance breakdown showing which parameters
     drive the water requirement up or down for the specific farm condition.
+    Explains the raw ML model prediction while contextualizing the final hybrid FAO-56 recommendation.
     """
     req_dict = request.model_dump()
     if not req_dict.get("et0_mm"):
@@ -170,7 +172,49 @@ def get_shap_analysis(request: PredictionRequest):
             wind_speed_kmh=request.wind_speed_kmh,
             solar_radiation_mj=request.solar_radiation
         )
-    return get_shap_explanation(req_dict)
+
+    # 1. Compute SHAP decomposition for the raw ML model
+    shap_res = get_shap_explanation(req_dict)
+
+    # 2. Compute the delivered hybrid agronomic recommendation
+    primary_predicted_mm, _ = predict_water_requirements(req_dict)
+    irr_result = calculate_irrigation_recommendation(
+        crop_type=request.crop_type,
+        growth_stage=request.growth_stage,
+        area=request.area,
+        area_unit=request.area_unit,
+        soil_type=request.soil_type,
+        soil_moisture_pct=request.soil_moisture_pct,
+        temperature_c=request.temperature_c,
+        humidity_pct=request.humidity_pct,
+        wind_speed_kmh=request.wind_speed_kmh,
+        rainfall_mm=request.rainfall_mm,
+        reference_et0_mm=req_dict["et0_mm"],
+        irrigation_method=request.irrigation_method,
+        ml_predicted_mm=primary_predicted_mm
+    )
+
+    canonical_crop = resolve_crop_name(request.crop_type)
+    is_trained = canonical_crop in ML_TRAINED_CROPS
+    gir = irr_result["gross_irrigation_requirement_mm"]
+    raw_ml = shap_res["predicted_value"]
+
+    shap_res["raw_ml_prediction_mm"] = raw_ml
+    shap_res["hybrid_recommendation_mm"] = gir
+
+    if is_trained:
+        shap_res["fao56_blend_note"] = (
+            f"SHAP decomposes the raw ML model prediction ({raw_ml:.2f} mm). "
+            f"The final delivered farm recommendation ({gir:.2f} mm / {irr_result['water_requirement_litres']:,.0f} L) blends 75% ML with 25% physical FAO-56 water balance."
+        )
+    else:
+        shap_res["fao56_blend_note"] = (
+            f"Crop '{canonical_crop}' is outside the 34 ML-trained benchmark crops. "
+            f"The final delivered recommendation ({gir:.2f} mm / {irr_result['water_requirement_litres']:,.0f} L) uses 100% physical FAO-56 Penman-Monteith water balance. "
+            f"SHAP explains the underlying ML regressor's exploratory generalization ({raw_ml:.2f} mm)."
+        )
+
+    return shap_res
 
 
 @router.get("/crops", response_model=List[CropInfo])

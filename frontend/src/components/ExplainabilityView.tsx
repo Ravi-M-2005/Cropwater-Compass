@@ -132,33 +132,55 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
       )}
 
       {/* Baseline to Prediction Waterfall Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-600 block">
+          <span className="text-xs uppercase font-bold text-slate-500 block">
             Base Value (Mean Baseline)
           </span>
           <div className="text-2xl font-black text-slate-800 mt-2">
             {loading ? "Computing..." : explanation ? `${explanation.base_value.toFixed(2)} mm` : "Unavailable"}
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Expected gross irrigation requirement across all baseline conditions.
+          <p className="text-xs text-slate-500 mt-1">
+            Expected gross requirement across baseline training dataset.
           </p>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-600 block">
-            Estimated Requirement
-          </span>
-          <div className="text-2xl font-black text-emerald-800 mt-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase font-bold text-slate-500 block">
+              Raw ML Model Output
+            </span>
+            <span className="text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200 font-mono font-bold px-1.5 py-0.5 rounded">
+              XGBoost
+            </span>
+          </div>
+          <div className="text-2xl font-black text-indigo-700 mt-2">
             {loading ? "Computing..." : explanation ? `${explanation.predicted_value.toFixed(2)} mm` : "Unavailable"}
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Final output after aggregating positive and negative feature attributions.
+          <p className="text-xs text-slate-500 mt-1">
+            Raw ML regressor prediction decomposed below by SHAP attributions.
           </p>
         </div>
 
         <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-          <span className="text-xs uppercase font-bold text-slate-600 block">
+          <div className="flex items-center justify-between">
+            <span className="text-xs uppercase font-bold text-emerald-800 block">
+              Delivered Recommendation
+            </span>
+            <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-1.5 py-0.5 rounded">
+              FAO-56 GIR
+            </span>
+          </div>
+          <div className="text-2xl font-black text-emerald-700 mt-2">
+            {loading ? "Computing..." : explanation?.hybrid_recommendation_mm != null ? `${explanation.hybrid_recommendation_mm.toFixed(2)} mm` : "—"}
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Final farm delivery incorporating crop Kc, root balance &amp; efficiency.
+          </p>
+        </div>
+
+        <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+          <span className="text-xs uppercase font-bold text-slate-500 block">
             Primary Influencers
           </span>
           <div className="flex items-center gap-1.5 mt-2 flex-wrap">
@@ -181,11 +203,22 @@ export const ExplainabilityView: React.FC<ExplainabilityViewProps> = ({
               </span>
             ))}
           </div>
-          <p className="text-xs text-slate-600 mt-1">
-            Red/Amber increases water; Green/Teal decreases water needed.
+          <p className="text-xs text-slate-500 mt-1">
+            Amber increases ML water; Teal decreases ML requirement.
           </p>
         </div>
       </div>
+
+      {/* Model vs Agronomic Blend Callout */}
+      {explanation?.fao56_blend_note && (
+        <div className="bg-emerald-50/60 border border-emerald-200/80 p-4 rounded-2xl text-xs text-emerald-950 flex items-start gap-2.5">
+          <Info className="w-4 h-4 text-emerald-700 flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-extrabold text-emerald-900 block">Agronomic Recommendation &amp; Explainability Mapping:</span>
+            <p className="text-emerald-800 leading-relaxed">{explanation.fao56_blend_note}</p>
+          </div>
+        </div>
+      )}
 
       {/* SHAP Waterfall / Feature Contributions Chart */}
       <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
