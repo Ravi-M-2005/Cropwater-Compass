@@ -15,8 +15,11 @@ from backend.app.services.irrigation import (
     convert_area_to_sq_meters
 )
 from backend.app.services.weather import calculate_fao56_et0
-from backend.app.services.ml_service import predict_water_requirements
-from backend.app.services.history import save_prediction
+from backend.app.services.ml_service import (
+    predict_water_requirements,
+    predict_water_requirements_batch
+)
+from backend.app.services.history import save_prediction, save_predictions_batch
 
 router = APIRouter(prefix="/api/dataset", tags=["Dataset"])
 
@@ -55,128 +58,163 @@ def _process_dataframe(df: pd.DataFrame, run_prediction_records: bool = True) ->
 
     known_crops_lower = {k.lower() for k in CROP_DATABASE} | {k.lower() for k in CROP_ALIASES}
 
-    processed_rows = []
+    MAX_BATCH_ROWS = 100_000
+    CHUNK_SIZE = 2500
+
+    total_rows = len(df)
+    rows_to_process = df.head(MAX_BATCH_ROWS)
+
+    preview_rows: List[Dict[str, Any]] = []
     row_errors: List[Dict[str, Any]] = []
     total_water_litres = 0.0
+    processed_count = 0
 
-    for idx, row in df.head(100).iterrows():  # process up to 100 rows in preview/batch
-        row_num = int(idx) + 1
-        errors_for_row: List[str] = []
+    num_rows = len(rows_to_process)
+    for chunk_start in range(0, num_rows, CHUNK_SIZE):
+        chunk_end = min(chunk_start + CHUNK_SIZE, num_rows)
+        chunk_df = rows_to_process.iloc[chunk_start:chunk_end]
 
-        raw_crop = str(row.get("crop_type", "")).strip()
-        if not raw_crop or raw_crop.lower() == "nan":
-            errors_for_row.append("Missing crop_type.")
-            crop = ""
-        elif raw_crop.lower() not in known_crops_lower:
-            errors_for_row.append(f"Unsupported crop_type '{raw_crop}'.")
-            crop = raw_crop
-        else:
-            crop = resolve_crop_name(raw_crop)
+        valid_specs = []
+        valid_rec_dicts = []
 
-        stage = str(row.get("growth_stage", "Mid-season")).strip()
-        if not stage or stage.lower() == "nan":
-            errors_for_row.append("Missing growth_stage.")
+        for idx, row in chunk_df.iterrows():
+            row_num = int(idx) + 1
+            errors_for_row: List[str] = []
 
-        soil = str(row.get("soil_type", "Loamy")).strip()
-        if not soil or soil.lower() == "nan":
-            errors_for_row.append("Missing soil_type.")
+            raw_crop = str(row.get("crop_type", "")).strip()
+            if not raw_crop or raw_crop.lower() == "nan":
+                errors_for_row.append("Missing crop_type.")
+                crop = ""
+            elif raw_crop.lower() not in known_crops_lower:
+                errors_for_row.append(f"Unsupported crop_type '{raw_crop}'.")
+                crop = raw_crop
+            else:
+                crop = resolve_crop_name(raw_crop)
 
-        unit = str(row.get("area_unit", "hectares")).strip()
-        method = str(row.get("irrigation_method", "Drip")).strip()
+            stage = str(row.get("growth_stage", "Mid-season")).strip()
+            if not stage or stage.lower() == "nan":
+                errors_for_row.append("Missing growth_stage.")
 
-        def _parse_float(col_name: str, default: Optional[float] = None) -> Optional[float]:
-            val = row.get(col_name, default)
-            if pd.isna(val):
-                return default
-            try:
-                return float(val)
-            except (ValueError, TypeError):
-                errors_for_row.append(f"Invalid numeric value for {col_name}: '{val}'.")
-                return None
+            soil = str(row.get("soil_type", "Loamy")).strip()
+            if not soil or soil.lower() == "nan":
+                errors_for_row.append("Missing soil_type.")
 
-        area = _parse_float("area", 1.0)
-        moisture = _parse_float("soil_moisture_pct")
-        temp = _parse_float("temperature_c")
-        hum = _parse_float("humidity_pct")
-        wind = _parse_float("wind_speed_kmh", 10.0)
-        rain = _parse_float("rainfall_mm", 0.0)
-        solar = _parse_float("solar_radiation", 18.0)
-        et0_raw = _parse_float("et0_mm", None) if "et0_mm" in df.columns else None
+            unit = str(row.get("area_unit", "hectares")).strip()
+            method = str(row.get("irrigation_method", "Drip")).strip()
 
-        if area is not None and area <= 0:
-            errors_for_row.append(f"area must be > 0 (got {area}).")
-        if moisture is None or not (0.0 <= moisture <= 100.0):
-            errors_for_row.append(f"soil_moisture_pct must be between 0 and 100 (got {moisture}).")
-        if temp is None or not (-20.0 <= temp <= 60.0):
-            errors_for_row.append(f"temperature_c must be between -20 and 60 (got {temp}).")
-        if hum is None or not (0.0 <= hum <= 100.0):
-            errors_for_row.append(f"humidity_pct must be between 0 and 100 (got {hum}).")
-        if wind is not None and wind < 0:
-            errors_for_row.append(f"wind_speed_kmh cannot be negative (got {wind}).")
-        if rain is not None and rain < 0:
-            errors_for_row.append(f"rainfall_mm cannot be negative (got {rain}).")
+            def _parse_float(col_name: str, default: Optional[float] = None) -> Optional[float]:
+                val = row.get(col_name, default)
+                if pd.isna(val):
+                    return default
+                try:
+                    return float(val)
+                except (ValueError, TypeError):
+                    errors_for_row.append(f"Invalid numeric value for {col_name}: '{val}'.")
+                    return None
 
-        if errors_for_row:
-            row_errors.append({"row": row_num, "crop_type": raw_crop, "errors": errors_for_row})
+            area = _parse_float("area", 1.0)
+            moisture = _parse_float("soil_moisture_pct")
+            temp = _parse_float("temperature_c")
+            hum = _parse_float("humidity_pct")
+            wind = _parse_float("wind_speed_kmh", 10.0)
+            rain = _parse_float("rainfall_mm", 0.0)
+            solar = _parse_float("solar_radiation", 18.0)
+            et0_raw = _parse_float("et0_mm", None) if "et0_mm" in df.columns else None
+
+            if area is not None and area <= 0:
+                errors_for_row.append(f"area must be > 0 (got {area}).")
+            if moisture is None or not (0.0 <= moisture <= 100.0):
+                errors_for_row.append(f"soil_moisture_pct must be between 0 and 100 (got {moisture}).")
+            if temp is None or not (-20.0 <= temp <= 60.0):
+                errors_for_row.append(f"temperature_c must be between -20 and 60 (got {temp}).")
+            if hum is None or not (0.0 <= hum <= 100.0):
+                errors_for_row.append(f"humidity_pct must be between 0 and 100 (got {hum}).")
+            if wind is not None and wind < 0:
+                errors_for_row.append(f"wind_speed_kmh cannot be negative (got {wind}).")
+            if rain is not None and rain < 0:
+                errors_for_row.append(f"rainfall_mm cannot be negative (got {rain}).")
+
+            if errors_for_row:
+                row_errors.append({"row": row_num, "crop_type": raw_crop, "errors": errors_for_row})
+                continue
+
+            et0 = et0_raw if (et0_raw is not None and et0_raw > 0) else calculate_fao56_et0(
+                temp_c=temp,
+                humidity_pct=hum,
+                wind_speed_kmh=wind,
+                solar_radiation_mj=solar
+            )
+
+            rec_dict = {
+                "crop_type": crop,
+                "growth_stage": stage,
+                "soil_type": soil,
+                "soil_moisture_pct": moisture,
+                "temperature_c": temp,
+                "humidity_pct": hum,
+                "wind_speed_kmh": wind,
+                "rainfall_mm": rain,
+                "solar_radiation": solar,
+                "et0_mm": et0,
+                "irrigation_method": method
+            }
+            valid_rec_dicts.append(rec_dict)
+            valid_specs.append((crop, stage, area, unit, soil, moisture, temp, hum, wind, rain, et0, method))
+
+        if not valid_rec_dicts:
             continue
 
-        et0 = et0_raw if (et0_raw is not None and et0_raw > 0) else calculate_fao56_et0(
-            temp_c=temp,
-            humidity_pct=hum,
-            wind_speed_kmh=wind,
-            solar_radiation_mj=solar
-        )
+        # Batch ML inference for high throughput
+        batch_ml_preds = predict_water_requirements_batch(valid_rec_dicts)
 
-        rec_dict = {
-            "crop_type": crop,
-            "growth_stage": stage,
-            "soil_type": soil,
-            "soil_moisture_pct": moisture,
-            "temperature_c": temp,
-            "humidity_pct": hum,
-            "wind_speed_kmh": wind,
-            "rainfall_mm": rain,
-            "solar_radiation": solar,
-            "et0_mm": et0,
-            "irrigation_method": method
-        }
+        chunk_irr_results = []
+        for i, (crop, stage, area, unit, soil, moisture, temp, hum, wind, rain, et0, method) in enumerate(valid_specs):
+            primary_mm = batch_ml_preds[i][0] if i < len(batch_ml_preds) else None
+            irr_result = calculate_irrigation_recommendation(
+                crop_type=crop,
+                growth_stage=stage,
+                area=area,
+                area_unit=unit,
+                soil_type=soil,
+                soil_moisture_pct=moisture,
+                temperature_c=temp,
+                humidity_pct=hum,
+                wind_speed_kmh=wind,
+                rainfall_mm=rain,
+                reference_et0_mm=et0,
+                irrigation_method=method,
+                ml_predicted_mm=primary_mm
+            )
+            total_water_litres += irr_result["water_requirement_litres"]
+            processed_count += 1
+            if len(preview_rows) < 10:
+                preview_rows.append(irr_result)
+            if run_prediction_records:
+                chunk_irr_results.append(irr_result)
 
-        primary_mm, _ = predict_water_requirements(rec_dict)
-        irr_result = calculate_irrigation_recommendation(
-            crop_type=crop,
-            growth_stage=stage,
-            area=area,
-            area_unit=unit,
-            soil_type=soil,
-            soil_moisture_pct=moisture,
-            temperature_c=temp,
-            humidity_pct=hum,
-            wind_speed_kmh=wind,
-            rainfall_mm=rain,
-            reference_et0_mm=et0,
-            irrigation_method=method,
-            ml_predicted_mm=primary_mm
-        )
-
-        if run_prediction_records:
-            save_prediction(irr_result)
-
-        total_water_litres += irr_result["water_requirement_litres"]
-        processed_rows.append(irr_result)
+        if run_prediction_records and chunk_irr_results:
+            save_predictions_batch(chunk_irr_results)
 
     crops_summary = df["crop_type"].value_counts().to_dict()
     soils_summary = df["soil_type"].value_counts().to_dict()
 
-    return {
-        "total_rows": len(df),
-        "processed_rows_count": len(processed_rows),
+    response: Dict[str, Any] = {
+        "total_rows": total_rows,
+        "processed_rows_count": processed_count,
         "failed_rows_count": len(row_errors),
+        "skipped_rows_count": max(0, total_rows - MAX_BATCH_ROWS) if total_rows > MAX_BATCH_ROWS else 0,
         "row_errors": row_errors,
         "total_water_required_litres": round(total_water_litres, 2),
         "crops_distribution": crops_summary,
         "soils_distribution": soils_summary,
-        "preview": processed_rows[:10]
+        "preview": preview_rows,
     }
+    if total_rows > MAX_BATCH_ROWS:
+        response["processing_note"] = (
+            f"Large dataset ({total_rows:,} rows). Processed the first {MAX_BATCH_ROWS:,} rows. "
+            "For datasets exceeding 100,000 rows, consider splitting into batches."
+        )
+    return response
 
 
 @router.post("/upload")

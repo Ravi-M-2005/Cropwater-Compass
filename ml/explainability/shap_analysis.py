@@ -57,11 +57,8 @@ class ShapExplainer:
         vals = shap_res.values[0] if hasattr(shap_res, "values") else np.array(shap_res)[0]
         base_val = float(shap_res.base_values[0]) if hasattr(shap_res, "base_values") else self.base_value_
 
-        # Map to readable feature names
+        # Map to readable feature names and sort by absolute SHAP importance FIRST
         features_output = []
-        top_pos = []
-        top_neg = []
-
         for name, sv in zip(self.feature_names, vals):
             direction = "increases_water" if sv >= 0 else "decreases_water"
             display_name = name.replace("num__", "").replace("cat__", "").replace("_", " ").title()
@@ -73,13 +70,14 @@ class ShapExplainer:
                 "impact_direction": direction
             }
             features_output.append(item)
-            if sv > 0.05:
-                top_pos.append(display_name)
-            elif sv < -0.05:
-                top_neg.append(display_name)
 
         sorted_items = sorted(features_output, key=lambda x: x["importance"], reverse=True)
+        top_pos = [item["display_name"] for item in sorted_items if item["shap_value"] > 0.05]
+        top_neg = [item["display_name"] for item in sorted_items if item["shap_value"] < -0.05]
         predicted_val = round(base_val + float(np.sum(vals)), 2)
+
+        pos_summary = ", ".join(top_pos[:2]) if top_pos else "no positive drivers (> 0.05 mm)"
+        neg_summary = ", ".join(top_neg[:2]) if top_neg else "no negative offsets (< -0.05 mm)"
 
         return {
             "base_value": round(base_val, 2),
@@ -89,8 +87,8 @@ class ShapExplainer:
             "top_negative_features": top_neg[:3],
             "explanation_summary": (
                 f"Base expectation is {base_val:.2f} mm. "
-                f"Top factors driving water demand up are {', '.join(top_pos[:2]) or 'ambient temperature'}, "
-                f"while {', '.join(top_neg[:2]) or 'soil moisture'} offsets irrigation requirement."
+                f"Top factors driving water demand up: {pos_summary}; "
+                f"top factors reducing demand: {neg_summary}."
             )
         }
 

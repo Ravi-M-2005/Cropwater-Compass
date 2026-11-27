@@ -436,17 +436,24 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
     }
   };
 
-  const selectedCrop = crops.find((c) => c.name === formData.crop_type);
-  const selectedSoil = soils.find((s) => s.name === formData.soil_type);
+  const selectedCrop = crops.find(
+    (c) => c.name === formData.crop_type || c.name.toLowerCase() === formData.crop_type.toLowerCase()
+  );
+  const selectedSoil = soils.find(
+    (s) => s.name === formData.soil_type || s.name.toLowerCase() === formData.soil_type.toLowerCase()
+  );
 
   // Dynamic Kc & ETc calculation
   const getCurrentKc = () => {
     if (!selectedCrop) return 0.85;
     const stage = formData.growth_stage.toLowerCase();
     if (stage.includes("init")) return selectedCrop.kc_initial;
-    if (stage.includes("mid")) return selectedCrop.kc_mid;
-    if (stage.includes("late")) return selectedCrop.kc_late;
-    return (selectedCrop.kc_initial + selectedCrop.kc_mid) / 2.0;
+    if (stage.includes("veg") || stage.includes("develop") || stage.includes("canopy")) {
+      return selectedCrop.kc_vegetative ?? (selectedCrop.kc_initial + selectedCrop.kc_mid) / 2.0;
+    }
+    if (stage.includes("mid") || stage.includes("flower")) return selectedCrop.kc_mid;
+    if (stage.includes("late") || stage.includes("matur") || stage.includes("harvest")) return selectedCrop.kc_late;
+    return selectedCrop.kc_mid;
   };
 
   const currentKc = getCurrentKc();
@@ -1344,6 +1351,29 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
 
                 {/* Main Headline: Litres */}
                 <div className="mt-5">
+                  <div className="flex items-center justify-between text-xs text-emerald-200 mb-2 pb-2 border-b border-emerald-700/40">
+                    <span>Target: <strong className="text-white font-extrabold text-sm">{result.crop_type}</strong> ({result.growth_stage})</span>
+                    <span className="bg-emerald-950/70 border border-emerald-700/60 px-2 py-0.5 rounded text-[11px] text-emerald-300">
+                      Stage Kc: <strong className="text-white">{result.crop_kc.toFixed(2)}</strong>
+                    </span>
+                  </div>
+                  {Boolean(
+                    result && (
+                      result.crop_type.toLowerCase() !== formData.crop_type.toLowerCase() ||
+                      result.growth_stage.toLowerCase() !== formData.growth_stage.toLowerCase() ||
+                      result.soil_type.toLowerCase() !== formData.soil_type.toLowerCase() ||
+                      (formData.et0_mm && Math.abs(result.reference_et0_mm - formData.et0_mm) > 0.05) ||
+                      Math.abs(result.soil_moisture_pct - formData.soil_moisture_pct) > 0.1 ||
+                      Math.abs(result.area - formData.area) > 0.01
+                    )
+                  ) && (
+                    <div className="mb-3 text-[11px] bg-amber-500/25 border border-amber-400/50 text-amber-100 p-2.5 rounded-xl flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-amber-300 flex-shrink-0" />
+                      <span>
+                        Inputs changed since last calculation (showing result for <strong>{result.crop_type} - {result.growth_stage}</strong>). Click &quot;Calculate Water Requirement&quot; to refresh.
+                      </span>
+                    </div>
+                  )}
                   <div className="text-3xl sm:text-4xl font-black text-white tracking-tight flex items-baseline gap-2">
                     <span>{result.water_requirement_litres.toLocaleString()}</span>
                     <span className="text-lg font-bold text-emerald-400">Litres</span>
@@ -1375,9 +1405,17 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
 
                 {/* Soil Profile & Texture Calibration Tag */}
                 <div className="mt-4 pt-3 border-t border-emerald-700/60 flex flex-wrap items-center justify-between text-xs text-emerald-200/90 gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Soil: <strong>{result.usda_soil_texture ? `USDA ${result.usda_soil_texture}` : result.soil_type}</strong></span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Layers className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                    {result.usda_soil_texture ? (
+                      <span className="text-emerald-100">
+                        SoilGrids Texture: <strong className="text-white">{result.usda_soil_texture}</strong>
+                        <span className="text-emerald-300/80 mx-1.5">|</span>
+                        Mapped Irrigation Class: <strong className="text-white">{result.soil_type}</strong>
+                      </span>
+                    ) : (
+                      <span>Soil Class: <strong className="text-white">{result.soil_type}</strong></span>
+                    )}
                     {result.soil_depth_interval && (
                       <span className="text-[10px] bg-emerald-950/80 px-2 py-0.5 rounded text-emerald-300 font-mono">
                         {result.soil_depth_interval}
@@ -1528,7 +1566,28 @@ export const PredictionView: React.FC<PredictionViewProps> = ({
                 {onNavigateToShap && (
                   <button
                     type="button"
-                    onClick={() => onNavigateToShap(formData)}
+                    onClick={() => {
+                      const predictionContext: PredictionRequest = {
+                        ...formData,
+                        crop_type: result.crop_type || formData.crop_type,
+                        growth_stage: result.growth_stage || formData.growth_stage,
+                        area: result.area ?? formData.area,
+                        area_unit: result.area_unit || formData.area_unit,
+                        soil_type: result.soil_type || formData.soil_type,
+                        soil_moisture_pct: result.soil_moisture_pct ?? formData.soil_moisture_pct,
+                        temperature_c: formData.temperature_c,
+                        humidity_pct: formData.humidity_pct,
+                        wind_speed_kmh: formData.wind_speed_kmh,
+                        rainfall_mm: formData.rainfall_mm,
+                        solar_radiation: formData.solar_radiation,
+                        et0_mm: result.reference_et0_mm ?? formData.et0_mm,
+                        irrigation_method: formData.irrigation_method,
+                        model_name: result.model_used || formData.model_name || "xgboost",
+                        soil_source: result.soil_source || formData.soil_source,
+                        soil_depth_interval: result.soil_depth_interval || formData.soil_depth_interval,
+                      };
+                      onNavigateToShap(predictionContext);
+                    }}
                     className="w-full text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-800 py-2.5 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <Sparkles className="w-4 h-4 text-emerald-600" />

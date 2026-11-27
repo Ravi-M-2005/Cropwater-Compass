@@ -1709,7 +1709,7 @@ def calculate_irrigation_recommendation(
         fc_val = custom_fc if custom_fc is not None else soil["field_capacity_pct"]
         pwp_val = custom_pwp if custom_pwp is not None else soil["wilting_point_pct"]
         recommendations.append(
-            f"Soil parameters calibrated using ISRIC SoilGrids 250m (USDA texture: {usda_soil_texture or 'Classified'}, FC: {fc_val:.1f}%, PWP: {pwp_val:.1f}%)."
+            f"Soil calibrated via ISRIC SoilGrids 250m: Original USDA texture '{usda_soil_texture or 'Classified'}', mapped irrigation soil class '{soil_type}' (FC: {fc_val:.1f}%, PWP: {pwp_val:.1f}%)."
         )
 
     # Data provenance & ML generalization notices

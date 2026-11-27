@@ -114,6 +114,56 @@ def save_prediction(record: Dict[str, Any]) -> str:
     return pred_id
 
 
+def save_predictions_batch(records: List[Dict[str, Any]]) -> None:
+    """Saves multiple prediction records in a single SQLite transaction for batch performance."""
+    if not records:
+        return
+    init_db()
+    rows = []
+    for record in records:
+        pred_id = record.get("id") or str(uuid.uuid4())[:8]
+        record["id"] = pred_id
+        timestamp = record.get("timestamp") or datetime.now().isoformat()
+        record["timestamp"] = timestamp
+        rows.append((
+            pred_id,
+            timestamp,
+            record.get("crop_type", "Wheat"),
+            record.get("growth_stage", "Mid-season"),
+            float(record.get("area", 1.0)),
+            record.get("area_unit", "hectares"),
+            record.get("soil_type", "Loamy"),
+            float(record.get("soil_moisture_pct", 30.0)),
+            float(record.get("temperature_c", 25.0)),
+            float(record.get("humidity_pct", 50.0)),
+            float(record.get("wind_speed_kmh", 10.0)),
+            float(record.get("rainfall_mm", 0.0)),
+            float(record.get("reference_et0_mm", 4.0)),
+            record.get("irrigation_method", "Drip"),
+            record.get("model_used", "xgboost"),
+            float(record.get("water_requirement_litres", 0.0)),
+            float(record.get("water_requirement_mm", 0.0)),
+            float(record.get("net_irrigation_requirement_mm", 0.0)),
+            1 if record.get("irrigation_recommended") else 0,
+            record.get("urgency_level", "Moderate"),
+            json.dumps(record)
+        ))
+
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.executemany("""
+            INSERT OR REPLACE INTO predictions (
+                id, timestamp, crop_type, growth_stage, area, area_unit,
+                soil_type, soil_moisture_pct, temperature_c, humidity_pct,
+                wind_speed_kmh, rainfall_mm, et0_mm, irrigation_method,
+                model_used, water_requirement_litres, water_requirement_mm,
+                net_irrigation_requirement_mm, irrigation_recommended,
+                urgency_level, details_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, rows)
+        conn.commit()
+
+
 def get_history(
     limit: int = 50,
     offset: int = 0,

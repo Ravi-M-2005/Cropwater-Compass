@@ -10,6 +10,7 @@ import {
   ArrowRight,
   Database,
   FileCheck,
+  Info,
 } from "lucide-react";
 import { api } from "../services/api";
 
@@ -209,6 +210,11 @@ export const DatasetView: React.FC = () => {
                     {uploadResult.failed_rows_count} row error(s)
                   </span>
                 )}
+                {uploadResult.skipped_rows_count > 0 && (
+                  <span className="ml-2 text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
+                    {uploadResult.skipped_rows_count.toLocaleString()} row(s) skipped (100k cap)
+                  </span>
+                )}
               </h3>
             </div>
             <div className="text-right">
@@ -218,6 +224,14 @@ export const DatasetView: React.FC = () => {
               </span>
             </div>
           </div>
+
+          {/* Processing Note for Large Datasets */}
+          {uploadResult.processing_note && (
+            <div className="p-4 bg-blue-50 border-b border-blue-200 text-xs text-blue-900 flex items-center gap-2">
+              <Info className="w-4 h-4 text-blue-600 flex-shrink-0" />
+              <span>{uploadResult.processing_note}</span>
+            </div>
+          )}
 
           {/* Row-Level Validation Errors */}
           {uploadResult.row_errors && uploadResult.row_errors.length > 0 && (
