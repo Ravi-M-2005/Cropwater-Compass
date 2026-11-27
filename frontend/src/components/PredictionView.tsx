@@ -43,6 +43,7 @@ import { useGeolocation } from "../hooks/useGeolocation";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 import { OfflineDatasetSelector } from "./OfflineDatasetSelector";
 import { OfflineDatasetRecord, OFFLINE_DATASET } from "../data/offlineDataset";
+import { OFFLINE_CROPS_LIST } from "../data/cropProfiles";
 import { calculateOfflineIrrigation } from "../services/offlineIrrigationEngine";
 import { DataSourceBadge } from "./DataSourceBadge";
 
@@ -81,8 +82,9 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
     model_name: "xgboost",
   });
 
-  // Catalogs
-  const [crops, setCrops] = useState<CropInfo[]>([]);
+  // Catalogs (initialized with 93-crop offline fallback so all crops are available even if API is unreachable)
+  const [crops, setCrops] = useState<CropInfo[]>(OFFLINE_CROPS_LIST);
+  const [selectedCropCategory, setSelectedCropCategory] = useState<string>("All");
   const [soils, setSoils] = useState<SoilInfo[]>([]);
   const [methods, setMethods] = useState<IrrigationMethodInfo[]>([]);
   const [locations, setLocations] = useState<Record<string, any>>({});
@@ -391,7 +393,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
       setResult(res);
     } catch (err: any) {
       console.warn("api.predict failed; executing verified local FAO-56 irrigation engine:", err);
-      const offlineRes = calculateOfflineIrrigation(formData);
+      const offlineRes = calculateOfflineIrrigation(formData, selectedCrop);
       setResult(offlineRes);
     } finally {
       setLoading(false);
@@ -415,7 +417,13 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
   const estimatedEtc = ((formData.et0_mm || 4.0) * currentKc).toFixed(2);
 
   // Options for searchable selects
-  const cropOptions: SelectOption[] = crops.map((c) => ({
+  const cropCategories = Array.from(new Set(crops.map((c) => c.category || "General")));
+  const filteredCrops =
+    selectedCropCategory === "All"
+      ? crops
+      : crops.filter((c) => (c.category || "General") === selectedCropCategory);
+
+  const cropOptions: SelectOption[] = filteredCrops.map((c) => ({
     value: c.name,
     label: c.name,
     category: c.category || "General",
@@ -619,6 +627,34 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Crop Category Filter */}
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Crop Category Filter ({crops.length || 93} Crops Across {cropCategories.length || 9} Categories)
+                </label>
+                <select
+                  value={selectedCropCategory}
+                  onChange={(e) => {
+                    const newCat = e.target.value;
+                    setSelectedCropCategory(newCat);
+                    if (newCat !== "All") {
+                      const firstInCat = crops.find((c) => (c.category || "General") === newCat);
+                      if (firstInCat && selectedCrop?.category !== newCat) {
+                        handleChange("crop_type", firstInCat.name);
+                      }
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-sm text-slate-800 font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                >
+                  <option value="All">All Categories ({crops.length || 93} Crops)</option>
+                  {cropCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat} ({crops.filter((c) => (c.category || "General") === cat).length})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {/* Crop Type - Searchable Dropdown */}
               <div>
                 <SearchableSelect
@@ -627,20 +663,54 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                   value={formData.crop_type}
                   onChange={(val) => handleChange("crop_type", val)}
                   placeholder="Select crop..."
-                  searchPlaceholder="Search 34 crops (e.g. Ragi, Rice, Cotton, Tomato)..."
+                  searchPlaceholder="Search 100+ crops (e.g. Ragi, Rice, Chickpea, Tomato, Coffee)..."
                   icon={<Sprout className="w-4 h-4" />}
                 />
                 {selectedCrop && (
-                  <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
-                    <span className="font-semibold text-emerald-800">
-                      Category: {selectedCrop.category}
-                    </span>
-                    <span>•</span>
-                    <span>Root: <strong>{selectedCrop.root_depth_meters}m</strong></span>
-                    <span>•</span>
-                    <span>Stage Kc: <strong>{currentKc.toFixed(2)}</strong></span>
-                    <span>•</span>
-                    <span>ETc: <strong className="text-emerald-700">{estimatedEtc} mm/d</strong></span>
+                  <div className="mt-2 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-200">
+                      <span className="font-semibold text-emerald-800">
+                        {selectedCrop.category}
+                      </span>
+                      {selectedCrop.scientific_name && (
+                        <>
+                          <span>•</span>
+                          <span className="italic text-slate-500">{selectedCrop.scientific_name}</span>
+                        </>
+                      )}
+                      <span>•</span>
+                      <span>Root: <strong>{selectedCrop.root_depth_meters}m</strong></span>
+                      <span>•</span>
+                      <span>Stage Kc: <strong>{currentKc.toFixed(2)}</strong></span>
+                      <span>•</span>
+                      <span>ETc: <strong className="text-emerald-700">{estimatedEtc} mm/d</strong></span>
+                      <span>•</span>
+                      {selectedCrop.data_source === "NEEDS CALIBRATION" ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">
+                          Needs Calibration (Fallback)
+                        </span>
+                      ) : selectedCrop.data_source === "FAO-56 EST" ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-sky-50 text-sky-800 border border-sky-200">
+                          Estimated (FAO-56 Group)
+                        </span>
+                      ) : selectedCrop.data_source === "ICAR" ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-200">
+                          ICAR Guide
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          FAO-56 Verified
+                        </span>
+                      )}
+                    </div>
+                    {selectedCrop.ml_validated === false && (
+                      <div className="text-[11px] bg-amber-50/80 text-amber-900 border border-amber-200 rounded-lg px-2.5 py-1.5 flex items-start gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                        <span>
+                          <strong>ML Generalization Notice:</strong> Pre-trained ML models were validated on the original 34-crop benchmark. For <strong>{selectedCrop.name}</strong>, irrigation demand is calculated directly from FAO-56 physical parameters (Kc={currentKc.toFixed(2)}).
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
@@ -1086,8 +1156,8 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                 </label>
                 <input
                   type="number"
-                  step="1"
-                  min="5"
+                  step="0.1"
+                  min="0"
                   max="100"
                   value={formData.humidity_pct}
                   onChange={(e) => handleChange("humidity_pct", parseFloat(e.target.value) || 0)}
@@ -1101,7 +1171,7 @@ export const PredictionView: React.FC<PredictionViewProps> = ({ onNavigateToShap
                 </label>
                 <input
                   type="number"
-                  step="0.5"
+                  step="0.1"
                   min="0"
                   value={formData.wind_speed_kmh}
                   onChange={(e) => handleChange("wind_speed_kmh", parseFloat(e.target.value) || 0)}

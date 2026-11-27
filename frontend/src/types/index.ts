@@ -256,12 +256,17 @@ export interface WeatherData {
 export interface CropInfo {
   name: string;
   category: string;
+  scientific_name?: string;
   kc_initial: number;
+  kc_vegetative?: number;
   kc_mid: number;
   kc_late: number;
   root_depth_meters: number;
   critical_depletion_fraction: number;
   typical_yield_season_days: number;
+  notes?: string;
+  data_source?: string;
+  ml_validated?: boolean;
 }
 
 export interface SoilInfo {

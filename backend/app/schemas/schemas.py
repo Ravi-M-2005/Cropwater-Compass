@@ -328,12 +328,16 @@ class HistoryStatsResponse(BaseModel):
 class CropInfo(BaseModel):
     name: str
     category: str
+    scientific_name: Optional[str] = None
     kc_initial: float
     kc_mid: float
     kc_late: float
     root_depth_meters: float
     critical_depletion_fraction: float
     typical_yield_season_days: int
+    notes: Optional[str] = None
+    data_source: Optional[str] = None
+    ml_validated: Optional[bool] = True
 
 
 class SoilInfo(BaseModel):

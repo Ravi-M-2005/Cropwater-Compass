@@ -176,7 +176,7 @@ export const DatasetView: React.FC = () => {
             <div>
               <span className="text-slate-500 block">Supported Varieties</span>
               <span className="font-bold text-slate-800">
-                {datasetStats?.supported_crops_count || 34} crops across 4 agricultural categories
+                {datasetStats?.supported_crops_count || 93} crops across 9 agricultural categories
               </span>
             </div>
             <div>
@@ -203,7 +203,12 @@ export const DatasetView: React.FC = () => {
                 Batch Evaluation Complete
               </span>
               <h3 className="text-lg font-black text-slate-900 mt-0.5">
-                {uploadResult.total_rows} Rows Processed Successfully
+                {uploadResult.processed_rows_count ?? uploadResult.total_rows} of {uploadResult.total_rows} Rows Processed Successfully
+                {uploadResult.failed_rows_count > 0 && (
+                  <span className="ml-2 text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                    {uploadResult.failed_rows_count} row error(s)
+                  </span>
+                )}
               </h3>
             </div>
             <div className="text-right">
@@ -213,6 +218,23 @@ export const DatasetView: React.FC = () => {
               </span>
             </div>
           </div>
+
+          {/* Row-Level Validation Errors */}
+          {uploadResult.row_errors && uploadResult.row_errors.length > 0 && (
+            <div className="p-4 bg-amber-50 border-b border-amber-200 text-xs text-amber-900 space-y-1.5">
+              <div className="font-bold flex items-center gap-1.5 text-amber-950">
+                <AlertTriangle className="w-4 h-4 text-amber-600" />
+                <span>Row-Level Validation Errors ({uploadResult.row_errors.length})</span>
+              </div>
+              <ul className="list-disc pl-5 space-y-0.5">
+                {uploadResult.row_errors.slice(0, 15).map((errItem: any, idx: number) => (
+                  <li key={idx}>
+                    <strong>Row {errItem.row}</strong> ({errItem.crop_type || "Unknown"}): {errItem.errors.join(" ")}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Table Preview */}
           <div className="overflow-x-auto">

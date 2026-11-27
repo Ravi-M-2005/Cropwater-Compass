@@ -1,65 +1,17 @@
 /**
  * Offline FAO-56 Irrigation Engine
  * Provides 100% offline agronomic calculations, volumetric water demand,
- * schedule generation, and ML multi-model estimations without network calls.
+ * schedule generation, and crop parameter resolution without network calls.
  */
-import { PredictionRequest, PredictionResponse } from "../types";
+import { PredictionRequest, PredictionResponse, CropInfo } from "../types";
+import {
+  OFFLINE_CROP_PROFILES,
+  OFFLINE_CROP_ALIASES,
+  OfflineCropProfile,
+} from "../data/cropProfiles";
 
-export interface CropProfile {
-  category: string;
-  kc_initial: number;
-  kc_vegetative: number;
-  kc_mid: number;
-  kc_late: number;
-  root_depth_meters: number;
-  critical_depletion_fraction: number;
-  typical_yield_season_days: number;
-}
-
-export const CROP_PROFILES: Record<string, CropProfile> = {
-  // Cereals
-  Wheat: { category: "Cereals", kc_initial: 0.35, kc_vegetative: 0.75, kc_mid: 1.15, kc_late: 0.40, root_depth_meters: 1.2, critical_depletion_fraction: 0.55, typical_yield_season_days: 130 },
-  "Rice (Paddy)": { category: "Cereals", kc_initial: 1.05, kc_vegetative: 1.10, kc_mid: 1.20, kc_late: 0.90, root_depth_meters: 0.6, critical_depletion_fraction: 0.20, typical_yield_season_days: 120 },
-  Rice: { category: "Cereals", kc_initial: 1.05, kc_vegetative: 1.10, kc_mid: 1.20, kc_late: 0.90, root_depth_meters: 0.6, critical_depletion_fraction: 0.20, typical_yield_season_days: 120 },
-  Maize: { category: "Cereals", kc_initial: 0.40, kc_vegetative: 0.80, kc_mid: 1.20, kc_late: 0.60, root_depth_meters: 1.2, critical_depletion_fraction: 0.55, typical_yield_season_days: 110 },
-  Barley: { category: "Cereals", kc_initial: 0.30, kc_vegetative: 0.70, kc_mid: 1.15, kc_late: 0.25, root_depth_meters: 1.0, critical_depletion_fraction: 0.55, typical_yield_season_days: 120 },
-  "Sorghum (Jowar)": { category: "Cereals", kc_initial: 0.35, kc_vegetative: 0.75, kc_mid: 1.05, kc_late: 0.55, root_depth_meters: 1.4, critical_depletion_fraction: 0.55, typical_yield_season_days: 115 },
-  "Pearl Millet (Bajra)": { category: "Cereals", kc_initial: 0.35, kc_vegetative: 0.70, kc_mid: 1.00, kc_late: 0.45, root_depth_meters: 1.2, critical_depletion_fraction: 0.60, typical_yield_season_days: 90 },
-  "Finger Millet (Ragi)": { category: "Cereals", kc_initial: 0.35, kc_vegetative: 0.70, kc_mid: 1.05, kc_late: 0.50, root_depth_meters: 0.9, critical_depletion_fraction: 0.50, typical_yield_season_days: 110 },
-
-  // Pulses
-  Chickpea: { category: "Pulses", kc_initial: 0.40, kc_vegetative: 0.75, kc_mid: 1.05, kc_late: 0.35, root_depth_meters: 0.9, critical_depletion_fraction: 0.50, typical_yield_season_days: 105 },
-  "Pigeon Pea (Toor Dal)": { category: "Pulses", kc_initial: 0.40, kc_vegetative: 0.80, kc_mid: 1.15, kc_late: 0.30, root_depth_meters: 1.5, critical_depletion_fraction: 0.60, typical_yield_season_days: 170 },
-  "Green Gram": { category: "Pulses", kc_initial: 0.40, kc_vegetative: 0.70, kc_mid: 1.05, kc_late: 0.35, root_depth_meters: 0.7, critical_depletion_fraction: 0.45, typical_yield_season_days: 75 },
-  "Black Gram": { category: "Pulses", kc_initial: 0.40, kc_vegetative: 0.70, kc_mid: 1.05, kc_late: 0.35, root_depth_meters: 0.7, critical_depletion_fraction: 0.45, typical_yield_season_days: 80 },
-  Lentil: { category: "Pulses", kc_initial: 0.40, kc_vegetative: 0.75, kc_mid: 1.10, kc_late: 0.30, root_depth_meters: 0.8, critical_depletion_fraction: 0.50, typical_yield_season_days: 110 },
-  "Field Pea": { category: "Pulses", kc_initial: 0.45, kc_vegetative: 0.80, kc_mid: 1.15, kc_late: 0.30, root_depth_meters: 0.8, critical_depletion_fraction: 0.45, typical_yield_season_days: 95 },
-
-  // Commercial Crops
-  Sugarcane: { category: "Commercial", kc_initial: 0.40, kc_vegetative: 0.85, kc_mid: 1.25, kc_late: 0.75, root_depth_meters: 1.6, critical_depletion_fraction: 0.65, typical_yield_season_days: 365 },
-  Cotton: { category: "Commercial", kc_initial: 0.35, kc_vegetative: 0.75, kc_mid: 1.20, kc_late: 0.65, root_depth_meters: 1.4, critical_depletion_fraction: 0.65, typical_yield_season_days: 180 },
-  Groundnut: { category: "Commercial", kc_initial: 0.40, kc_vegetative: 0.75, kc_mid: 1.15, kc_late: 0.60, root_depth_meters: 0.8, critical_depletion_fraction: 0.50, typical_yield_season_days: 120 },
-  Soybean: { category: "Commercial", kc_initial: 0.40, kc_vegetative: 0.80, kc_mid: 1.15, kc_late: 0.50, root_depth_meters: 1.0, critical_depletion_fraction: 0.50, typical_yield_season_days: 110 },
-  Sunflower: { category: "Commercial", kc_initial: 0.35, kc_vegetative: 0.75, kc_mid: 1.15, kc_late: 0.40, root_depth_meters: 1.2, critical_depletion_fraction: 0.55, typical_yield_season_days: 105 },
-  Mustard: { category: "Commercial", kc_initial: 0.35, kc_vegetative: 0.75, kc_mid: 1.15, kc_late: 0.35, root_depth_meters: 1.1, critical_depletion_fraction: 0.50, typical_yield_season_days: 120 },
-  Tobacco: { category: "Commercial", kc_initial: 0.45, kc_vegetative: 0.85, kc_mid: 1.15, kc_late: 0.75, root_depth_meters: 1.0, critical_depletion_fraction: 0.50, typical_yield_season_days: 125 },
-
-  // Horticultural Crops
-  Tomato: { category: "Horticultural", kc_initial: 0.60, kc_vegetative: 0.85, kc_mid: 1.15, kc_late: 0.80, root_depth_meters: 0.8, critical_depletion_fraction: 0.40, typical_yield_season_days: 125 },
-  Potato: { category: "Horticultural", kc_initial: 0.50, kc_vegetative: 0.80, kc_mid: 1.15, kc_late: 0.75, root_depth_meters: 0.6, critical_depletion_fraction: 0.35, typical_yield_season_days: 115 },
-  Onion: { category: "Horticultural", kc_initial: 0.70, kc_vegetative: 0.85, kc_mid: 1.05, kc_late: 0.75, root_depth_meters: 0.4, critical_depletion_fraction: 0.30, typical_yield_season_days: 130 },
-  Chilli: { category: "Horticultural", kc_initial: 0.60, kc_vegetative: 0.80, kc_mid: 1.10, kc_late: 0.85, root_depth_meters: 0.7, critical_depletion_fraction: 0.40, typical_yield_season_days: 140 },
-  Brinjal: { category: "Horticultural", kc_initial: 0.60, kc_vegetative: 0.85, kc_mid: 1.15, kc_late: 0.80, root_depth_meters: 0.9, critical_depletion_fraction: 0.45, typical_yield_season_days: 135 },
-  Cabbage: { category: "Horticultural", kc_initial: 0.70, kc_vegetative: 0.85, kc_mid: 1.05, kc_late: 0.95, root_depth_meters: 0.6, critical_depletion_fraction: 0.45, typical_yield_season_days: 100 },
-  Cauliflower: { category: "Horticultural", kc_initial: 0.70, kc_vegetative: 0.85, kc_mid: 1.05, kc_late: 0.95, root_depth_meters: 0.6, critical_depletion_fraction: 0.45, typical_yield_season_days: 90 },
-  Carrot: { category: "Horticultural", kc_initial: 0.70, kc_vegetative: 0.85, kc_mid: 1.05, kc_late: 0.95, root_depth_meters: 0.7, critical_depletion_fraction: 0.40, typical_yield_season_days: 95 },
-  Banana: { category: "Horticultural", kc_initial: 0.90, kc_vegetative: 1.00, kc_mid: 1.20, kc_late: 1.10, root_depth_meters: 0.9, critical_depletion_fraction: 0.35, typical_yield_season_days: 340 },
-  Mango: { category: "Horticultural", kc_initial: 0.50, kc_vegetative: 0.65, kc_mid: 0.80, kc_late: 0.70, root_depth_meters: 2.0, critical_depletion_fraction: 0.65, typical_yield_season_days: 365 },
-  Grapes: { category: "Horticultural", kc_initial: 0.45, kc_vegetative: 0.65, kc_mid: 0.85, kc_late: 0.55, root_depth_meters: 1.5, critical_depletion_fraction: 0.50, typical_yield_season_days: 210 },
-  Pomegranate: { category: "Horticultural", kc_initial: 0.45, kc_vegetative: 0.65, kc_mid: 0.80, kc_late: 0.65, root_depth_meters: 1.4, critical_depletion_fraction: 0.55, typical_yield_season_days: 220 },
-  Papaya: { category: "Horticultural", kc_initial: 0.80, kc_vegetative: 0.95, kc_mid: 1.15, kc_late: 1.00, root_depth_meters: 0.8, critical_depletion_fraction: 0.40, typical_yield_season_days: 300 },
-  Watermelon: { category: "Horticultural", kc_initial: 0.45, kc_vegetative: 0.75, kc_mid: 1.00, kc_late: 0.75, root_depth_meters: 0.9, critical_depletion_fraction: 0.45, typical_yield_season_days: 90 },
-};
+export type CropProfile = OfflineCropProfile;
+export const CROP_PROFILES: Record<string, OfflineCropProfile> = OFFLINE_CROP_PROFILES;
 
 export const SOIL_PROFILES: Record<string, { fc: number; pwp: number; awc: number }> = {
   Sandy: { fc: 12.0, pwp: 5.0, awc: 70.0 },
@@ -77,6 +29,62 @@ export const METHOD_EFFICIENCIES: Record<string, number> = {
   Surface: 60.0,
 };
 
+export function resolveOfflineCropProfile(
+  cropType: string,
+  cropOverride?: CropInfo
+): { canonicalName: string; profile: OfflineCropProfile } {
+  if (cropOverride) {
+    return {
+      canonicalName: cropOverride.name,
+      profile: {
+        category: cropOverride.category,
+        scientific_name: cropOverride.scientific_name,
+        kc_initial: cropOverride.kc_initial,
+        kc_vegetative: (cropOverride.kc_initial + cropOverride.kc_mid) / 2.0,
+        kc_mid: cropOverride.kc_mid,
+        kc_late: cropOverride.kc_late,
+        root_depth_meters: cropOverride.root_depth_meters,
+        critical_depletion_fraction: cropOverride.critical_depletion_fraction,
+        typical_yield_season_days: cropOverride.typical_yield_season_days,
+        notes: cropOverride.notes,
+        data_source: cropOverride.data_source || "FAO-56",
+        ml_validated: cropOverride.ml_validated ?? true,
+      },
+    };
+  }
+
+  const clean = (cropType || "").trim();
+  if (!clean) {
+    throw new Error("Crop type is required for offline FAO-56 calculation.");
+  }
+
+  if (OFFLINE_CROP_PROFILES[clean]) {
+    return { canonicalName: clean, profile: OFFLINE_CROP_PROFILES[clean] };
+  }
+
+  if (OFFLINE_CROP_ALIASES[clean] && OFFLINE_CROP_PROFILES[OFFLINE_CROP_ALIASES[clean]]) {
+    const target = OFFLINE_CROP_ALIASES[clean];
+    return { canonicalName: target, profile: OFFLINE_CROP_PROFILES[target] };
+  }
+
+  const lower = clean.toLowerCase();
+  for (const [k, prof] of Object.entries(OFFLINE_CROP_PROFILES)) {
+    if (k.toLowerCase() === lower) {
+      return { canonicalName: k, profile: prof };
+    }
+  }
+
+  for (const [alias, target] of Object.entries(OFFLINE_CROP_ALIASES)) {
+    if (alias.toLowerCase() === lower && OFFLINE_CROP_PROFILES[target]) {
+      return { canonicalName: target, profile: OFFLINE_CROP_PROFILES[target] };
+    }
+  }
+
+  throw new Error(
+    `Unsupported crop "${cropType}" in offline engine — no FAO-56 parameters found.`
+  );
+}
+
 export function convertAreaToSqMeters(area: number, unit: string): number {
   const u = (unit || "hectares").toLowerCase();
   if (u.includes("hect")) return area * 10000.0;
@@ -84,33 +92,41 @@ export function convertAreaToSqMeters(area: number, unit: string): number {
   return area;
 }
 
-export function getCropKcOffline(cropType: string, growthStage: string): number {
-  const profile = CROP_PROFILES[cropType] || CROP_PROFILES["Wheat"];
+export function getCropKcOffline(
+  cropType: string,
+  growthStage: string,
+  cropOverride?: CropInfo
+): number {
+  const { profile } = resolveOfflineCropProfile(cropType, cropOverride);
   const stage = (growthStage || "Mid-season").toLowerCase();
   if (stage.includes("init")) return profile.kc_initial;
-  if (stage.includes("veg")) return profile.kc_vegetative;
+  if (stage.includes("veg") || stage.includes("develop")) return profile.kc_vegetative;
   if (stage.includes("mid")) return profile.kc_mid;
   if (stage.includes("late")) return profile.kc_late;
   return profile.kc_mid;
 }
 
 export function calculateEffectiveRainfallOffline(rainfallMm: number): number {
-  if (rainfallMm <= 0) return 0.0;
-  if (rainfallMm <= 250.0) {
-    return Math.max(0.0, (rainfallMm * (125.0 - 0.2 * rainfallMm)) / 125.0);
-  }
-  return 125.0 + 0.1 * rainfallMm;
+  if (rainfallMm <= 5.0) return 0.0;
+  if (rainfallMm <= 50.0) return (rainfallMm - 5.0) * 0.75;
+  return 45.0 * 0.75 + (rainfallMm - 50.0) * 0.5;
 }
 
-export function calculateOfflineIrrigation(req: PredictionRequest): PredictionResponse {
-  const crop = CROP_PROFILES[req.crop_type] || CROP_PROFILES["Wheat"];
+export function calculateOfflineIrrigation(
+  req: PredictionRequest,
+  cropOverride?: CropInfo
+): PredictionResponse {
+  const { canonicalName, profile: crop } = resolveOfflineCropProfile(
+    req.crop_type,
+    cropOverride
+  );
   const soil = SOIL_PROFILES[req.soil_type] || SOIL_PROFILES["Loamy"];
   const efficiencyPct = METHOD_EFFICIENCIES[req.irrigation_method] || 90.0;
   const efficiency = efficiencyPct / 100.0;
 
   const areaSqMeters = convertAreaToSqMeters(req.area, req.area_unit);
   const et0 = req.et0_mm && req.et0_mm > 0 ? req.et0_mm : 4.5;
-  const kc = getCropKcOffline(req.crop_type, req.growth_stage);
+  const kc = getCropKcOffline(req.crop_type, req.growth_stage, cropOverride);
   const etc = et0 * kc;
 
   const peff = calculateEffectiveRainfallOffline(req.rainfall_mm || 0);
@@ -123,8 +139,12 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
   const raw = taw * crop.critical_depletion_fraction;
 
   const moisture = req.soil_moisture_pct;
-  const depletion = moisture >= fc ? 0.0 : Math.min(taw, Math.max(0.0, 10.0 * (fc - moisture) * rootDepth));
-  const depletionFraction = taw > 0 ? Math.min(1.0, Math.max(0.0, depletion / taw)) : 0.0;
+  const depletion =
+    moisture >= fc
+      ? 0.0
+      : Math.min(taw, Math.max(0.0, 10.0 * (fc - moisture) * rootDepth));
+  const depletionFraction =
+    taw > 0 ? Math.min(1.0, Math.max(0.0, depletion / taw)) : 0.0;
 
   // Net irrigation requirement
   let baseNir = Math.max(0.0, etc - peff);
@@ -135,7 +155,7 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
   // Gross irrigation requirement
   const girMm = Number((baseNir / efficiency).toFixed(2));
   const waterLitres = Math.round(girMm * areaSqMeters);
-  const waterM3 = Number((waterLitres / 1000.0).toFixed(2));
+  const waterM3 = Number((waterLitres / 1000.0).toFixed(3));
 
   // Urgency logic
   let urgency: "Critical" | "High" | "Moderate" | "Low" | "None" = "Moderate";
@@ -153,11 +173,35 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
 
   // Schedule recommendation
   const frequencyDays = Math.max(1, Math.min(7, Math.round(raw / Math.max(1.0, etc))));
-  const applicationRateMmPerHour = req.irrigation_method === "Drip" ? 4.0 : req.irrigation_method === "Sprinkler" ? 8.0 : 15.0;
-  const durationHours = Number(Math.max(0.5, Math.min(12.0, girMm / applicationRateMmPerHour)).toFixed(1));
+  const applicationRateMmPerHour =
+    req.irrigation_method === "Drip"
+      ? 4.0
+      : req.irrigation_method === "Sprinkler"
+      ? 8.0
+      : 15.0;
+  const durationHours = Number(
+    Math.max(0.5, Math.min(12.0, girMm / applicationRateMmPerHour)).toFixed(1)
+  );
 
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const recommendations: string[] = [
+    `Computed using local deterministic FAO-56 Agronomic Engine (Offline Mode) for ${canonicalName}.`,
+    `Gross crop requirement: ${girMm} mm depth distributed over ${areaSqMeters.toLocaleString()} m² (${req.area} ${req.area_unit}).`,
+    `Irrigation delivery efficiency calibrated to ${efficiencyPct}% for ${req.irrigation_method} systems.`,
+  ];
+
+  if (crop.data_source === "NEEDS CALIBRATION") {
+    recommendations.push(
+      `Calibration Notice: ${canonicalName} Kc parameters are fallback estimates. Local field calibration is recommended.`
+    );
+  }
+  if (!crop.ml_validated) {
+    recommendations.push(
+      `ML Generalization Notice: Pre-trained ML models were validated on the original 34-crop benchmark; offline FAO-56 physical balance is used directly.`
+    );
+  }
 
   return {
     id: `PRED-OFFLINE-${Date.now().toString(36).toUpperCase()}`,
@@ -188,12 +232,7 @@ export function calculateOfflineIrrigation(req: PredictionRequest): PredictionRe
       emitter_discharge_lph: req.irrigation_method === "Drip" ? 4.0 : undefined,
       next_irrigation_date: tomorrow.toISOString().split("T")[0],
     },
-    recommendations: [
-      `Computed using local deterministic FAO-56 Agronomic Engine (Offline Mode).`,
-      `Gross crop requirement: ${girMm} mm depth distributed over ${areaSqMeters.toLocaleString()} m² (${req.area} ${req.area_unit}).`,
-      `Irrigation delivery efficiency calibrated to ${efficiencyPct}% for ${req.irrigation_method} systems.`,
-      `Cloud ML neural network inference (XGBoost, ANN, LSTM) requires online server connectivity. Offline mode provides standard FAO-56 Penman-Monteith physical balance.`,
-    ],
+    recommendations,
     model_used: "FAO-56 Deterministic Agronomic Engine (Offline)",
     model_predictions: {},
     timestamp: new Date().toISOString(),

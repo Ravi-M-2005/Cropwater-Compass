@@ -17,6 +17,7 @@ from backend.app.schemas.schemas import (
 )
 from backend.app.services.irrigation import (
     CROP_DATABASE,
+    ML_TRAINED_CROPS,
     SOIL_DATABASE,
     IRRIGATION_METHODS,
     calculate_irrigation_recommendation
@@ -180,12 +181,16 @@ def get_crops():
         crop_list.append({
             "name": name,
             "category": data["category"],
+            "scientific_name": data.get("scientific_name"),
             "kc_initial": data["kc_initial"],
             "kc_mid": data["kc_mid"],
             "kc_late": data["kc_late"],
             "root_depth_meters": data["root_depth_meters"],
             "critical_depletion_fraction": data["critical_depletion_fraction"],
-            "typical_yield_season_days": data["typical_yield_season_days"]
+            "typical_yield_season_days": data["typical_yield_season_days"],
+            "notes": data.get("notes"),
+            "data_source": data.get("data_source"),
+            "ml_validated": name in ML_TRAINED_CROPS,
         })
     return crop_list
 
